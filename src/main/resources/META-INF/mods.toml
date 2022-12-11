@@ -1,0 +1,31 @@
+modLoader = "javafml"
+loaderVersion = "[44,)"
+license = "CC BY-NC-ND 4.0"
+#issueTrackerURL="https://github.com/tristankechlo/ToolLeveling/issues"
+#showAsResourcePack=false
+
+[[mods]]
+modId = "random_mob_sizes"
+version = "1.19.3-1.0"
+displayName = "Random Mob Sizes"
+#updateJSONURL="https://change.me.example.invalid/updates.json"
+#displayURL="https://change.me.to.your.mods.homepage.example.invalid/"
+#logoFile="examplemod.png"
+#credits = "Thanks for this example mod goes to Java"
+authors = "Buecher_wurm"
+description = ''''''
+
+
+[[dependencies.random_mob_sizes]]
+    modId = "forge"
+    mandatory = true
+    versionRange = "[44,)"
+    ordering = "NONE"
+    side = "BOTH"
+
+[[dependencies.random_mob_sizes]]
+    modId = "minecraft"
+    mandatory = true
+    versionRange = "[1.19.3,1.20)"
+    ordering = "NONE"
+    side = "BOTH"
