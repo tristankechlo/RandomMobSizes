@@ -20,5 +20,6 @@
 
 # TODOs
  - readme
- - config
  - project pages
+ - mob shadows
+ - update command links

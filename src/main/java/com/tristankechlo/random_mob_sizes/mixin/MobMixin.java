@@ -1,7 +1,7 @@
 package com.tristankechlo.random_mob_sizes.mixin;
 
 import com.tristankechlo.random_mob_sizes.config.RandomMobSizesConfig;
-import com.tristankechlo.random_mob_sizes.config.ScalingSampler;
+import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
 import com.tristankechlo.random_mob_sizes.mixin_access.MobMixinAddon;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -35,7 +35,7 @@ public abstract class MobMixin implements MobMixinAddon {
         ScalingSampler sampler = RandomMobSizesConfig.SETTINGS.get(type);
         float scaling = 1.0F;
         if (sampler != null) {
-            scaling = sampler.sampleScalingFactor();
+            scaling = sampler.sample();
         }
         ((Mob) (Object) this).getEntityData().define(SCALING, scaling);
     }
