@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+/* reapply all EntityDimensions scaling factors, after vanilla changes them */
 @Mixin(Entity.class)
 public abstract class EntityMixin {
 
@@ -25,9 +26,7 @@ public abstract class EntityMixin {
     }
 
     @Inject(method = "refreshDimensions",
-            at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/world/entity/Entity;reapplyPosition()V",
-                    shift = At.Shift.BEFORE))
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;reapplyPosition()V", shift = At.Shift.BEFORE))
     private void refreshDimensions(CallbackInfo ci) {
         if (((Entity) (Object) this) instanceof Mob) {
             float scaleFactor = ((MobMixinAddon) this).getScaleFactor();

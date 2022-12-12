@@ -1,6 +1,6 @@
 buildscript {
     dependencies {
-        classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
+        classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7.+'
     }
 }
 
@@ -12,6 +12,9 @@ plugins {
 apply plugin: 'org.spongepowered.mixin'
 mixin {
     add sourceSets.main, "random_mob_sizes.refmap.json"
+    config 'random_mob_sizes.mixins.json'
+    debug.verbose = true
+    debug.export = true
 }
 
 version = "forge-${minecraft_version}-${mod_version}"
@@ -31,7 +34,6 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-            arg "-mixin.config=random_mob_sizes.mixins.json"
 
             mods { random_mob_sizes { source sourceSets.main } }
         }
@@ -40,7 +42,6 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-            arg "-mixin.config=random_mob_sizes.mixins.json"
 
             mods { random_mob_sizes { source sourceSets.main } }
         }
@@ -56,8 +57,8 @@ repositories {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    implementation 'org.spongepowered:mixin:0.8.4:processor'
-    annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
+    implementation 'org.spongepowered:mixin:0.8.5:processor'
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
 jar {

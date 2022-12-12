@@ -27,6 +27,7 @@
         "entities.ZombifiedPiglinMixin"
     ],
     "client": [
+        "EntityRenderDispatcherMixin",
         "LivingEntityRendererMixin"
     ]
 }

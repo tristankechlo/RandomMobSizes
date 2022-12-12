@@ -1,8 +1,8 @@
 package com.tristankechlo.random_mob_sizes.mixin;
 
 import com.tristankechlo.random_mob_sizes.config.RandomMobSizesConfig;
-import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
 import com.tristankechlo.random_mob_sizes.mixin_access.MobMixinAddon;
+import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+/* Adds another EntityDataAccessor to the Mob class to store the scale factor */
 @Mixin(Mob.class)
 public abstract class MobMixin implements MobMixinAddon {
 
