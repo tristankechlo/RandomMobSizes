@@ -1,0 +1,7 @@
+{
+    "minecraft:sheep": {
+        "scaling_factor_lower_bound": 0.5,
+        "scaling_factor_upper_bound": 1.5
+    },
+    "minecraft:cow": 1.4
+}

@@ -1,0 +1,14 @@
+{
+    "required": true,
+    "package": "com.tristankechlo.random_mob_sizes.mixin",
+    "compatibilityLevel": "JAVA_17",
+    "refmap": "random_mob_sizes.refmap.json",
+    "minVersion": "0.8",
+    "mixins": [
+        "EntityMixin",
+        "MobMixin"
+    ],
+    "client": [
+        "LivingEntityRendererMixin"
+    ]
+}

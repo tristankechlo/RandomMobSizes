@@ -1,21 +1,21 @@
-/*buildscript {
+buildscript {
     dependencies {
         classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
     }
-}*/
+}
 
 plugins {
     id 'eclipse'
     id 'net.minecraftforge.gradle' version '5.1.+'
 }
 
-/*apply plugin: 'org.spongepowered.mixin'
+apply plugin: 'org.spongepowered.mixin'
 mixin {
     add sourceSets.main, "random_mob_sizes.refmap.json"
-}*/
+}
 
 version = "forge-${minecraft_version}-${mod_version}"
-group = 'com.tristankechlo.random_mob_sizes' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group = 'com.tristankechlo.random_mob_sizes'
 archivesBaseName = 'random_mob_sizes'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -31,7 +31,7 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-            //arg "-mixin.config=random_mob_sizes.mixins.json"
+            arg "-mixin.config=random_mob_sizes.mixins.json"
 
             mods { random_mob_sizes { source sourceSets.main } }
         }
@@ -40,7 +40,7 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-            //arg "-mixin.config=random_mob_sizes.mixins.json"
+            arg "-mixin.config=random_mob_sizes.mixins.json"
 
             mods { random_mob_sizes { source sourceSets.main } }
         }
@@ -56,20 +56,20 @@ repositories {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    //implementation 'org.spongepowered:mixin:0.8.4:processor'
-    //annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
+    implementation 'org.spongepowered:mixin:0.8.4:processor'
+    annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
 }
 
 jar {
     manifest {
         attributes([
-                "Specification-Title": "Random Mob Sizes",
-                "Implementation-Title": project.name,
-                "Implementation-Version": project.jar.archiveVersion,
+                "Specification-Title"     : "Random Mob Sizes",
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : project.jar.archiveVersion,
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                //"TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
-                //"TweakOrder": 0,
-                //"MixinConfigs": "random_mob_sizes.mixins.json"
+                "TweakClass"              : "org.spongepowered.asm.launch.MixinTweaker",
+                "TweakOrder"              : 0,
+                "MixinConfigs"            : "random_mob_sizes.mixins.json"
         ])
     }
 }
