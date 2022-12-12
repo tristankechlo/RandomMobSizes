@@ -6,7 +6,25 @@
     "minVersion": "0.8",
     "mixins": [
         "EntityMixin",
-        "MobMixin"
+        "MobMixin",
+        "entities.AbstractPiglinMixin",
+        "entities.AbstractSkeletonMixin",
+        "entities.AbstractVillagerMixin",
+        "entities.CaveSpiderMixin",
+        "entities.CowMixin",
+        "entities.DolphinMixin",
+        "entities.EndermanMixin",
+        "entities.EndermiteMixin",
+        "entities.FoxMixin",
+        "entities.GhastMixin",
+        "entities.ShulkerMixin",
+        "entities.SilverfishMixin",
+        "entities.SnowGolemMixin",
+        "entities.SpiderMixin",
+        "entities.WitchMixin",
+        "entities.WitherSkeletonMixin",
+        "entities.ZombieMixin",
+        "entities.ZombifiedPiglinMixin"
     ],
     "client": [
         "LivingEntityRendererMixin"
