@@ -3,7 +3,7 @@ package com.tristankechlo.random_mob_sizes.sampler;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import net.minecraft.util.Mth;
+import net.minecraft.util.math.MathHelper;
 
 import java.util.Random;
 
@@ -38,7 +38,7 @@ public class GaussianSampler extends ScalingSampler {
     /* returns a random number from a Gaussian distribution, clamped to [0, 1] */
     private double randomGaussian() {
         double value = MEAN + (RANDOM.nextGaussian() * STD_DEV);
-        return Mth.clamp(value, 0.0D, 1.0D);
+        return MathHelper.clamp(value, 0.0D, 1.0D);
     }
 
     @Override

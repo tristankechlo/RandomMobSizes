@@ -10,8 +10,8 @@ import com.tristankechlo.random_mob_sizes.sampler.GaussianSampler;
 import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
 import com.tristankechlo.random_mob_sizes.sampler.StaticScalingSampler;
 import com.tristankechlo.random_mob_sizes.sampler.UniformScalingSampler;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.entity.EntityType;
+import net.minecraft.util.Identifier;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -30,7 +30,7 @@ public final class RandomMobSizesConfig {
 
     public static JsonObject serialize(JsonObject json) {
         SETTINGS.forEach((entityType, scalingSampler) -> {
-            ResourceLocation location = EntityType.getKey(entityType);
+            Identifier location = EntityType.getId(entityType);
             JsonElement element = scalingSampler.serialize();
             json.add(location.toString(), element);
         });
@@ -42,7 +42,7 @@ public final class RandomMobSizesConfig {
         Map<String, JsonElement> settings = ConfigManager.GSON.fromJson(json, MAP_TYPE);
         Map<EntityType<?>, ScalingSampler> newSettings = new HashMap<>();
         settings.forEach((key, value) -> {
-            Optional<EntityType<?>> entityType = EntityType.byString(key);
+            Optional<EntityType<?>> entityType = EntityType.get(key);
             if (entityType.isPresent()) {
                 try {
                     EntityType<?> type = entityType.get();

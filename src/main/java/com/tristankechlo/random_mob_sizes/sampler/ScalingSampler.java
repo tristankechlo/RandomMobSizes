@@ -1,7 +1,7 @@
 package com.tristankechlo.random_mob_sizes.sampler;
 
 import com.google.gson.JsonElement;
-import net.minecraft.util.Mth;
+import net.minecraft.util.math.MathHelper;
 
 public abstract class ScalingSampler {
 
@@ -13,7 +13,7 @@ public abstract class ScalingSampler {
     public abstract JsonElement serialize();
 
     public float sample() {
-        return Mth.clamp(sampleScalingFactor(), minimum, maximum);
+        return MathHelper.clamp(sampleScalingFactor(), minimum, maximum);
     }
 
 }

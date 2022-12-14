@@ -2,11 +2,11 @@ package com.tristankechlo.random_mob_sizes.mixin;
 
 import com.tristankechlo.random_mob_sizes.RandomMobSizesMod;
 import com.tristankechlo.random_mob_sizes.mixin_access.MobMixinAddon;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.Pose;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityDimensions;
+import net.minecraft.entity.EntityPose;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.mob.MobEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -18,19 +18,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class EntityMixin {
 
     @Inject(at = @At("RETURN"), method = "getDimensions", cancellable = true)
-    private void getDimensions(Pose pose, CallbackInfoReturnable<EntityDimensions> cir) {
+    private void getDimensions(EntityPose pose, CallbackInfoReturnable<EntityDimensions> cir) {
         // normally getDimensions() uses the dimensions from the entityType, so we need to apply scaling here
-        if (((Entity) (Object) this) instanceof Mob) {
+        if (((Entity) (Object) this) instanceof MobEntity) {
             float scaleFactor = ((MobMixinAddon) this).getScaleFactor();
-            cir.setReturnValue(cir.getReturnValue().scale(scaleFactor));
+            cir.setReturnValue(cir.getReturnValue().scaled(scaleFactor));
         }
     }
 
-    @Inject(at = @At("RETURN"), method = "onSyncedDataUpdated")
-    private void onSyncedDataUpdated(EntityDataAccessor<?> data, CallbackInfo ci) {
-        if (((Entity) (Object) this) instanceof Mob) {
+    @Inject(at = @At("RETURN"), method = "onTrackedDataSet")
+    private void onSyncedDataUpdated(TrackedData<?> data, CallbackInfo ci) {
+        if (((Entity) (Object) this) instanceof MobEntity) {
             if (data.equals(RandomMobSizesMod.SCALING)) {
-                ((Mob) (Object) this).refreshDimensions();
+                ((MobEntity) (Object) this).calculateDimensions();
             }
         }
     }

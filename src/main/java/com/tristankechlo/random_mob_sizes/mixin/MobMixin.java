@@ -4,13 +4,13 @@ import com.tristankechlo.random_mob_sizes.RandomMobSizesMod;
 import com.tristankechlo.random_mob_sizes.config.RandomMobSizesConfig;
 import com.tristankechlo.random_mob_sizes.mixin_access.MobMixinAddon;
 import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.SpawnGroupData;
-import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.entity.EntityData;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.world.LocalDifficulty;
+import net.minecraft.world.ServerWorldAccess;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -18,22 +18,22 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /* Adds another EntityDataAccessor to the Mob class to store the scale factor */
-@Mixin(Mob.class)
+@Mixin(MobEntity.class)
 public abstract class MobMixin implements MobMixinAddon {
 
     @Override
     public float getScaleFactor() {
-        return ((Mob) (Object) this).getEntityData().get(RandomMobSizesMod.SCALING);
+        return ((MobEntity) (Object) this).getDataTracker().get(RandomMobSizesMod.SCALING);
     }
 
     @Override
     public void setScaleFactor(Float scale) {
-        ((Mob) (Object) this).getEntityData().set(RandomMobSizesMod.SCALING, scale);
+        ((MobEntity) (Object) this).getDataTracker().set(RandomMobSizesMod.SCALING, scale);
     }
 
-    @Inject(at = @At("RETURN"), method = "finalizeSpawn")
-    private void onFinalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType mobSpawnType, SpawnGroupData data, CompoundTag nbt, CallbackInfoReturnable<SpawnGroupData> cir) {
-        EntityType<?> type = ((Mob) (Object) this).getType();
+    @Inject(at = @At("RETURN"), method = "initialize")
+    private void onFinalizeSpawn(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, EntityData entityData, NbtCompound entityNbt, CallbackInfoReturnable<EntityData> cir) {
+        EntityType<?> type = ((MobEntity) (Object) this).getType();
         ScalingSampler sampler = RandomMobSizesConfig.SETTINGS.get(type);
         float scaling = 1.0F;
         if (sampler != null) {
@@ -42,21 +42,21 @@ public abstract class MobMixin implements MobMixinAddon {
         this.setScaleFactor(scaling);
     }
 
-    @Inject(at = @At("TAIL"), method = "defineSynchedData")
+    @Inject(at = @At("TAIL"), method = "initDataTracker")
     private void defineSynchedData(CallbackInfo ci) {
-        ((Mob) (Object) this).getEntityData().define(RandomMobSizesMod.SCALING, 1.0F);
+        ((MobEntity) (Object) this).getDataTracker().startTracking(RandomMobSizesMod.SCALING, 1.0F);
     }
 
-    @Inject(at = @At("TAIL"), method = "readAdditionalSaveData")
-    private void readAdditionalSaveData(CompoundTag tag, CallbackInfo ci) {
+    @Inject(at = @At("TAIL"), method = "readCustomDataFromNbt")
+    private void readAdditionalSaveData(NbtCompound tag, CallbackInfo ci) {
         if (tag.contains("ScaleFactor")) {
             this.setScaleFactor(tag.getFloat("ScaleFactor"));
         }
     }
 
-    @Inject(at = @At("TAIL"), method = "addAdditionalSaveData")
-    private void addAdditionalSaveData(CompoundTag tag, CallbackInfo ci) {
-        tag.putFloat("ScaleFactor", ((Mob) (Object) this).getEntityData().get(RandomMobSizesMod.SCALING));
+    @Inject(at = @At("TAIL"), method = "writeCustomDataToNbt")
+    private void addAdditionalSaveData(NbtCompound tag, CallbackInfo ci) {
+        tag.putFloat("ScaleFactor", this.getScaleFactor());
     }
 
 }

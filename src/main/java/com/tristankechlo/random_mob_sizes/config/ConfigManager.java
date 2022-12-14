@@ -3,7 +3,7 @@ package com.tristankechlo.random_mob_sizes.config;
 import com.google.gson.*;
 import com.google.gson.stream.JsonWriter;
 import com.tristankechlo.random_mob_sizes.RandomMobSizesMod;
-import net.minecraftforge.fml.loading.FMLPaths;
+import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.File;
 import java.io.FileReader;
@@ -11,7 +11,7 @@ import java.io.FileWriter;
 
 public final class ConfigManager {
 
-    private static final File CONFIG_DIR = FMLPaths.CONFIGDIR.get().toFile();
+    private static final File CONFIG_DIR = FabricLoader.getInstance().getConfigDir().toFile();
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
     public static final String FILE_NAME = RandomMobSizesMod.MOD_ID + ".json";
 
@@ -45,8 +45,7 @@ public final class ConfigManager {
     private static void loadConfigFromFile(File file) {
         JsonObject json = null;
         try {
-            JsonParser parser = new JsonParser();
-            JsonElement jsonElement = parser.parse(new FileReader(file));
+            JsonElement jsonElement = JsonParser.parseReader(new FileReader(file));
             json = jsonElement.getAsJsonObject();
         } catch (Exception e) {
             RandomMobSizesMod.LOGGER.error("There was an error loading the config file: '{}'", FILE_NAME);
