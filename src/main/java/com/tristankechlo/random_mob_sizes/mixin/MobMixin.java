@@ -56,7 +56,7 @@ public abstract class MobMixin implements MobMixinAddon {
 
     @Inject(at = @At("TAIL"), method = "addAdditionalSaveData")
     private void addAdditionalSaveData(CompoundTag tag, CallbackInfo ci) {
-        tag.putFloat("ScaleFactor", ((Mob) (Object) this).getEntityData().get(RandomMobSizesMod.SCALING));
+        tag.putFloat("ScaleFactor", this.getScaleFactor());
     }
 
 }
