@@ -5,7 +5,7 @@ import com.google.gson.JsonPrimitive;
 
 public class StaticScalingSampler extends ScalingSampler {
 
-    final float static_scaling;
+    private final float static_scaling;
 
     public StaticScalingSampler(float static_scaling) {
         this.static_scaling = static_scaling;

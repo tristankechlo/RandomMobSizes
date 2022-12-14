@@ -9,12 +9,12 @@ import java.util.Random;
 
 public class GaussianSampler extends ScalingSampler {
 
+    private static final double MEAN = 0.5D;
+    private static final double STD_DEV = 0.15D;
+    private static final Random RANDOM = new Random();
     public static final String TYPE = "gaussian";
-    private final Random random = new Random();
-    final float min_scaling;
-    final float max_scaling;
-    final double mean = 0.5D;
-    final double std_dev = 0.15D;
+    private final float min_scaling;
+    private final float max_scaling;
 
     public GaussianSampler(float min_scaling, float max_scaling) {
         this.min_scaling = min_scaling;
@@ -37,7 +37,7 @@ public class GaussianSampler extends ScalingSampler {
 
     /* returns a random number from a Gaussian distribution, clamped to [0, 1] */
     private double randomGaussian() {
-        double value = mean + (random.nextGaussian() * std_dev);
+        double value = MEAN + (RANDOM.nextGaussian() * STD_DEV);
         return Mth.clamp(value, 0.0D, 1.0D);
     }
 

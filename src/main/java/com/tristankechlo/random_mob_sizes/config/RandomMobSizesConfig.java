@@ -17,13 +17,11 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.BiFunction;
 
 public final class RandomMobSizesConfig {
 
-    private static final Map<String, BiFunction<JsonElement, String, ScalingSampler>> DESERIALIZER = setupDeserializers();
+    private static final Map<String, IDeserializer> DESERIALIZER = setupDeserializers();
     public static Map<EntityType<?>, ScalingSampler> SETTINGS = new HashMap<>();
-    public static ScalingSampler DEFAULT_SAMPLER = new GaussianSampler(0.5F, 1.5F);
     private static final Type MAP_TYPE = new TypeToken<Map<String, JsonElement>>() {}.getType();
 
     public static void setToDefault() {
@@ -31,7 +29,6 @@ public final class RandomMobSizesConfig {
     }
 
     public static JsonObject serialize(JsonObject json) {
-        json.add("default_scaling", DEFAULT_SAMPLER.serialize());
         SETTINGS.forEach((entityType, scalingSampler) -> {
             ResourceLocation location = EntityType.getKey(entityType);
             JsonElement element = scalingSampler.serialize();
@@ -41,11 +38,6 @@ public final class RandomMobSizesConfig {
     }
 
     public static void deserialize(JsonObject json) {
-        // deserialize default sampler
-        JsonElement defaultElement = json.get("default_scaling");
-        if (defaultElement != null) {
-            DEFAULT_SAMPLER = deserializeSampler(defaultElement, "default_scaling");
-        }
         // deserialize entity specific samplers
         Map<String, JsonElement> settings = ConfigManager.GSON.fromJson(json, MAP_TYPE);
         Map<EntityType<?>, ScalingSampler> newSettings = new HashMap<>();
@@ -58,6 +50,7 @@ public final class RandomMobSizesConfig {
                     newSettings.put(type, scalingSampler);
                 } catch (Exception e) {
                     RandomMobSizesMod.LOGGER.error("Error while parsing scaling for entity {}", key);
+                    RandomMobSizesMod.LOGGER.error(e.getMessage());
                 }
             } else {
                 RandomMobSizesMod.LOGGER.error("Error loading config, unknown EntityType: '{}'", key);
@@ -72,17 +65,17 @@ public final class RandomMobSizesConfig {
         } else if (jsonElement.isJsonObject()) {
             JsonObject jsonObject = jsonElement.getAsJsonObject();
             String type = jsonObject.get("type").getAsString();
-            BiFunction<JsonElement, String, ScalingSampler> deserializer = DESERIALIZER.get(type);
+            IDeserializer deserializer = DESERIALIZER.get(type);
             if (deserializer == null) {
                 throw new JsonParseException("Unknown ScalingType: " + type);
             }
-            return deserializer.apply(jsonElement, entityType);
+            return deserializer.deserialize(jsonElement, entityType);
         }
         throw new JsonParseException("ScalingType must be a JsonPrimitive or JsonObject");
     }
 
-    private static Map<String, BiFunction<JsonElement, String, ScalingSampler>> setupDeserializers() {
-        Map<String, BiFunction<JsonElement, String, ScalingSampler>> deserializer = new HashMap<>();
+    private static Map<String, IDeserializer> setupDeserializers() {
+        Map<String, IDeserializer> deserializer = new HashMap<>();
         deserializer.put(UniformScalingSampler.TYPE, UniformScalingSampler::new);
         deserializer.put(GaussianSampler.TYPE, GaussianSampler::new);
         return deserializer;
@@ -94,6 +87,11 @@ public final class RandomMobSizesConfig {
         settings.put(EntityType.BAT, new StaticScalingSampler(0.5F));
         settings.put(EntityType.SHEEP, new GaussianSampler(0.5F, 1.5F));
         return settings;
+    }
+
+    @FunctionalInterface
+    private interface IDeserializer {
+        ScalingSampler deserialize(JsonElement jsonElement, String key) throws JsonParseException;
     }
 
 }

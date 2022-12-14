@@ -1,7 +1,7 @@
 modLoader = "javafml"
 loaderVersion = "[44,)"
 license = "CC BY-NC-ND 4.0"
-#issueTrackerURL="https://github.com/tristankechlo/ToolLeveling/issues"
+#issueTrackerURL="https://github.com/tristankechlo/RandomMobSizes/issues"
 #showAsResourcePack=false
 
 [[mods]]
@@ -9,7 +9,7 @@ modId = "random_mob_sizes"
 version = "1.19.3-1.0"
 displayName = "Random Mob Sizes"
 #updateJSONURL="https://change.me.example.invalid/updates.json"
-#displayURL="https://change.me.to.your.mods.homepage.example.invalid/"
+displayURL="https://github.com/tristankechlo/RandomMobSizes"
 #logoFile="examplemod.png"
 #credits = "Thanks for this example mod goes to Java"
 authors = "Buecher_wurm"

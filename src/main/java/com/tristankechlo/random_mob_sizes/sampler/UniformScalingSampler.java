@@ -7,8 +7,8 @@ import com.google.gson.JsonParseException;
 public class UniformScalingSampler extends ScalingSampler {
 
     public static final String TYPE = "uniform";
-    final float min_scaling;
-    final float max_scaling;
+    private final float min_scaling;
+    private final float max_scaling;
 
     public UniformScalingSampler(float min_scaling, float max_scaling) {
         this.min_scaling = min_scaling;
