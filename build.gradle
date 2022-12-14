@@ -19,7 +19,7 @@ mixin {
 
 version = "forge-${minecraft_version}-${mod_version}"
 group = 'com.tristankechlo.random_mob_sizes'
-archivesBaseName = 'random_mob_sizes'
+archivesBaseName = 'randommobsizes'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
