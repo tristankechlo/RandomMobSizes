@@ -2,7 +2,7 @@
 
 ### let's you configure mobs, to spawn in different sizes
 According to the configuration, the mobs will spawn with random sizes.  
-checkout the [wiki](https://github.com/tristankechlo/RandomMobSizes/wiki) to get more information on how to configure the mod
+Checkout the [wiki](https://github.com/tristankechlo/RandomMobSizes/wiki) to get more information on how to configure the mod
 
 ## Images
 <img src="https://i.ibb.co/fFt1M4F/chicken.png#23" height="200">
