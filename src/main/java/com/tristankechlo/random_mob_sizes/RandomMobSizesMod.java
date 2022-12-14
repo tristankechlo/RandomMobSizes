@@ -2,6 +2,10 @@ package com.tristankechlo.random_mob_sizes;
 
 import com.tristankechlo.random_mob_sizes.commands.RandomMobSizesCommand;
 import com.tristankechlo.random_mob_sizes.config.ConfigManager;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.Mob;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -23,6 +27,7 @@ public class RandomMobSizesMod {
     public static final String DISCORD_URL = "https://discord.gg/bhUaWhq";
     public static final String CURSEFORGE_URL = "https://curseforge.com/minecraft/mc-mods/random-mob-sizes";
     public static final String MODRINTH_URL = "https://modrinth.com/mod/random-mob-sizes";
+    public static final EntityDataAccessor<Float> SCALING = SynchedEntityData.defineId(Mob.class, EntityDataSerializers.FLOAT);
 
     public RandomMobSizesMod() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
