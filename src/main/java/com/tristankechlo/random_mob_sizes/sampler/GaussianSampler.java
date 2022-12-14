@@ -10,7 +10,7 @@ import java.util.Random;
 public class GaussianSampler extends ScalingSampler {
 
     private static final double MEAN = 0.5D;
-    private static final double STD_DEV = 0.15D;
+    private static final double STD_DEV = 0.13D;
     private static final Random RANDOM = new Random();
     public static final String TYPE = "gaussian";
     private final float min_scaling;
