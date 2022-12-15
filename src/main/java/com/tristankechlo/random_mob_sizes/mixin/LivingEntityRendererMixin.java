@@ -26,7 +26,6 @@ public abstract class LivingEntityRendererMixin {
             float scale = ((MobMixinAddon) entity).getScaleFactor();
             poseStack.scale(scale, scale, scale);
         }
-        //float scale = entity.getScalingFactor():
     }
 
 }

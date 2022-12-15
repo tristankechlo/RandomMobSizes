@@ -43,7 +43,7 @@ public abstract class MobMixin implements MobMixinAddon {
     }
 
     @Inject(at = @At("TAIL"), method = "defineSynchedData")
-    private void defineSynchedData(CallbackInfo ci) {
+    private void defineSyncedData(CallbackInfo ci) {
         ((Mob) (Object) this).getEntityData().define(RandomMobSizesMod.SCALING, 1.0F);
     }
 
