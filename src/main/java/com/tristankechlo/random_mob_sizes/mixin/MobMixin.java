@@ -1,12 +1,14 @@
 package com.tristankechlo.random_mob_sizes.mixin;
 
-import com.tristankechlo.random_mob_sizes.RandomMobSizesMod;
 import com.tristankechlo.random_mob_sizes.config.RandomMobSizesConfig;
 import com.tristankechlo.random_mob_sizes.mixin_access.MobMixinAddon;
 import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
 import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.LocalDifficulty;
@@ -21,14 +23,21 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(MobEntity.class)
 public abstract class MobMixin implements MobMixinAddon {
 
+    private static final TrackedData<Float> SCALING = DataTracker.registerData(MobEntity.class, TrackedDataHandlerRegistry.FLOAT);
+
     @Override
     public float getScaleFactor() {
-        return ((MobEntity) (Object) this).getDataTracker().get(RandomMobSizesMod.SCALING);
+        return ((MobEntity) (Object) this).getDataTracker().get(SCALING);
     }
 
     @Override
     public void setScaleFactor(Float scale) {
-        ((MobEntity) (Object) this).getDataTracker().set(RandomMobSizesMod.SCALING, scale);
+        ((MobEntity) (Object) this).getDataTracker().set(SCALING, scale);
+    }
+
+    @Override
+    public TrackedData<Float> getTracker() {
+        return SCALING;
     }
 
     @Inject(at = @At("RETURN"), method = "initialize")
@@ -44,7 +53,7 @@ public abstract class MobMixin implements MobMixinAddon {
 
     @Inject(at = @At("TAIL"), method = "initDataTracker")
     private void defineSynchedData(CallbackInfo ci) {
-        ((MobEntity) (Object) this).getDataTracker().startTracking(RandomMobSizesMod.SCALING, 1.0F);
+        ((MobEntity) (Object) this).getDataTracker().startTracking(SCALING, 1.0F);
     }
 
     @Inject(at = @At("TAIL"), method = "readCustomDataFromNbt")

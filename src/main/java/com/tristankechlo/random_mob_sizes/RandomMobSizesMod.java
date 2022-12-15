@@ -5,10 +5,6 @@ import com.tristankechlo.random_mob_sizes.config.ConfigManager;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.MobEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +19,6 @@ public class RandomMobSizesMod implements ModInitializer {
     public static final String DISCORD_URL = "https://discord.gg/bhUaWhq";
     public static final String CURSEFORGE_URL = "https://curseforge.com/minecraft/mc-mods/random-mob-sizes";
     public static final String MODRINTH_URL = "https://modrinth.com/mod/random-mob-sizes";
-    public static final TrackedData<Float> SCALING = DataTracker.registerData(MobEntity.class, TrackedDataHandlerRegistry.FLOAT);
 
     @Override
     public void onInitialize() {
