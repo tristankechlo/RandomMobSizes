@@ -52,7 +52,7 @@ public abstract class MobMixin implements MobMixinAddon {
     }
 
     @Inject(at = @At("TAIL"), method = "initDataTracker")
-    private void defineSynchedData(CallbackInfo ci) {
+    private void defineSyncedData(CallbackInfo ci) {
         ((MobEntity) (Object) this).getDataTracker().startTracking(SCALING, 1.0F);
     }
 

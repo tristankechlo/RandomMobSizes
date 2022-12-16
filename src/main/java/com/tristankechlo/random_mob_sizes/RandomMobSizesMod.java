@@ -32,4 +32,5 @@ public class RandomMobSizesMod implements ModInitializer {
             RandomMobSizesCommand.register(dispatcher);
         });
     }
+
 }
