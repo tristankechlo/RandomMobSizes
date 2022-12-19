@@ -1,5 +1,6 @@
 package com.tristankechlo.random_mob_sizes;
 
+import com.tristankechlo.random_mob_sizes.commands.MobScalingsCommand;
 import com.tristankechlo.random_mob_sizes.commands.RandomMobSizesCommand;
 import com.tristankechlo.random_mob_sizes.config.ConfigManager;
 import net.fabricmc.api.ModInitializer;
@@ -30,6 +31,7 @@ public class RandomMobSizesMod implements ModInitializer {
         //register commands
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             RandomMobSizesCommand.register(dispatcher);
+            MobScalingsCommand.register(dispatcher, registryAccess);
         });
     }
 

@@ -12,7 +12,7 @@ import net.minecraft.util.Formatting;
 
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class RandomMobSizesCommand {
+public final class RandomMobSizesCommand {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         LiteralArgumentBuilder<ServerCommandSource> command = literal(RandomMobSizesMod.MOD_ID)

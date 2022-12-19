@@ -2,6 +2,9 @@ package com.tristankechlo.random_mob_sizes.commands;
 
 import com.tristankechlo.random_mob_sizes.RandomMobSizesMod;
 import com.tristankechlo.random_mob_sizes.config.ConfigManager;
+import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
+import com.tristankechlo.random_mob_sizes.sampler.StaticScalingSampler;
+import net.minecraft.entity.EntityType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.MutableText;
@@ -53,6 +56,56 @@ public final class ResponseHelper {
 
     public static MutableText clickableLink(String url) {
         return clickableLink(url, url);
+    }
+
+    public static void sendSuccessScalingTypeSet(ServerCommandSource source, EntityType<?> entityType, SamplerTypes samplerTypes, float min_scaling, float max_scaling) {
+        MutableText message = Text.literal("Scaling for ").formatted(Formatting.WHITE)
+                .append(Text.literal(entityType.getName().getString()).formatted(Formatting.GREEN))
+                .append(Text.literal(" was set to ").formatted(Formatting.WHITE))
+                .append(Text.literal(samplerTypes.toString()).formatted(Formatting.GREEN))
+                .append(Text.literal(" with min_scaling ").formatted(Formatting.WHITE))
+                .append(Text.literal(String.valueOf(min_scaling)).formatted(Formatting.GREEN))
+                .append(Text.literal(" and max_scaling ").formatted(Formatting.WHITE))
+                .append(Text.literal(String.valueOf(max_scaling)).formatted(Formatting.GREEN));
+        sendMessage(source, message, true);
+    }
+
+    public static void sendErrorScalingTypeSet(ServerCommandSource source, EntityType<?> entityType) {
+        MutableText message = Text.literal("Scaling for ").formatted(Formatting.RED)
+                .append(Text.literal(entityType.getName().getString()).formatted(Formatting.DARK_RED))
+                .append(Text.literal(" is now allowed!").formatted(Formatting.RED));
+        sendMessage(source, message, true);
+    }
+
+    public static void sendSuccessStaticScalingTypeSet(ServerCommandSource source, EntityType<?> entityType, float scaling) {
+        MutableText message = Text.literal("Scaling for ").formatted(Formatting.WHITE)
+                .append(Text.literal(entityType.getName().getString()).formatted(Formatting.GREEN))
+                .append(Text.literal(" was set to static scaling of ").formatted(Formatting.WHITE))
+                .append(Text.literal(String.valueOf(scaling)).formatted(Formatting.GREEN));
+        sendMessage(source, message, true);
+    }
+
+    public static void sendSuccessScalingTypeRemoved(ServerCommandSource source, EntityType<?> entityType) {
+        MutableText message = Text.literal("Scaling for ").formatted(Formatting.WHITE)
+                .append(Text.literal(entityType.getName().getString()).formatted(Formatting.GREEN))
+                .append(Text.literal(" was removed from the config.").formatted(Formatting.WHITE));
+        sendMessage(source, message, true);
+    }
+
+    public static void sendErrorScalingTypeNotSet(ServerCommandSource source, EntityType<?> entityType) {
+        MutableText message = Text.literal("Scaling for ").formatted(Formatting.WHITE)
+                .append(Text.literal(entityType.getName().getString()).formatted(Formatting.GREEN))
+                .append(Text.literal(" is not set in the config.").formatted(Formatting.WHITE));
+        sendMessage(source, message, false);
+    }
+
+    public static void sendSuccessScalingType(ServerCommandSource source, EntityType<?> entityType, ScalingSampler sampler) {
+        String result = (sampler instanceof StaticScalingSampler) ? String.valueOf(sampler.sample()) : sampler.serialize().toString();
+        MutableText message = Text.literal("Scaling for ").formatted(Formatting.WHITE)
+                .append(Text.literal(entityType.getName().getString()).formatted(Formatting.GREEN))
+                .append(Text.literal(" was set to ").formatted(Formatting.WHITE))
+                .append(Text.literal(result).formatted(Formatting.GREEN));
+        sendMessage(source, message, false);
     }
 
 }

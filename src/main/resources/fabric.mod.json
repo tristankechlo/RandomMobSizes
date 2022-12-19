@@ -1,7 +1,7 @@
 {
     "schemaVersion": 1,
     "id": "random_mob_sizes",
-    "version": "1.19.3-1.0.1",
+    "version": "1.19.3-1.1",
     "name": "Random Mob Sizes",
     "description": "configure mobs to spawn in different sizes",
     "authors": [
