@@ -103,7 +103,7 @@ public final class ResponseHelper {
         String result = (sampler instanceof StaticScalingSampler) ? String.valueOf(sampler.sample()) : sampler.serialize().toString();
         MutableText message = Text.literal("Scaling for ").formatted(Formatting.WHITE)
                 .append(Text.literal(entityType.getName().getString()).formatted(Formatting.GREEN))
-                .append(Text.literal(" was set to ").formatted(Formatting.WHITE))
+                .append(Text.literal(" is set to ").formatted(Formatting.WHITE))
                 .append(Text.literal(result).formatted(Formatting.GREEN));
         sendMessage(source, message, false);
     }

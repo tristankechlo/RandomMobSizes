@@ -68,7 +68,7 @@ public final class MobScalingsCommand {
             }
             return 1;
         } catch (Exception e) {
-            return errorHandling(source, e, "An error occurred while setting the scale for the entity type");
+            return errorHandling(source, e, "An error occurred while setting the scale for the entity type!");
         }
     }
 
