@@ -1,27 +1,25 @@
 package com.tristankechlo.random_mob_sizes.config;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.tristankechlo.random_mob_sizes.RandomMobSizesMod;
+import com.tristankechlo.random_mob_sizes.commands.SamplerTypes;
 import com.tristankechlo.random_mob_sizes.sampler.GaussianSampler;
 import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
 import com.tristankechlo.random_mob_sizes.sampler.StaticScalingSampler;
 import com.tristankechlo.random_mob_sizes.sampler.UniformScalingSampler;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
 
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public final class RandomMobSizesConfig {
 
-    private static final Map<String, IDeserializer> DESERIALIZER = setupDeserializers();
-    public static Map<EntityType<?>, ScalingSampler> SETTINGS = new HashMap<>();
+    private static Map<EntityType<?>, ScalingSampler> SETTINGS = new HashMap<>();
     private static final Type MAP_TYPE = new TypeToken<Map<String, JsonElement>>() {}.getType();
 
     public static void setToDefault() {
@@ -56,29 +54,23 @@ public final class RandomMobSizesConfig {
                 RandomMobSizesMod.LOGGER.error("Error loading config, unknown EntityType: '{}'", key);
             }
         });
-        SETTINGS = ImmutableMap.copyOf(newSettings);
+        SETTINGS.clear();
+        SETTINGS.putAll(newSettings);
     }
 
     private static ScalingSampler deserializeSampler(JsonElement jsonElement, String entityType) {
         if (jsonElement.isJsonPrimitive()) {
-            return new StaticScalingSampler(jsonElement.getAsFloat());
+            return new StaticScalingSampler(jsonElement, entityType);
         } else if (jsonElement.isJsonObject()) {
             JsonObject jsonObject = jsonElement.getAsJsonObject();
             String type = jsonObject.get("type").getAsString();
-            IDeserializer deserializer = DESERIALIZER.get(type);
-            if (deserializer == null) {
+            SamplerTypes samplerType = SamplerTypes.byName(type);
+            if (samplerType == null) {
                 throw new JsonParseException("Unknown ScalingType: " + type);
             }
-            return deserializer.deserialize(jsonElement, entityType);
+            return samplerType.fromJson(jsonElement, entityType);
         }
         throw new JsonParseException("ScalingType must be a JsonPrimitive or JsonObject");
-    }
-
-    private static Map<String, IDeserializer> setupDeserializers() {
-        Map<String, IDeserializer> deserializer = new HashMap<>();
-        deserializer.put(UniformScalingSampler.TYPE, UniformScalingSampler::new);
-        deserializer.put(GaussianSampler.TYPE, GaussianSampler::new);
-        return deserializer;
     }
 
     public static Map<EntityType<?>, ScalingSampler> getDefaultSettings() {
@@ -92,9 +84,26 @@ public final class RandomMobSizesConfig {
         return settings;
     }
 
-    @FunctionalInterface
-    private interface IDeserializer {
-        ScalingSampler deserialize(JsonElement jsonElement, String key) throws JsonParseException;
+    public static ScalingSampler getScalingSampler(EntityType<?> entityType) {
+        return SETTINGS.get(entityType);
+    }
+
+    public static boolean setScalingSampler(EntityType<?> entityType, ScalingSampler scalingSampler) {
+        //disallow all entities from the spawn group "misc", except for golems, villagers
+        final List<EntityType<?>> allowedMisc = Arrays.asList(EntityType.IRON_GOLEM, EntityType.SNOW_GOLEM, EntityType.VILLAGER);
+        if (entityType.getCategory() == MobCategory.MISC && !allowedMisc.contains(entityType)) {
+            return false;
+        }
+        SETTINGS.put(entityType, scalingSampler);
+        return true;
+    }
+
+    public static void removeScalingSampler(EntityType<?> entityType) {
+        SETTINGS.remove(entityType);
+    }
+
+    public static Iterator<Map.Entry<EntityType<?>, ScalingSampler>> getIterator() {
+        return SETTINGS.entrySet().iterator();
     }
 
 }

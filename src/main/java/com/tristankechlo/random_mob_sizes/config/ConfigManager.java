@@ -67,6 +67,12 @@ public final class ConfigManager {
         RandomMobSizesMod.LOGGER.info("Config '{}' was set to default.", FILE_NAME);
     }
 
+    public static void saveConfig() {
+        File configFile = new File(CONFIG_DIR, FILE_NAME);
+        ConfigManager.writeConfigToFile(configFile);
+        RandomMobSizesMod.LOGGER.info("Config '{}' was saved.", FILE_NAME);
+    }
+
     public static void reloadConfig() {
         File configFile = new File(CONFIG_DIR, FILE_NAME);
         if (configFile.exists()) {

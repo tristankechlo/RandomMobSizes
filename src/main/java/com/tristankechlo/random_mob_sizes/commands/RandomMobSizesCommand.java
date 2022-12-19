@@ -11,7 +11,7 @@ import net.minecraft.network.chat.Component;
 
 import static net.minecraft.commands.Commands.literal;
 
-public class RandomMobSizesCommand {
+public final class RandomMobSizesCommand {
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         LiteralArgumentBuilder<CommandSourceStack> command = literal(RandomMobSizesMod.MOD_ID)

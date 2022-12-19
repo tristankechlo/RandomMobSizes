@@ -6,7 +6,7 @@ issueTrackerURL="https://github.com/tristankechlo/RandomMobSizes/issues"
 
 [[mods]]
 modId = "random_mob_sizes"
-version = "1.19.3-1.0.1"
+version = "1.19.3-1.1"
 displayName = "Random Mob Sizes"
 displayURL="https://github.com/tristankechlo/RandomMobSizes"
 logoFile="banner.png"

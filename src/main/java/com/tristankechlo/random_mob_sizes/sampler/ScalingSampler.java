@@ -5,15 +5,15 @@ import net.minecraft.util.Mth;
 
 public abstract class ScalingSampler {
 
-    private final float minimum = 0.1F;
-    private final float maximum = 10.0F;
+    public static final float MINIMUM_SCALING = 0.1F;
+    public static final float MAXIMUM_SCALING = 10.0F;
 
     protected abstract float sampleScalingFactor();
 
     public abstract JsonElement serialize();
 
     public float sample() {
-        return Mth.clamp(sampleScalingFactor(), minimum, maximum);
+        return Mth.clamp(sampleScalingFactor(), MINIMUM_SCALING, MAXIMUM_SCALING);
     }
 
 }

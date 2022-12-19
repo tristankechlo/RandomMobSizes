@@ -34,7 +34,7 @@ public abstract class MobMixin implements MobMixinAddon {
     @Inject(at = @At("RETURN"), method = "finalizeSpawn")
     private void onFinalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType mobSpawnType, SpawnGroupData data, CompoundTag nbt, CallbackInfoReturnable<SpawnGroupData> cir) {
         EntityType<?> type = ((Mob) (Object) this).getType();
-        ScalingSampler sampler = RandomMobSizesConfig.SETTINGS.get(type);
+        ScalingSampler sampler = RandomMobSizesConfig.getScalingSampler(type);
         float scaling = 1.0F;
         if (sampler != null) {
             scaling = sampler.sample();

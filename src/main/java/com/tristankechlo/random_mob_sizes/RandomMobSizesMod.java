@@ -1,5 +1,6 @@
 package com.tristankechlo.random_mob_sizes;
 
+import com.tristankechlo.random_mob_sizes.commands.MobScalingsCommand;
 import com.tristankechlo.random_mob_sizes.commands.RandomMobSizesCommand;
 import com.tristankechlo.random_mob_sizes.config.ConfigManager;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -42,6 +43,7 @@ public class RandomMobSizesMod {
 
     private void registerCommands(final RegisterCommandsEvent event) {
         RandomMobSizesCommand.register(event.getDispatcher());
+        MobScalingsCommand.register(event.getDispatcher(), event.getBuildContext());
     }
 
 }
