@@ -21,7 +21,7 @@ public abstract class EntityMixin {
     private void getDimensions(Pose pose, CallbackInfoReturnable<EntityDimensions> cir) {
         // normally getDimensions() uses the dimensions from the entityType, so we need to apply scaling here
         if (((Entity) (Object) this) instanceof Mob) {
-            float scaleFactor = ((MobMixinAddon) this).getScaleFactor();
+            float scaleFactor = ((MobMixinAddon) this).getMobScaling();
             cir.setReturnValue(cir.getReturnValue().scale(scaleFactor));
         }
     }

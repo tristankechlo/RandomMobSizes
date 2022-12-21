@@ -19,7 +19,7 @@ public abstract class EntityRenderDispatcherMixin {
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/EntityRenderDispatcher;renderShadow(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;Lnet/minecraft/world/entity/Entity;FFLnet/minecraft/world/level/LevelReader;F)V"))
     private void redirectRenderShadow(PoseStack poseStack, MultiBufferSource buffer, Entity entity, float p_114459_, float p_114460_, LevelReader level, float shadowRadius) {
         if (entity instanceof Mob) {
-            shadowRadius *= ((MobMixinAddon) entity).getScaleFactor();
+            shadowRadius *= ((MobMixinAddon) entity).getMobScaling();
         }
         renderShadow(poseStack, buffer, entity, p_114459_, p_114460_, level, shadowRadius);
     }

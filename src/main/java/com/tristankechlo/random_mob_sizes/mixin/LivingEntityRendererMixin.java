@@ -23,7 +23,7 @@ public abstract class LivingEntityRendererMixin {
         // called after the normal scale method, to make sure the scaling is applied to all mobs
         // only scale Mob entities and not Players, ArmorStands, etc.
         if (entity instanceof Mob) {
-            float scale = ((MobMixinAddon) entity).getScaleFactor();
+            float scale = ((MobMixinAddon) entity).getMobScaling();
             poseStack.scale(scale, scale, scale);
         }
     }

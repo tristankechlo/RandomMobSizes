@@ -2,8 +2,8 @@ package com.tristankechlo.random_mob_sizes.mixin_access;
 
 public interface MobMixinAddon {
 
-    float getScaleFactor();
+    float getMobScaling();
 
-    void setScaleFactor(Float scale);
+    void setMobScaling(float scale);
 
 }

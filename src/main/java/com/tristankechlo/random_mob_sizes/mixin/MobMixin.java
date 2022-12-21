@@ -22,12 +22,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MobMixin implements MobMixinAddon {
 
     @Override
-    public float getScaleFactor() {
+    public float getMobScaling() {
         return ((Mob) (Object) this).getEntityData().get(RandomMobSizesMod.SCALING);
     }
 
     @Override
-    public void setScaleFactor(Float scale) {
+    public void setMobScaling(float scale) {
         ((Mob) (Object) this).getEntityData().set(RandomMobSizesMod.SCALING, scale);
     }
 
@@ -39,7 +39,7 @@ public abstract class MobMixin implements MobMixinAddon {
         if (sampler != null) {
             scaling = sampler.sample();
         }
-        this.setScaleFactor(scaling);
+        this.setMobScaling(scaling);
     }
 
     @Inject(at = @At("TAIL"), method = "defineSynchedData")
@@ -50,13 +50,13 @@ public abstract class MobMixin implements MobMixinAddon {
     @Inject(at = @At("TAIL"), method = "readAdditionalSaveData")
     private void readAdditionalSaveData(CompoundTag tag, CallbackInfo ci) {
         if (tag.contains("ScaleFactor")) {
-            this.setScaleFactor(tag.getFloat("ScaleFactor"));
+            this.setMobScaling(tag.getFloat("ScaleFactor"));
         }
     }
 
     @Inject(at = @At("TAIL"), method = "addAdditionalSaveData")
     private void addAdditionalSaveData(CompoundTag tag, CallbackInfo ci) {
-        tag.putFloat("ScaleFactor", this.getScaleFactor());
+        tag.putFloat("ScaleFactor", this.getMobScaling());
     }
 
 }
