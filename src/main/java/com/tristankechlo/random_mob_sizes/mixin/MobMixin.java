@@ -31,7 +31,7 @@ public abstract class MobMixin implements MobMixinAddon {
     }
 
     @Override
-    public void setScaleFactor(Float scale) {
+    public void setScaleFactor(float scale) {
         ((MobEntity) (Object) this).getDataTracker().set(SCALING, scale);
     }
 

@@ -6,7 +6,7 @@ public interface MobMixinAddon {
 
     float getScaleFactor();
 
-    void setScaleFactor(Float scale);
+    void setScaleFactor(float scale);
 
     TrackedData<Float> getTracker(); //needed for accessing the tracker from EntityMixin
 
