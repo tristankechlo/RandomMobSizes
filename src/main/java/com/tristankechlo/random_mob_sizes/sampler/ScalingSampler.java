@@ -12,7 +12,7 @@ public abstract class ScalingSampler {
 
     public abstract JsonElement serialize();
 
-    public float sample() {
+    public final float sample() {
         return MathHelper.clamp(sampleScalingFactor(), MINIMUM_SCALING, MAXIMUM_SCALING);
     }
 
