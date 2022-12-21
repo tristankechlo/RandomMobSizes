@@ -4,9 +4,9 @@ import net.minecraft.entity.data.TrackedData;
 
 public interface MobMixinAddon {
 
-    float getScaleFactor();
+    float getMobScaling();
 
-    void setScaleFactor(float scale);
+    void setMobScaling(float scale);
 
     TrackedData<Float> getTracker(); //needed for accessing the tracker from EntityMixin
 
