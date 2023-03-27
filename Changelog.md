@@ -1,5 +1,8 @@
 # Changelog
 
+### Version 1.19.4 - 1.1
+ - port to 1.19.4
+
 ### Version 1.19.3 - 1.1
  - reduce file size of the banner
  - add new command `/mobScalings` to set/remove/show the configured mob scalings

@@ -26,7 +26,7 @@ public abstract class EntityMixin {
         }
     }
 
-    @Inject(at = @At("RETURN"), method = "onSyncedDataUpdated")
+    @Inject(at = @At("RETURN"), method = "onSyncedDataUpdated(Lnet/minecraft/network/syncher/EntityDataAccessor;)V")
     private void onSyncedDataUpdated(EntityDataAccessor<?> data, CallbackInfo ci) {
         if (((Entity) (Object) this) instanceof Mob) {
             if (data.equals(RandomMobSizesMod.SCALING)) {

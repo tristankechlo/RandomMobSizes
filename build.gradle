@@ -13,8 +13,8 @@ apply plugin: 'org.spongepowered.mixin'
 mixin {
     add sourceSets.main, "random_mob_sizes.refmap.json"
     config 'random_mob_sizes.mixins.json'
-    debug.verbose = true
-    debug.export = true
+    debug.verbose = false
+    debug.export = false
 }
 
 version = "forge-${minecraft_version}-${mod_version}"
