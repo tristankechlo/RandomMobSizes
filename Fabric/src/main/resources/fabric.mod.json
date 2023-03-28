@@ -1,0 +1,32 @@
+{
+    "schemaVersion": 1,
+    "id": "random_mob_sizes",
+    "version": "${version}",
+    "name": "Random Mob Sizes",
+    "description": "configure mobs to spawn in different sizes",
+    "authors": [
+        "Buecher_wurm"
+    ],
+    "contact": {
+        "homepage": "https://www.curseforge.com/minecraft/mc-mods/random-mob-sizes",
+        "sources": "https://github.com/tristankechlo/RandomMobSizes",
+        "issues": "https://github.com/tristankechlo/RandomMobSizes/issues"
+    },
+    "license": "CC BY-NC-ND 4.0",
+    "icon": "assets/random_mob_sizes/icon.png",
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+            "com.tristankechlo.random_mob_sizes.FabricRandomMobSizes"
+        ]
+    },
+    "mixins": [
+        "random_mob_sizes.mixins.json"
+    ],
+    "depends": {
+        "fabricloader": ">=0.14.6",
+        "fabric": "*",
+        "minecraft": ">=1.19.4",
+        "java": ">=17"
+    }
+}
