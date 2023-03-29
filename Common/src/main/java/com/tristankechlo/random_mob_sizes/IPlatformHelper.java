@@ -20,7 +20,6 @@ public interface IPlatformHelper {
 
     Path getConfigDirectory();
 
-
     private static <T> T load(Class<T> clazz) {
         final T loadedService = ServiceLoader.load(clazz)
                 .findFirst()
