@@ -1,9 +1,9 @@
 # Changelog
 
-### Version 1.19 - 1.1
+### Version 1.19.2 - 1.1
  - port to 1.19.4
 
-### Version 1.19 - 1.1
+### Version 1.19.2 - 1.1
  - reduce file size of the banner
  - add new command `/mobScalings` to set/remove/show the configured mob scalings
      - `/mobScalings set <entity_type> <scaling>` => set static scaling for the entity type
@@ -12,6 +12,6 @@
      - `/mobScalings show` => show all configured mob scalings
      - `/mobScalings show <entity_type>` => show the scaling for the entity type
 
-### Version 1.19 - 1.0
+### Version 1.19.2 - 1.0
  - initial release
  
