@@ -28,5 +28,15 @@
         "fabric": "*",
         "minecraft": ">=1.19.4",
         "java": ">=17"
+    },
+    "custom": {
+        "modmenu": {
+            "links": {
+                "modmenu.discord": "https://discord.gg/bhUaWhq",
+                "modmenu.curseforge": "https://www.curseforge.com/minecraft/mc-mods/random-mob-sizes",
+                "modmenu.modrinth": "https://modrinth.com/mod/random-mob-sizes",
+                "modmenu.wiki": "https://github.com/tristankechlo/RandomMobSizes/wiki"
+            }
+        }
     }
 }
