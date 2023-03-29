@@ -14,7 +14,6 @@ logoFile= "banner.png"
 authors = "Buecher_wurm"
 description = '''configure mobs to spawn in different sizes'''
 
-
 [[dependencies.random_mob_sizes]]
     modId = "forge"
     mandatory = true
