@@ -1,5 +1,9 @@
 # Changelog
 
+### Version 1.19.2 - 1.2
+- mobs that can convert to other mobs (e.g. zombie to drowned) now keep their scaling when converting
+   - can be disabled in the config
+
 ### Version 1.19.2 - 1.1
  - port to 1.19.4
 
