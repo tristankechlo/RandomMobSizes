@@ -44,6 +44,7 @@ public final class RandomMobSizesConfig {
     public static void deserialize(JsonObject json) {
         try {
             keepScalingOnConversion = GsonHelper.getAsBoolean(json, "keep_scaling_on_conversion");
+            json.remove("keep_scaling_on_conversion");
         } catch (Exception e) {
             RandomMobSizes.LOGGER.error("Error while parsing config value 'keep_scaling_on_conversion' using default value.");
             RandomMobSizes.LOGGER.error(e.getMessage());
