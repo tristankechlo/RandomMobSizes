@@ -1,5 +1,6 @@
 package com.tristankechlo.random_mob_sizes.mixin;
 
+import com.tristankechlo.random_mob_sizes.RandomMobSizes;
 import com.tristankechlo.random_mob_sizes.config.RandomMobSizesConfig;
 import com.tristankechlo.random_mob_sizes.mixin_access.MobMixinAddon;
 import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
@@ -14,6 +15,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /* Adds another EntityDataAccessor to the Mob class to store the scale factor */
 @Mixin(Mob.class)
@@ -64,6 +66,17 @@ public abstract class MobMixin implements MobMixinAddon {
     @Inject(at = @At("TAIL"), method = "addAdditionalSaveData")
     private void addAdditionalSaveData(CompoundTag tag, CallbackInfo ci) {
         tag.putFloat("ScaleFactor", this.getMobScaling());
+    }
+
+    @Inject(at = @At("TAIL"), method = "convertTo")
+    private <T extends Mob> void convertTo(EntityType<T> type, boolean $$1, CallbackInfoReturnable<T> cir) {
+        if (!RandomMobSizesConfig.keepScalingOnConversion()) {
+            return;
+        }
+        float scaling = ((MobMixinAddon) this).getMobScaling();
+        T entity = cir.getReturnValue();
+        ((MobMixinAddon) entity).setMobScaling(scaling);
+        RandomMobSizes.LOGGER.info("Converted {} to {} with scaling {}", this.getClass().getSimpleName(), entity.getClass().getSimpleName(), scaling);
     }
 
 }

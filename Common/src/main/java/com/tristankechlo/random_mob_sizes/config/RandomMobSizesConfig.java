@@ -11,6 +11,7 @@ import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
 import com.tristankechlo.random_mob_sizes.sampler.StaticScalingSampler;
 import com.tristankechlo.random_mob_sizes.sampler.UniformScalingSampler;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 
@@ -21,12 +22,17 @@ public final class RandomMobSizesConfig {
 
     private static Map<EntityType<?>, ScalingSampler> SETTINGS = new HashMap<>();
     private static final Type MAP_TYPE = new TypeToken<Map<String, JsonElement>>() {}.getType();
+    private static boolean keepScalingOnConversion = true;
 
     public static void setToDefault() {
         SETTINGS = getDefaultSettings();
+        keepScalingOnConversion = true;
     }
 
     public static JsonObject serialize(JsonObject json) {
+        json.addProperty("keep_scaling_on_conversion", keepScalingOnConversion);
+
+        // serialize entity specific samplers
         SETTINGS.forEach((entityType, scalingSampler) -> {
             ResourceLocation location = EntityType.getKey(entityType);
             JsonElement element = scalingSampler.serialize();
@@ -36,6 +42,14 @@ public final class RandomMobSizesConfig {
     }
 
     public static void deserialize(JsonObject json) {
+        try {
+            keepScalingOnConversion = GsonHelper.getAsBoolean(json, "keep_scaling_on_conversion");
+        } catch (Exception e) {
+            RandomMobSizes.LOGGER.error("Error while parsing config value 'keep_scaling_on_conversion' using default value.");
+            RandomMobSizes.LOGGER.error(e.getMessage());
+            keepScalingOnConversion = true;
+        }
+
         // deserialize entity specific samplers
         Map<String, JsonElement> settings = ConfigManager.GSON.fromJson(json, MAP_TYPE);
         Map<EntityType<?>, ScalingSampler> newSettings = new HashMap<>();
@@ -104,6 +118,10 @@ public final class RandomMobSizesConfig {
 
     public static Iterator<Map.Entry<EntityType<?>, ScalingSampler>> getIterator() {
         return SETTINGS.entrySet().iterator();
+    }
+
+    public static boolean keepScalingOnConversion() {
+        return keepScalingOnConversion;
     }
 
 }
