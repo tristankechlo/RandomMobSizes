@@ -6,7 +6,7 @@ plugins {
 
 base {
     version = "${minecraft_version}-${mod_version}"
-    archivesBaseName = "${mod_id}-forge"
+    archivesBaseName = "${mod_file_name}-forge"
 }
 
 mixin {
