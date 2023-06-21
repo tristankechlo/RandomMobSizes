@@ -33,7 +33,8 @@ minecraft {
             workingDirectory project.file('run')
             ideaModule "${rootProject.name}.${project.name}.main"
             taskName 'Client'
-            args "-mixin.config=${mod_id}.mixins.json"
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             mods {
                 modClientRun {
                     source sourceSets.main
@@ -46,7 +47,8 @@ minecraft {
             workingDirectory project.file('run')
             ideaModule "${rootProject.name}.${project.name}.main"
             taskName 'Server'
-            args "-mixin.config=${mod_id}.mixins.json"
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             mods {
                 modServerRun {
                     source sourceSets.main
@@ -74,10 +76,6 @@ processResources {
 
     filesMatching("META-INF/mods.toml") {
         expand "version": project.version
-    }
-
-    filesMatching('*.mixins.json') {
-        expand "refmap_target": "${mod_id}."
     }
 }
 

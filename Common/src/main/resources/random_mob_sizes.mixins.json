@@ -30,5 +30,5 @@
         "EntityRenderDispatcherMixin",
         "LivingEntityRendererMixin"
     ],
-    "refmap": "${refmap_target}refmap.json"
+    "refmap": "random_mob_sizes.refmap.json"
 }
