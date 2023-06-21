@@ -95,7 +95,6 @@ public final class RandomMobSizesConfig {
         settings.put(EntityType.SHEEP, new GaussianSampler(0.5F, 1.5F));
         settings.put(EntityType.PIG, new GaussianSampler(0.5F, 1.5F));
         settings.put(EntityType.CHICKEN, new GaussianSampler(0.5F, 1.5F));
-        settings.put(EntityType.FROG, new GaussianSampler(0.5F, 1.5F));
         return settings;
     }
 

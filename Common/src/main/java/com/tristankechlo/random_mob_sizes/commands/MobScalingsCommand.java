@@ -10,12 +10,13 @@ import com.tristankechlo.random_mob_sizes.config.RandomMobSizesConfig;
 import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
 import com.tristankechlo.random_mob_sizes.sampler.StaticScalingSampler;
 import net.minecraft.ChatFormatting;
-import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.arguments.ResourceArgument;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.network.chat.Component;
+import net.minecraft.commands.arguments.EntitySummonArgument;
+import net.minecraft.commands.synchronization.SuggestionProviders;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 
 import static com.tristankechlo.random_mob_sizes.sampler.ScalingSampler.MAXIMUM_SCALING;
@@ -27,10 +28,11 @@ public final class MobScalingsCommand {
 
     private static final String COMMAND_NAME = "mobScalings";
 
-    public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context) {
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         LiteralArgumentBuilder<CommandSourceStack> command = literal(COMMAND_NAME).requires((source) -> source.hasPermission(3))
                 .then(literal("set")
-                        .then(argument("entity_type", ResourceArgument.resource(context, Registries.ENTITY_TYPE))
+                        .then(argument("entity_type", EntitySummonArgument.id())
+                                .suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
                                 .then(argument("scaling_type", SamplerTypesArgumentType.get())
                                         .then(argument("min_scaling", FloatArgumentType.floatArg(MINIMUM_SCALING, MAXIMUM_SCALING))
                                                 .then(argument("max_scaling", FloatArgumentType.floatArg(MINIMUM_SCALING, MAXIMUM_SCALING))
@@ -38,10 +40,12 @@ public final class MobScalingsCommand {
                                 .then(argument("scale", FloatArgumentType.floatArg(MINIMUM_SCALING, MAXIMUM_SCALING))
                                         .executes(MobScalingsCommand::setEntityScaleStatic))))
                 .then(literal("remove")
-                        .then(argument("entity_type", ResourceArgument.resource(context, Registries.ENTITY_TYPE))
+                        .then(argument("entity_type", EntitySummonArgument.id())
+                                .suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
                                 .executes(MobScalingsCommand::removeEntityScale)))
                 .then(literal("show")
-                        .then(argument("entity_type", ResourceArgument.resource(context, Registries.ENTITY_TYPE))
+                        .then(argument("entity_type", EntitySummonArgument.id())
+                                .suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
                                 .executes(MobScalingsCommand::showEntityScale))
                         .executes(MobScalingsCommand::showAllEntityScales));
         dispatcher.register(command);
@@ -52,7 +56,8 @@ public final class MobScalingsCommand {
         CommandSourceStack source = context.getSource();
         try {
             //read values from command
-            final EntityType<?> entityType = ResourceArgument.getEntityType(context, "entity_type").value();
+            final ResourceLocation entityId = EntitySummonArgument.getSummonableEntity(context, "entity_type");
+            final EntityType<?> entityType = Registry.ENTITY_TYPE.get(entityId);
             final SamplerTypes scalingType = context.getArgument("scaling_type", SamplerTypes.class);
             final float minScale = FloatArgumentType.getFloat(context, "min_scaling");
             final float maxScale = FloatArgumentType.getFloat(context, "max_scaling");
@@ -76,7 +81,8 @@ public final class MobScalingsCommand {
         CommandSourceStack source = context.getSource();
         try {
             //read values from command
-            final EntityType<?> entityType = ResourceArgument.getEntityType(context, "entity_type").value();
+            final ResourceLocation entityId = EntitySummonArgument.getSummonableEntity(context, "entity_type");
+            final EntityType<?> entityType = Registry.ENTITY_TYPE.get(entityId);
             final float scale = FloatArgumentType.getFloat(context, "scale");
 
             //updating and saving config
@@ -98,7 +104,8 @@ public final class MobScalingsCommand {
         CommandSourceStack source = context.getSource();
         try {
             //read values from command
-            final EntityType<?> entityType = ResourceArgument.getEntityType(context, "entity_type").value();
+            final ResourceLocation entityId = EntitySummonArgument.getSummonableEntity(context, "entity_type");
+            final EntityType<?> entityType = Registry.ENTITY_TYPE.get(entityId);
 
             //updating and saving config
             RandomMobSizes.LOGGER.info("Removing scale for entity type '{}'", entityType);
@@ -115,7 +122,8 @@ public final class MobScalingsCommand {
         CommandSourceStack source = context.getSource();
         try {
             //read values from command
-            final EntityType<?> entityType = ResourceArgument.getEntityType(context, "entity_type").value();
+            final ResourceLocation entityId = EntitySummonArgument.getSummonableEntity(context, "entity_type");
+            final EntityType<?> entityType = Registry.ENTITY_TYPE.get(entityId);
             final ScalingSampler scalingSampler = RandomMobSizesConfig.getScalingSampler(entityType);
             if (scalingSampler == null) {
                 ResponseHelper.sendErrorScalingTypeNotSet(source, entityType);
@@ -135,7 +143,7 @@ public final class MobScalingsCommand {
     }
 
     private static int errorHandling(CommandSourceStack source, Exception e, String text) {
-        MutableComponent message = Component.literal(text).withStyle(ChatFormatting.RED);
+        MutableComponent message = new TextComponent(text).withStyle(ChatFormatting.RED);
         ResponseHelper.sendMessage(source, message, false);
         RandomMobSizes.LOGGER.error(message.getString(), e);
         return 0;

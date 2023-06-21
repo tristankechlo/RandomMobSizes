@@ -6,13 +6,15 @@ import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
 import com.tristankechlo.random_mob_sizes.sampler.UniformScalingSampler;
 import net.minecraft.util.StringRepresentable;
 
+import java.util.Arrays;
+import java.util.Map;
+
 public enum SamplerTypes implements StringRepresentable {
 
     UNIFORM("uniform", UniformScalingSampler::new, UniformScalingSampler::new),
     GAUSSIAN("gaussian", GaussianSampler::new, GaussianSampler::new);
 
-    @SuppressWarnings("deprecation")
-    public static final StringRepresentable.EnumCodec<SamplerTypes> CODEC;
+    public static final Map<String, SamplerTypes> BY_NAME;
     private final String name;
     private final IDeserializer deserializer;
     private final IConstructor constructor;
@@ -24,8 +26,7 @@ public enum SamplerTypes implements StringRepresentable {
     }
 
     public static SamplerTypes byName(String name, SamplerTypes fallback) {
-        SamplerTypes type = CODEC.byName(name);
-        return type != null ? type : fallback;
+        return BY_NAME.getOrDefault(name, fallback);
     }
 
     public ScalingSampler fromJson(JsonElement json, String entityType) {
@@ -42,7 +43,7 @@ public enum SamplerTypes implements StringRepresentable {
     }
 
     static {
-        CODEC = StringRepresentable.fromEnum(SamplerTypes::values);
+        BY_NAME = Arrays.stream(values()).collect(java.util.stream.Collectors.toMap(SamplerTypes::getSerializedName, (type) -> type));
     }
 
     @FunctionalInterface

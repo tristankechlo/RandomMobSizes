@@ -26,7 +26,7 @@ public class ForgeRandomMobSizes {
 
     private void registerCommands(final RegisterCommandsEvent event) {
         RandomMobSizesCommand.register(event.getDispatcher());
-        MobScalingsCommand.register(event.getDispatcher(), event.getBuildContext());
+        MobScalingsCommand.register(event.getDispatcher());
     }
 
 }

@@ -8,7 +8,7 @@ import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.level.GameType;
 
 import java.util.Arrays;
@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 
 public class SamplerTypesArgumentType implements ArgumentType<SamplerTypes> {
 
-    private static final DynamicCommandExceptionType ERROR_INVALID = new DynamicCommandExceptionType((o) -> Component.literal("Invalid sampler type: " + o));
+    private static final DynamicCommandExceptionType ERROR_INVALID = new DynamicCommandExceptionType((o) -> new TextComponent("Invalid sampler type: " + o));
     private static final Collection<String> EXAMPLES = Stream.of(SamplerTypes.values()).map(SamplerTypes::getSerializedName).toList();
     private static final GameType[] VALUES = GameType.values();
 
