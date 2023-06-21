@@ -7,7 +7,6 @@
         "ArgumentTypesMixin",
         "EntityMixin",
         "MobMixin",
-        "entities.AbstractPiglinMixin",
         "entities.AbstractSkeletonMixin",
         "entities.AbstractVillagerMixin",
         "entities.CaveSpiderMixin",
@@ -23,8 +22,7 @@
         "entities.SpiderMixin",
         "entities.WitchMixin",
         "entities.WitherSkeletonMixin",
-        "entities.ZombieMixin",
-        "entities.ZombifiedPiglinMixin"
+        "entities.ZombieMixin"
     ],
     "client": [
         "EntityRenderDispatcherMixin",

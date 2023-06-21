@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class SpiderMixin {
 
     @Inject(method = "getStandingEyeHeight", at = @At("RETURN"), cancellable = true)
-    private void getStandingEyeHeight(Pose pose, EntityDimensions dimensions, CallbackInfoReturnable<Float> cir) {
+    private void getStandingEyeHeight$RandomMobSizes(Pose pose, EntityDimensions dimensions, CallbackInfoReturnable<Float> cir) {
         cir.setReturnValue(dimensions.height * 0.7222F);
     }
 
