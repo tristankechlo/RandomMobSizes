@@ -2,7 +2,6 @@ modLoader = "javafml"
 loaderVersion = "[44,)"
 license = "CC BY-NC-ND 4.0"
 issueTrackerURL="https://github.com/tristankechlo/RandomMobSizes/issues"
-#showAsResourcePack=false
 
 [[mods]]
 modId = "random_mob_sizes"
@@ -10,7 +9,6 @@ version = "${version}"
 displayName = "Random Mob Sizes"
 displayURL="https://github.com/tristankechlo/RandomMobSizes"
 logoFile= "banner.png"
-#credits = "Thanks for this example mod goes to Java"
 authors = "Buecher_wurm"
 description = '''configure mobs to spawn in different sizes'''
 

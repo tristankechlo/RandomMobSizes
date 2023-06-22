@@ -7,17 +7,6 @@ public interface IPlatformHelper {
 
     public static final IPlatformHelper INSTANCE = load(IPlatformHelper.class);
 
-    String getPlatformName();
-
-    boolean isModLoaded(String modId);
-
-    boolean isDevelopmentEnvironment();
-
-    default String getEnvironmentName() {
-
-        return isDevelopmentEnvironment() ? "development" : "production";
-    }
-
     Path getConfigDirectory();
 
     private static <T> T load(Class<T> clazz) {
