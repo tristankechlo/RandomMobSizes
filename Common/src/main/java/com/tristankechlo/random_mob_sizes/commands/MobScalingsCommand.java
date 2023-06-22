@@ -31,8 +31,7 @@ public final class MobScalingsCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         LiteralArgumentBuilder<CommandSourceStack> command = literal(COMMAND_NAME).requires((source) -> source.hasPermission(3))
                 .then(literal("set")
-                        .then(argument("entity_type", EntitySummonArgument.id())
-                                .suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
+                        .then(argument("entity_type", EntitySummonArgument.id()).suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
                                 .then(argument("scaling_type", SamplerTypesArgumentType.get())
                                         .then(argument("min_scaling", FloatArgumentType.floatArg(MINIMUM_SCALING, MAXIMUM_SCALING))
                                                 .then(argument("max_scaling", FloatArgumentType.floatArg(MINIMUM_SCALING, MAXIMUM_SCALING))
@@ -40,12 +39,10 @@ public final class MobScalingsCommand {
                                 .then(argument("scale", FloatArgumentType.floatArg(MINIMUM_SCALING, MAXIMUM_SCALING))
                                         .executes(MobScalingsCommand::setEntityScaleStatic))))
                 .then(literal("remove")
-                        .then(argument("entity_type", EntitySummonArgument.id())
-                                .suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
+                        .then(argument("entity_type", EntitySummonArgument.id()).suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
                                 .executes(MobScalingsCommand::removeEntityScale)))
                 .then(literal("show")
-                        .then(argument("entity_type", EntitySummonArgument.id())
-                                .suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
+                        .then(argument("entity_type", EntitySummonArgument.id()).suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
                                 .executes(MobScalingsCommand::showEntityScale))
                         .executes(MobScalingsCommand::showAllEntityScales));
         dispatcher.register(command);

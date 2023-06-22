@@ -1,5 +1,9 @@
 # Changelog
 
+### Version 1.18.2 - 1.2.1
+
+- fix incorrect suggestions for the `/mobScalings` command
+
 ### Version 1.18.2 - 1.2
 
 - backport to 1.18.2
