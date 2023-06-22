@@ -39,7 +39,7 @@ public abstract class MobMixin implements MobMixinAddon {
     }
 
     @Inject(at = @At("TAIL"), method = "<init>")
-    private void constructor(EntityType<?> type, Level world, CallbackInfo ci) {
+    private void constructor$RandomMobSizes(EntityType<?> type, Level world, CallbackInfo ci) {
         if (world.isClientSide) {
             return;
         }
@@ -52,24 +52,24 @@ public abstract class MobMixin implements MobMixinAddon {
     }
 
     @Inject(at = @At("TAIL"), method = "defineSynchedData")
-    private void defineSyncedData(CallbackInfo ci) {
+    private void defineSyncedData$RandomMobSizes(CallbackInfo ci) {
         ((Mob) (Object) this).getEntityData().define(SCALING, 1.0F);
     }
 
     @Inject(at = @At("TAIL"), method = "readAdditionalSaveData")
-    private void readAdditionalSaveData(CompoundTag tag, CallbackInfo ci) {
+    private void readAdditionalSaveData$RandomMobSizes(CompoundTag tag, CallbackInfo ci) {
         if (tag.contains("ScaleFactor")) {
             this.setMobScaling(tag.getFloat("ScaleFactor"));
         }
     }
 
     @Inject(at = @At("TAIL"), method = "addAdditionalSaveData")
-    private void addAdditionalSaveData(CompoundTag tag, CallbackInfo ci) {
+    private void addAdditionalSaveData$RandomMobSizes(CompoundTag tag, CallbackInfo ci) {
         tag.putFloat("ScaleFactor", this.getMobScaling());
     }
 
     @Inject(at = @At("TAIL"), method = "convertTo")
-    private <T extends Mob> void convertTo(EntityType<T> type, boolean $$1, CallbackInfoReturnable<T> cir) {
+    private <T extends Mob> void convertTo$RandomMobSizes(EntityType<T> type, boolean $$1, CallbackInfoReturnable<T> cir) {
         if (!RandomMobSizesConfig.keepScalingOnConversion()) {
             return;
         }
