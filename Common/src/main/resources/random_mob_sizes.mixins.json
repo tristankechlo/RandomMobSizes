@@ -28,7 +28,8 @@
     ],
     "client": [
         "EntityRenderDispatcherMixin",
-        "LivingEntityRendererMixin"
+        "LivingEntityRendererMixin",
+        "geckolib.GeoEntityRendererMixin"
     ],
     "refmap": "random_mob_sizes.refmap.json"
 }

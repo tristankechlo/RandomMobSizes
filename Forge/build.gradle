@@ -58,6 +58,7 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     compileOnly project(":Common")
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
+    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${geckolib_mc_version}:${geckolib_version_forge}")
 }
 
 tasks.withType(JavaCompile).configureEach {
