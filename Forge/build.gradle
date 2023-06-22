@@ -62,6 +62,7 @@ dependencies {
     compileOnly project(":Common")
     implementation 'org.spongepowered:mixin:0.8.4:processor'
     annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
+    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version_forge}")
 }
 
 tasks.withType(JavaCompile) {
@@ -74,10 +75,6 @@ processResources {
 
     filesMatching("META-INF/mods.toml") {
         expand "version": project.version
-    }
-
-    filesMatching('*.mixins.json') {
-        expand "refmap_target": "${mod_id}."
     }
 }
 
