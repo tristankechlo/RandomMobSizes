@@ -64,6 +64,7 @@ dependencies {
     compileOnly project(":Common")
     implementation 'org.spongepowered:mixin:0.8.4:processor'
     annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
+    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${geckolib_mc_version}:${geckolib_version_forge}")
 }
 
 tasks.withType(JavaCompile) {
