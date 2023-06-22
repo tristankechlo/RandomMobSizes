@@ -13,7 +13,7 @@
         "issues": "https://github.com/tristankechlo/RandomMobSizes/issues"
     },
     "license": "CC BY-NC-ND 4.0",
-    "icon": "assets/random_mob_sizes/icon.png",
+    "icon": "icon.png",
     "environment": "*",
     "entrypoints": {
         "main": [
