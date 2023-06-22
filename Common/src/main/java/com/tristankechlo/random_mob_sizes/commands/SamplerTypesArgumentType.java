@@ -9,7 +9,6 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.GameType;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -20,7 +19,7 @@ public class SamplerTypesArgumentType implements ArgumentType<SamplerTypes> {
 
     private static final DynamicCommandExceptionType ERROR_INVALID = new DynamicCommandExceptionType((o) -> Component.literal("Invalid sampler type: " + o));
     private static final Collection<String> EXAMPLES = Stream.of(SamplerTypes.values()).map(SamplerTypes::getSerializedName).toList();
-    private static final GameType[] VALUES = GameType.values();
+    private static final SamplerTypes[] VALUES = SamplerTypes.values();
 
     @Override
     public SamplerTypes parse(StringReader reader) throws CommandSyntaxException {
@@ -36,7 +35,7 @@ public class SamplerTypesArgumentType implements ArgumentType<SamplerTypes> {
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
         if (context.getSource() instanceof SharedSuggestionProvider) {
-            return SharedSuggestionProvider.suggest(Arrays.stream(VALUES).map(GameType::getName), builder);
+            return SharedSuggestionProvider.suggest(Arrays.stream(VALUES).map(SamplerTypes::getSerializedName), builder);
         }
         return Suggestions.empty();
     }
