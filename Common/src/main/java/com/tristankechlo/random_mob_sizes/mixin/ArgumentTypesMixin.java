@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class ArgumentTypesMixin {
 
     @Inject(at = @At("HEAD"), method = "bootstrap")
-    private static void bootstrap(Registry<ArgumentTypeInfo<?, ?>> registry, CallbackInfoReturnable<ArgumentTypeInfo<?, ?>> cir) {
+    private static void bootstrap$RandomMobSizes(Registry<ArgumentTypeInfo<?, ?>> registry, CallbackInfoReturnable<ArgumentTypeInfo<?, ?>> cir) {
         // register custom argument type
         register(registry, RandomMobSizes.MOD_ID + ":sampler_types", SamplerTypesArgumentType.class, SingletonArgumentInfo.contextFree(SamplerTypesArgumentType::get));
     }

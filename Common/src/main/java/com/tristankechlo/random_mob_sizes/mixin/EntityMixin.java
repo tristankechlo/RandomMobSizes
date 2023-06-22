@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class EntityMixin {
 
     @Inject(at = @At("RETURN"), method = "getDimensions", cancellable = true)
-    private void getDimensions(Pose pose, CallbackInfoReturnable<EntityDimensions> cir) {
+    private void getDimensions$RandomMobSizes(Pose pose, CallbackInfoReturnable<EntityDimensions> cir) {
         // normally getDimensions() uses the dimensions from the entityType, so we need to apply scaling here
         if (((Entity) (Object) this) instanceof Mob) {
             EntityDimensions dimensions = cir.getReturnValue();
@@ -26,7 +26,7 @@ public abstract class EntityMixin {
     }
 
     @Inject(at = @At("RETURN"), method = "onSyncedDataUpdated(Lnet/minecraft/network/syncher/EntityDataAccessor;)V")
-    private void onSyncedDataUpdated(EntityDataAccessor<?> data, CallbackInfo ci) {
+    private void onSyncedDataUpdated$RandomMobSizes(EntityDataAccessor<?> data, CallbackInfo ci) {
         if (((Entity) (Object) this) instanceof Mob) {
             MobMixinAddon mob = (MobMixinAddon) this;
             //update bounding box, when the scale factor changes
@@ -38,7 +38,7 @@ public abstract class EntityMixin {
 
     @Redirect(method = "refreshDimensions", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/entity/Entity;getDimensions(Lnet/minecraft/world/entity/Pose;)Lnet/minecraft/world/entity/EntityDimensions;"))
-    private EntityDimensions getDimensions(Entity entity, Pose pose) {
+    private EntityDimensions getDimensions$RandomMobSizes(Entity entity, Pose pose) {
         if (((Entity) (Object) this) instanceof Mob) {
             MobMixinAddon mob = (MobMixinAddon) this;
             float scaling = mob.getMobScaling();
