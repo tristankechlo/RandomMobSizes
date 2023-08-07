@@ -3,6 +3,7 @@
 ### Version 1.19.2 - 1.3
 
 - fix incorrect suggestions for the `/mobScalings` command
+- add support for geckolib models
 
 ### Version 1.19.2 - 1.2
 
