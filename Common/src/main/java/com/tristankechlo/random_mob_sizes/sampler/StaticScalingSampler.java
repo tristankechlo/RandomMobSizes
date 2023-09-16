@@ -3,6 +3,7 @@ package com.tristankechlo.random_mob_sizes.sampler;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
+import net.minecraft.util.RandomSource;
 
 public class StaticScalingSampler extends ScalingSampler {
 
@@ -20,7 +21,7 @@ public class StaticScalingSampler extends ScalingSampler {
     }
 
     @Override
-    protected float sampleScalingFactor() {
+    protected float sampleScalingFactor(RandomSource random) {
         return static_scaling;
     }
 

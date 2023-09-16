@@ -3,6 +3,8 @@ package com.tristankechlo.random_mob_sizes.sampler;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.util.RandomSource;
 
 public class UniformScalingSampler extends ScalingSampler {
 
@@ -20,13 +22,13 @@ public class UniformScalingSampler extends ScalingSampler {
             throw new JsonParseException("Expected to get a JsonObject for " + entityType + ", but got a " + jsonElement.getClass().getSimpleName());
         }
         JsonObject json = jsonElement.getAsJsonObject();
-        this.min_scaling = json.get("min_scaling").getAsFloat();
-        this.max_scaling = json.get("max_scaling").getAsFloat();
+        this.min_scaling = GsonHelper.getAsFloat(json, "min_scaling");
+        this.max_scaling = GsonHelper.getAsFloat(json, "max_scaling");
     }
 
     @Override
-    protected float sampleScalingFactor() {
-        return min_scaling + (float) (Math.random() * (max_scaling - min_scaling));
+    protected float sampleScalingFactor(RandomSource random) {
+        return min_scaling + (float) (random.nextDouble() * (max_scaling - min_scaling));
     }
 
     @Override

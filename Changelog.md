@@ -1,5 +1,9 @@
 # Changelog
 
+### Version 1.20.1 - 1.4
+
+- random scaling is now tied to the world random
+
 ### Version 1.20.1 - 1.3
 
 - fix incorrect suggestions for the `/mobScalings` command

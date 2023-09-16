@@ -39,14 +39,14 @@ public abstract class MobMixin implements MobMixinAddon {
     }
 
     @Inject(at = @At("TAIL"), method = "<init>")
-    private void constructor$RandomMobSizes(EntityType<?> type, Level world, CallbackInfo ci) {
-        if (world.isClientSide) {
+    private void constructor$RandomMobSizes(EntityType<?> type, Level level, CallbackInfo ci) {
+        if (level.isClientSide) {
             return;
         }
         ScalingSampler sampler = RandomMobSizesConfig.getScalingSampler(type);
         float scaling = 1.0F;
         if (sampler != null) {
-            scaling = sampler.sample();
+            scaling = sampler.sample(level.random);
         }
         this.setMobScaling(scaling);
     }

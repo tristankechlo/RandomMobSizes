@@ -100,7 +100,7 @@ public final class ResponseHelper {
     }
 
     public static void sendSuccessScalingType(CommandSourceStack source, EntityType<?> entityType, ScalingSampler sampler) {
-        String result = (sampler instanceof StaticScalingSampler) ? String.valueOf(sampler.sample()) : sampler.serialize().toString();
+        String result = (sampler instanceof StaticScalingSampler) ? String.valueOf(sampler.sample(null)) : sampler.serialize().toString();
         MutableComponent message = Component.literal("Scaling for ").withStyle(ChatFormatting.WHITE)
                 .append(Component.literal(entityType.getDescription().getString()).withStyle(ChatFormatting.GREEN))
                 .append(Component.literal(" is set to ").withStyle(ChatFormatting.WHITE))
