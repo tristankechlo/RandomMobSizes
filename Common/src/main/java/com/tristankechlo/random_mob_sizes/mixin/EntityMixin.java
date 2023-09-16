@@ -19,7 +19,7 @@ public abstract class EntityMixin {
         // normally getDimensions() uses the dimensions from the entityType, so we need to apply scaling here
         if (((Entity) (Object) this) instanceof Mob) {
             EntityDimensions dimensions = cir.getReturnValue();
-            float scaling = ((MobMixinAddon) this).getMobScaling();
+            float scaling = ((MobMixinAddon) this).getMobScaling$RandomMobSizes();
             EntityDimensions scaledDimensions = dimensions.scale(scaling);
             cir.setReturnValue(scaledDimensions);
         }
@@ -30,7 +30,7 @@ public abstract class EntityMixin {
         if (((Entity) (Object) this) instanceof Mob) {
             MobMixinAddon mob = (MobMixinAddon) this;
             //update bounding box, when the scale factor changes
-            if (data.equals(mob.getTracker())) {
+            if (data.equals(mob.getTracker$RandomMobSizes())) {
                 ((Entity) (Object) this).refreshDimensions();
             }
         }
@@ -41,7 +41,7 @@ public abstract class EntityMixin {
     private EntityDimensions getDimensions$RandomMobSizes(Entity entity, Pose pose) {
         if (((Entity) (Object) this) instanceof Mob) {
             MobMixinAddon mob = (MobMixinAddon) this;
-            float scaling = mob.getMobScaling();
+            float scaling = mob.getMobScaling$RandomMobSizes();
             float scaleFactor = ((LivingEntity) (Object) this).getScale();
             EntityDimensions dimensions = entity.getType().getDimensions();
             return dimensions.scale(scaling).scale(scaleFactor);

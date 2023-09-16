@@ -21,7 +21,7 @@ public abstract class GeoEntityRendererMixin {
             PoseStack poseStack, T animatable, software.bernie.geckolib.cache.object.BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer,
             boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha, CallbackInfo ci) {
         if (animatable instanceof Mob) {
-            float scale = ((MobMixinAddon) animatable).getMobScaling();
+            float scale = ((MobMixinAddon) animatable).getMobScaling$RandomMobSizes();
             poseStack.scale(scale, scale, scale);
         }
     }

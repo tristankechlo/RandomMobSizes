@@ -21,21 +21,21 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Mob.class)
 public abstract class MobMixin implements MobMixinAddon {
 
-    private static final EntityDataAccessor<Float> SCALING = SynchedEntityData.defineId(Mob.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> SCALING$RANDOM_MOB_SIZES = SynchedEntityData.defineId(Mob.class, EntityDataSerializers.FLOAT);
 
     @Override
-    public float getMobScaling() {
-        return ((Mob) (Object) this).getEntityData().get(SCALING);
+    public float getMobScaling$RandomMobSizes() {
+        return ((Mob) (Object) this).getEntityData().get(SCALING$RANDOM_MOB_SIZES);
     }
 
     @Override
-    public void setMobScaling(float scale) {
-        ((Mob) (Object) this).getEntityData().set(SCALING, scale);
+    public void setMobScaling$RandomMobSizes(float scale) {
+        ((Mob) (Object) this).getEntityData().set(SCALING$RANDOM_MOB_SIZES, scale);
     }
 
     @Override
-    public EntityDataAccessor<Float> getTracker() {
-        return SCALING;
+    public EntityDataAccessor<Float> getTracker$RandomMobSizes() {
+        return SCALING$RANDOM_MOB_SIZES;
     }
 
     @Inject(at = @At("TAIL"), method = "<init>")
@@ -53,19 +53,19 @@ public abstract class MobMixin implements MobMixinAddon {
 
     @Inject(at = @At("TAIL"), method = "defineSynchedData")
     private void defineSyncedData$RandomMobSizes(CallbackInfo ci) {
-        ((Mob) (Object) this).getEntityData().define(SCALING, 1.0F);
+        ((Mob) (Object) this).getEntityData().define(SCALING$RANDOM_MOB_SIZES, 1.0F);
     }
 
     @Inject(at = @At("TAIL"), method = "readAdditionalSaveData")
     private void readAdditionalSaveData$RandomMobSizes(CompoundTag tag, CallbackInfo ci) {
         if (tag.contains("ScaleFactor")) {
-            this.setMobScaling(tag.getFloat("ScaleFactor"));
+            this.setMobScaling$RandomMobSizes(tag.getFloat("ScaleFactor"));
         }
     }
 
     @Inject(at = @At("TAIL"), method = "addAdditionalSaveData")
     private void addAdditionalSaveData$RandomMobSizes(CompoundTag tag, CallbackInfo ci) {
-        tag.putFloat("ScaleFactor", this.getMobScaling());
+        tag.putFloat("ScaleFactor", this.getMobScaling$RandomMobSizes());
     }
 
     @Inject(at = @At("TAIL"), method = "convertTo")
@@ -73,9 +73,9 @@ public abstract class MobMixin implements MobMixinAddon {
         if (!RandomMobSizesConfig.keepScalingOnConversion()) {
             return;
         }
-        float scaling = ((MobMixinAddon) this).getMobScaling();
+        float scaling = ((MobMixinAddon) this).getMobScaling$RandomMobSizes();
         T entity = cir.getReturnValue();
-        ((MobMixinAddon) entity).setMobScaling(scaling);
+        ((MobMixinAddon) entity).setMobScaling$RandomMobSizes(scaling);
         RandomMobSizes.LOGGER.info("Converted {} to {} with scaling {}", this.getClass().getSimpleName(), entity.getClass().getSimpleName(), scaling);
     }
 
