@@ -7,6 +7,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.tristankechlo.random_mob_sizes.RandomMobSizes;
 import com.tristankechlo.random_mob_sizes.config.ConfigManager;
 import com.tristankechlo.random_mob_sizes.config.RandomMobSizesConfig;
+import com.tristankechlo.random_mob_sizes.config.ScalingOverrides;
 import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
 import com.tristankechlo.random_mob_sizes.sampler.StaticScalingSampler;
 import net.minecraft.ChatFormatting;
@@ -59,7 +60,7 @@ public final class MobScalingsCommand {
 
             //updating and saving config
             RandomMobSizes.LOGGER.info("Setting scale for entity type '{}' to '{}' with data '{}'", entityType, scalingType, data);
-            boolean success = RandomMobSizesConfig.setScalingSampler(entityType, scalingType.fromNBT(data, entityType.getDescriptionId()));
+            boolean success = RandomMobSizesConfig.SCALING_OVERRIDES.setScalingSampler(entityType, scalingType.fromNBT(data, entityType.getDescriptionId()));
             if (success) {
                 ConfigManager.saveConfig();
                 ResponseHelper.sendSuccessScalingTypeSet(source, entityType, scalingType, data);
@@ -81,7 +82,7 @@ public final class MobScalingsCommand {
 
             //updating and saving config
             RandomMobSizes.LOGGER.info("Setting scale for entity type '{}' to static scale of '{}'", entityType, scale);
-            boolean success = RandomMobSizesConfig.setScalingSampler(entityType, new StaticScalingSampler(scale));
+            boolean success = RandomMobSizesConfig.SCALING_OVERRIDES.setScalingSampler(entityType, new StaticScalingSampler(scale));
             if (success) {
                 ConfigManager.saveConfig();
                 ResponseHelper.sendSuccessStaticScalingTypeSet(source, entityType, scale);
@@ -102,7 +103,7 @@ public final class MobScalingsCommand {
 
             //updating and saving config
             RandomMobSizes.LOGGER.info("Removing scale for entity type '{}'", entityType);
-            RandomMobSizesConfig.removeScalingSampler(entityType);
+            RandomMobSizesConfig.SCALING_OVERRIDES.removeScalingSampler(entityType);
             ConfigManager.saveConfig();
             ResponseHelper.sendSuccessScalingTypeRemoved(source, entityType);
             return 1;
@@ -130,7 +131,9 @@ public final class MobScalingsCommand {
 
     private static int showAllEntityScales(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
-        RandomMobSizesConfig.getIterator().forEachRemaining(entry -> ResponseHelper.sendSuccessScalingType(source, entry.getKey(), entry.getValue()));
+        ScalingSampler defaultSampler = RandomMobSizesConfig.getDefaultSampler();
+        ResponseHelper.sendSuccessScalingType(source, "DefaultScaling", defaultSampler);
+        ScalingOverrides.getIterator().forEachRemaining(entry -> ResponseHelper.sendSuccessScalingType(source, entry.getKey(), entry.getValue()));
         return 1;
     }
 

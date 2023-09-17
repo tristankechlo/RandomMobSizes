@@ -18,7 +18,7 @@ import java.util.List;
 public final class ConfigManager {
 
     private static final File CONFIG_DIR = IPlatformHelper.INSTANCE.getConfigDirectory().toFile();
-    public static final Gson GSON = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
     public static final String FILE_NAME = RandomMobSizes.MOD_ID + ".json";
     public static boolean saveBackup = false;
 

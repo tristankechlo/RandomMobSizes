@@ -2,6 +2,8 @@ package com.tristankechlo.random_mob_sizes.sampler;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.tristankechlo.random_mob_sizes.commands.SamplerTypes;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -15,7 +17,7 @@ public abstract class ScalingSampler {
     protected final AttributeScalingTypes scaleSpeed;
 
     protected ScalingSampler() {
-        this(AttributeScalingTypes.NORMAL, AttributeScalingTypes.NORMAL, AttributeScalingTypes.INVERSE);
+        this(AttributeScalingTypes.NORMAL, AttributeScalingTypes.NORMAL, AttributeScalingTypes.NORMAL);
     }
 
     protected ScalingSampler(AttributeScalingTypes health, AttributeScalingTypes damage, AttributeScalingTypes speed) {
@@ -70,6 +72,21 @@ public abstract class ScalingSampler {
 
     public AttributeScalingTypes getSpeedScaler() {
         return scaleSpeed;
+    }
+
+    public static ScalingSampler deserializeSampler(JsonElement jsonElement, String entityType) {
+        if (GsonHelper.isNumberValue(jsonElement)) {
+            return new StaticScalingSampler(jsonElement.getAsFloat());
+        } else if (jsonElement.isJsonObject()) {
+            JsonObject jsonObject = GsonHelper.convertToJsonObject(jsonElement, entityType);
+            String type = jsonObject.get("type").getAsString();
+            SamplerTypes samplerType = SamplerTypes.byName(type, null);
+            if (samplerType == null) {
+                throw new JsonParseException("Unknown ScalingType: " + type);
+            }
+            return samplerType.fromJson(jsonElement, entityType);
+        }
+        throw new JsonParseException("ScalingType must be a NumberValue or JsonObject");
     }
 
 }

@@ -1,0 +1,93 @@
+package com.tristankechlo.random_mob_sizes.config;
+
+import com.google.common.collect.ImmutableList;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.tristankechlo.random_mob_sizes.IPlatformHelper;
+import com.tristankechlo.random_mob_sizes.RandomMobSizes;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.entity.EntityType;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Supplier;
+
+public final class EntityTypeList implements Supplier<List<EntityType<?>>> {
+
+    private final String key;
+    private ImmutableList<String> parsedValues;
+    private ImmutableList<EntityType<?>> cachedValue;
+    private final ImmutableList<String> defaultValue;
+
+    public EntityTypeList(String key, List<String> stringValues) {
+        this(key, stringValues, parseList(stringValues, key));
+    }
+
+    public EntityTypeList(String key, EntityType<?>... entityTypes) {
+        this(key, Arrays.stream(entityTypes).map(EntityType::getKey).map(ResourceLocation::toString).toList(), List.of(entityTypes));
+    }
+
+    private EntityTypeList(String key, List<String> stringValues, List<EntityType<?>> entityTypes) {
+        this.key = key;
+        this.cachedValue = ImmutableList.copyOf(entityTypes);
+        this.defaultValue = ImmutableList.copyOf(stringValues);
+        this.parsedValues = ImmutableList.copyOf(stringValues);
+    }
+
+    public void setToDefault() {
+        this.cachedValue = parseList(defaultValue, key);
+        this.parsedValues = ImmutableList.copyOf(defaultValue);
+    }
+
+    public void serialize(JsonObject json) {
+        JsonArray array = new JsonArray();
+        for (String value : parsedValues) {
+            array.add(value);
+        }
+        json.add(key, array);
+    }
+
+    public void deserialize(JsonObject json) {
+        JsonArray array = GsonHelper.getAsJsonArray(json, key);
+        List<JsonElement> elements = array.asList();
+        ImmutableList.Builder<String> builder = ImmutableList.builder();
+        for (JsonElement element : elements) {
+            String value = GsonHelper.convertToString(element, key);
+            builder.add(value);
+        }
+        this.parsedValues = builder.build();
+        this.cachedValue = parseList(parsedValues, key);
+    }
+
+    @Override
+    public List<EntityType<?>> get() {
+        return cachedValue;
+    }
+
+    private static ImmutableList<EntityType<?>> parseList(List<String> values, String key) {
+        ImmutableList.Builder<EntityType<?>> builder = ImmutableList.builder();
+        for (String value : values) {
+            if (value.endsWith(":*")) {
+                //add all entities of the given namespace
+                String namespace = value.substring(0, value.length() - 2);
+                if (!IPlatformHelper.INSTANCE.isModLoaded(namespace)) {
+                    RandomMobSizes.LOGGER.error("Skipping unknown wildcard: '{}' of config value '{}'", namespace, key);
+                    continue;
+                }
+                BuiltInRegistries.ENTITY_TYPE.stream()
+                        .filter(entityType -> EntityType.getKey(entityType).getNamespace().equals(namespace))
+                        .forEach(builder::add);
+            } else {
+                // parse as normal entity type
+                EntityType.byString(value).ifPresentOrElse(builder::add, () -> {
+                    RandomMobSizes.LOGGER.error("Skipping unknown EntityType: '{}' of config value '{}'", value, key);
+                });
+            }
+        }
+        return builder.build();
+    }
+
+}

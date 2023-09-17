@@ -23,6 +23,12 @@ public class UniformScalingSampler extends ScalingSampler {
         this.max_scaling = GsonHelper.getAsFloat(json, "max_scaling");
     }
 
+    public UniformScalingSampler(float min_scaling, float max_scaling, AttributeScalingTypes health, AttributeScalingTypes damage, AttributeScalingTypes speed) {
+        super(health, damage, speed);
+        this.min_scaling = min_scaling;
+        this.max_scaling = max_scaling;
+    }
+
     @Override
     protected float sampleScalingFactor(RandomSource random) {
         return min_scaling + (float) (random.nextDouble() * (max_scaling - min_scaling));

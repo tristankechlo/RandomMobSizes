@@ -73,6 +73,7 @@ public abstract class MobMixin implements MobMixinAddon {
         if (instance != null) {
             double baseValue = instance.getBaseValue();
             instance.setBaseValue(baseValue * scaling);
+            //RandomMobSizes.LOGGER.info("Scaled '{}' of '{}' from '{}' to '{}'", attribute.getDescriptionId(), this.getClass().getSimpleName(), baseValue, instance.getBaseValue());
         }
     }
 

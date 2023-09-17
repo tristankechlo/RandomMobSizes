@@ -3,7 +3,6 @@ package com.tristankechlo.random_mob_sizes.commands;
 import com.tristankechlo.random_mob_sizes.RandomMobSizes;
 import com.tristankechlo.random_mob_sizes.config.ConfigManager;
 import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
-import com.tristankechlo.random_mob_sizes.sampler.StaticScalingSampler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.nbt.CompoundTag;
@@ -99,11 +98,13 @@ public final class ResponseHelper {
     }
 
     public static void sendSuccessScalingType(CommandSourceStack source, EntityType<?> entityType, ScalingSampler sampler) {
-        String result = (sampler instanceof StaticScalingSampler) ? String.valueOf(sampler.sample(null)) : sampler.serialize().toString();
-        MutableComponent message = Component.literal("Scaling for ").withStyle(ChatFormatting.WHITE)
-                .append(Component.literal(entityType.getDescription().getString()).withStyle(ChatFormatting.GREEN))
-                .append(Component.literal(" is set to ").withStyle(ChatFormatting.WHITE))
-                .append(Component.literal(result).withStyle(ChatFormatting.GREEN));
+        sendSuccessScalingType(source, entityType.getDescription().getString(), sampler);
+    }
+
+    public static void sendSuccessScalingType(CommandSourceStack source, String entityType, ScalingSampler sampler) {
+        MutableComponent entity = Component.literal(entityType).withStyle(ChatFormatting.GREEN);
+        MutableComponent result = Component.literal(sampler.serialize().toString()).withStyle(ChatFormatting.GREEN);
+        MutableComponent message = Component.translatable("Scaling for %s is set to %s", entity, result).withStyle(ChatFormatting.WHITE);
         sendMessage(source, message, false);
     }
 
