@@ -14,6 +14,7 @@ public final class RandomMobSizesConfig {
 
     private static final BooleanValue KEEP_SCALING_ON_CONVERSION = new BooleanValue("keep_scaling_on_conversion", true);
     private static ScalingSampler defaultSampler = createDefaultSampler();
+    private static final String DEFAULT_SAMPLER_NAME = "default_scaling";
     private static final EntityTypeList WHITELIST = new EntityTypeList("whitelist", List.of("minecraft:*"));
     private static final EntityTypeList BLACKLIST = new EntityTypeList("blacklist", EntityType.SHULKER, EntityType.WITHER);
     public static final ScalingOverrides SCALING_OVERRIDES = new ScalingOverrides();
@@ -28,7 +29,7 @@ public final class RandomMobSizesConfig {
 
     public static JsonObject serialize() {
         JsonObject json = new JsonObject();
-        json.add("default_sampler", defaultSampler.serialize());
+        json.add(DEFAULT_SAMPLER_NAME, defaultSampler.serialize());
         WHITELIST.serialize(json);
         BLACKLIST.serialize(json);
         KEEP_SCALING_ON_CONVERSION.serialize(json);
@@ -44,10 +45,10 @@ public final class RandomMobSizesConfig {
 
         // deserialize default sampler
         try {
-            JsonElement defaultSamplerElement = GsonHelper.getNonNull(json, "default_sampler");
-            defaultSampler = ScalingSampler.deserializeSampler(defaultSamplerElement, "default_sampler");
+            JsonElement defaultSamplerElement = GsonHelper.getNonNull(json, DEFAULT_SAMPLER_NAME);
+            defaultSampler = ScalingSampler.deserializeSampler(defaultSamplerElement, DEFAULT_SAMPLER_NAME);
         } catch (Exception e) {
-            RandomMobSizes.LOGGER.error("Error while parsing 'default_sampler', using default value");
+            RandomMobSizes.LOGGER.error("Error while parsing '{}', using default value", DEFAULT_SAMPLER_NAME);
             defaultSampler = createDefaultSampler();
             throw new ConfigParseException(e.getMessage());
         }
