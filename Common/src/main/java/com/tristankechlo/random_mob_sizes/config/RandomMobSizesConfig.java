@@ -6,7 +6,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.tristankechlo.random_mob_sizes.RandomMobSizes;
 import com.tristankechlo.random_mob_sizes.commands.SamplerTypes;
-import com.tristankechlo.random_mob_sizes.sampler.GaussianSampler;
+import com.tristankechlo.random_mob_sizes.sampler.GaussianScalingSampler;
 import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
 import com.tristankechlo.random_mob_sizes.sampler.StaticScalingSampler;
 import com.tristankechlo.random_mob_sizes.sampler.UniformScalingSampler;
@@ -56,17 +56,18 @@ public final class RandomMobSizesConfig {
         Map<EntityType<?>, ScalingSampler> newSettings = new HashMap<>();
         settings.forEach((key, value) -> {
             Optional<EntityType<?>> entityType = EntityType.byString(key);
-            if (entityType.isPresent()) {
-                try {
-                    EntityType<?> type = entityType.get();
-                    ScalingSampler scalingSampler = deserializeSampler(value, key);
-                    newSettings.put(type, scalingSampler);
-                } catch (Exception e) {
-                    RandomMobSizes.LOGGER.error("Error while parsing scaling for entity {}", key);
-                    RandomMobSizes.LOGGER.error(e.getMessage());
-                }
-            } else {
+            if (entityType.isEmpty()) {
                 RandomMobSizes.LOGGER.error("Error loading config, unknown EntityType: '{}'", key);
+                return;
+            }
+            try {
+                EntityType<?> type = entityType.get();
+                ScalingSampler scalingSampler = deserializeSampler(value, key);
+                newSettings.put(type, scalingSampler);
+            } catch (Exception e) {
+                RandomMobSizes.LOGGER.error("Error while parsing scaling for entity '{}'", key);
+                RandomMobSizes.LOGGER.error(e.getMessage());
+                ConfigManager.saveBackup = true;
             }
         });
         SETTINGS.clear();
@@ -74,10 +75,10 @@ public final class RandomMobSizesConfig {
     }
 
     private static ScalingSampler deserializeSampler(JsonElement jsonElement, String entityType) {
-        if (jsonElement.isJsonPrimitive()) {
-            return new StaticScalingSampler(jsonElement, entityType);
+        if (GsonHelper.isNumberValue(jsonElement)) {
+            return new StaticScalingSampler(jsonElement.getAsFloat());
         } else if (jsonElement.isJsonObject()) {
-            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            JsonObject jsonObject = GsonHelper.convertToJsonObject(jsonElement, entityType);
             String type = jsonObject.get("type").getAsString();
             SamplerTypes samplerType = SamplerTypes.byName(type, null);
             if (samplerType == null) {
@@ -85,17 +86,17 @@ public final class RandomMobSizesConfig {
             }
             return samplerType.fromJson(jsonElement, entityType);
         }
-        throw new JsonParseException("ScalingType must be a JsonPrimitive or JsonObject");
+        throw new JsonParseException("ScalingType must be a NumberValue or JsonObject");
     }
 
     public static Map<EntityType<?>, ScalingSampler> getDefaultSettings() {
         Map<EntityType<?>, ScalingSampler> settings = new HashMap<>();
-        settings.put(EntityType.BAT, new StaticScalingSampler(0.75F));
+        settings.put(EntityType.BAT, new StaticScalingSampler(1.25F));
         settings.put(EntityType.COW, new UniformScalingSampler(0.5F, 1.5F));
-        settings.put(EntityType.SHEEP, new GaussianSampler(0.5F, 1.5F));
-        settings.put(EntityType.PIG, new GaussianSampler(0.5F, 1.5F));
-        settings.put(EntityType.CHICKEN, new GaussianSampler(0.5F, 1.5F));
-        settings.put(EntityType.FROG, new GaussianSampler(0.5F, 1.5F));
+        settings.put(EntityType.SHEEP, new GaussianScalingSampler(0.5F, 1.5F));
+        settings.put(EntityType.PIG, new GaussianScalingSampler(0.5F, 1.5F));
+        settings.put(EntityType.CHICKEN, new GaussianScalingSampler(0.5F, 1.5F));
+        settings.put(EntityType.FROG, new GaussianScalingSampler(0.5F, 1.5F));
         return settings;
     }
 

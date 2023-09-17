@@ -6,6 +6,7 @@ import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
 import com.tristankechlo.random_mob_sizes.sampler.StaticScalingSampler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -58,15 +59,13 @@ public final class ResponseHelper {
         return clickableLink(url, url);
     }
 
-    public static void sendSuccessScalingTypeSet(CommandSourceStack source, EntityType<?> entityType, SamplerTypes samplerTypes, float min_scaling, float max_scaling) {
+    public static void sendSuccessScalingTypeSet(CommandSourceStack source, EntityType<?> entityType, SamplerTypes samplerTypes, CompoundTag data) {
         MutableComponent message = Component.literal("Scaling for ").withStyle(ChatFormatting.WHITE)
                 .append(Component.literal(entityType.getDescription().getString()).withStyle(ChatFormatting.GREEN))
                 .append(Component.literal(" was set to ").withStyle(ChatFormatting.WHITE))
                 .append(Component.literal(samplerTypes.toString()).withStyle(ChatFormatting.GREEN))
-                .append(Component.literal(" with min_scaling ").withStyle(ChatFormatting.WHITE))
-                .append(Component.literal(String.valueOf(min_scaling)).withStyle(ChatFormatting.GREEN))
-                .append(Component.literal(" and max_scaling ").withStyle(ChatFormatting.WHITE))
-                .append(Component.literal(String.valueOf(max_scaling)).withStyle(ChatFormatting.GREEN));
+                .append(Component.literal(" with data ").withStyle(ChatFormatting.WHITE))
+                .append(Component.literal(data.toString()).withStyle(ChatFormatting.GREEN));
         sendMessage(source, message, true);
     }
 

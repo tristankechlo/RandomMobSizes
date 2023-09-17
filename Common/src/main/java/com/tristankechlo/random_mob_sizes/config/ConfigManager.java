@@ -8,12 +8,19 @@ import com.tristankechlo.random_mob_sizes.RandomMobSizes;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public final class ConfigManager {
 
     private static final File CONFIG_DIR = IPlatformHelper.INSTANCE.getConfigDirectory().toFile();
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
     public static final String FILE_NAME = RandomMobSizes.MOD_ID + ".json";
+    public static boolean saveBackup = false;
 
     public static void loadAndVerifyConfig() {
         ConfigManager.createConfigFolder();
@@ -21,6 +28,9 @@ public final class ConfigManager {
         File configFile = new File(CONFIG_DIR, FILE_NAME);
         if (configFile.exists()) {
             ConfigManager.loadConfigFromFile(configFile);
+            if (saveBackup) {
+                saveBackup(configFile);
+            }
             ConfigManager.writeConfigToFile(configFile);
             RandomMobSizes.LOGGER.info("Saved the checked/corrected config: '{}'", FILE_NAME);
         } else {
@@ -38,25 +48,38 @@ public final class ConfigManager {
             writer.close();
         } catch (Exception e) {
             RandomMobSizes.LOGGER.error("There was an error writing the config to file: '{}'", FILE_NAME);
-            e.printStackTrace();
+            RandomMobSizes.LOGGER.error(e.getMessage());
         }
     }
 
     private static void loadConfigFromFile(File file) {
-        JsonObject json = null;
         try {
             JsonParser parser = new JsonParser();
             JsonElement jsonElement = parser.parse(new FileReader(file));
-            json = jsonElement.getAsJsonObject();
+            JsonObject json = jsonElement.getAsJsonObject();
+
+            if (json != null) {
+                RandomMobSizesConfig.deserialize(json);
+                RandomMobSizes.LOGGER.info("Config '{}' was successfully loaded.", FILE_NAME);
+            }
         } catch (Exception e) {
-            RandomMobSizes.LOGGER.error("There was an error loading the config file: '{}'", FILE_NAME);
-            e.printStackTrace();
+            RandomMobSizes.LOGGER.error("Error loading config '{}', config hasn't been loaded", FILE_NAME);
+            RandomMobSizes.LOGGER.error(e.getMessage());
+            saveBackup = true;
         }
-        if (json != null) {
-            RandomMobSizesConfig.deserialize(json);
-            RandomMobSizes.LOGGER.info("Config '{}' was successfully loaded.", FILE_NAME);
-        } else {
-            RandomMobSizes.LOGGER.error("Error loading config '{}', config hasn't been loaded.", FILE_NAME);
+    }
+
+    private static void saveBackup(File file) {
+        String datetimeFormatted = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss").format(LocalDateTime.now());
+        String backupFileName = FILE_NAME.replace(".json", "_" + datetimeFormatted + ".backup.txt");
+        Path backupFilePath = Paths.get(CONFIG_DIR.getAbsolutePath(), backupFileName);
+        try {
+            List<String> lines = Files.readAllLines(file.toPath());
+            Files.write(backupFilePath, lines);
+            RandomMobSizes.LOGGER.warn("Created backup file '{}'", backupFileName);
+        } catch (Exception e) {
+            RandomMobSizes.LOGGER.error("Error creating backup file '{}'", backupFileName);
+            RandomMobSizes.LOGGER.error(e.getMessage());
         }
     }
 

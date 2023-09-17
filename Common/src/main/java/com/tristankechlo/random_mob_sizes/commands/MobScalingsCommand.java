@@ -12,8 +12,10 @@ import com.tristankechlo.random_mob_sizes.sampler.StaticScalingSampler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.CompoundTagArgument;
 import net.minecraft.commands.arguments.ResourceArgument;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.EntityType;
@@ -32,9 +34,8 @@ public final class MobScalingsCommand {
                 .then(literal("set")
                         .then(argument("entity_type", ResourceArgument.resource(context, Registries.ENTITY_TYPE))
                                 .then(argument("scaling_type", SamplerTypesArgumentType.get())
-                                        .then(argument("min_scaling", FloatArgumentType.floatArg(MINIMUM_SCALING, MAXIMUM_SCALING))
-                                                .then(argument("max_scaling", FloatArgumentType.floatArg(MINIMUM_SCALING, MAXIMUM_SCALING))
-                                                        .executes(MobScalingsCommand::setEntityScale))))
+                                        .then(argument("data", CompoundTagArgument.compoundTag())
+                                                .executes(MobScalingsCommand::setEntityScale)))
                                 .then(argument("scale", FloatArgumentType.floatArg(MINIMUM_SCALING, MAXIMUM_SCALING))
                                         .executes(MobScalingsCommand::setEntityScaleStatic))))
                 .then(literal("remove")
@@ -54,15 +55,14 @@ public final class MobScalingsCommand {
             //read values from command
             final EntityType<?> entityType = ResourceArgument.getEntityType(context, "entity_type").value();
             final SamplerTypes scalingType = context.getArgument("scaling_type", SamplerTypes.class);
-            final float minScale = FloatArgumentType.getFloat(context, "min_scaling");
-            final float maxScale = FloatArgumentType.getFloat(context, "max_scaling");
+            final CompoundTag data = CompoundTagArgument.getCompoundTag(context, "data");
 
             //updating and saving config
-            RandomMobSizes.LOGGER.info("Setting scale for entity type '{}' to '{}' with min scale '{}' and max scale '{}'", entityType, scalingType, minScale, maxScale);
-            boolean success = RandomMobSizesConfig.setScalingSampler(entityType, scalingType.create(minScale, maxScale));
+            RandomMobSizes.LOGGER.info("Setting scale for entity type '{}' to '{}' with data '{}'", entityType, scalingType, data);
+            boolean success = RandomMobSizesConfig.setScalingSampler(entityType, scalingType.fromNBT(data, entityType.getDescriptionId()));
             if (success) {
                 ConfigManager.saveConfig();
-                ResponseHelper.sendSuccessScalingTypeSet(source, entityType, scalingType, minScale, maxScale);
+                ResponseHelper.sendSuccessScalingTypeSet(source, entityType, scalingType, data);
             } else {
                 ResponseHelper.sendErrorScalingTypeSet(source, entityType);
             }
