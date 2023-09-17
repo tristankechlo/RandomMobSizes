@@ -9,9 +9,9 @@ public enum AttributeScalingTypes implements StringRepresentable {
 
     NONE("none", (value) -> 1.0F),
     NORMAL("normal", (value) -> value),
-    SQUARED("squared", (value) -> (value * value)),
+    SQUARE("square", (value) -> (value * value)),
     INVERSE("inverse", (value) -> (1.0F / value)),
-    INVERSE_SQUARED("inverse_squared", (value) -> (1.0F / (value * value)));
+    INVERSE_SQUARE("inverse_square", (value) -> (1.0F / (value * value)));
 
     @SuppressWarnings("deprecation")
     public static final EnumCodec<AttributeScalingTypes> CODEC = StringRepresentable.fromEnum(AttributeScalingTypes::values);

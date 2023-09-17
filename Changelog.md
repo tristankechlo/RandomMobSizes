@@ -8,9 +8,9 @@
     - five options to scale those attributes
         - `none` => no scaling
         - `normal` => same scaling as the mob size
-        - `squared` => scaling is squared $(scaling*scaling)$
+        - `square` => scaling is squared $(scaling*scaling)$
         - `inverse` => scaling is inverted $(1 / scaling)$
-        - `inverse_squared` => scaling is squared and inverted $(1 / (scaling * scaling))$
+        - `inverse_square` => scaling is squared and inverted $(1 / (scaling * scaling))$
 - new config format
     - allows to set a default scaling for all mobs
         - uses whitelist/blacklist to include/exclude mobs from the default scaling
