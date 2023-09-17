@@ -39,7 +39,7 @@ public final class ScalingOverrides {
         json.asMap().forEach((key, value) -> {
             Optional<EntityType<?>> entityType = EntityType.byString(key);
             if (entityType.isEmpty()) {
-                RandomMobSizes.LOGGER.error("Error loading config, unknown EntityType: '{}'", key);
+                RandomMobSizes.LOGGER.error("Error loading config, skipping unknown entity: '{}'", key);
                 return;
             }
             try {
@@ -47,9 +47,8 @@ public final class ScalingOverrides {
                 ScalingSampler scalingSampler = ScalingSampler.deserializeSampler(value, key);
                 newSettings.put(type, scalingSampler);
             } catch (Exception e) {
-                RandomMobSizes.LOGGER.error("Error while parsing scaling for entity '{}'", key);
+                RandomMobSizes.LOGGER.error("Error while parsing scaling, skipping scaling for entity '{}'", key);
                 RandomMobSizes.LOGGER.error(e.getMessage());
-                ConfigManager.saveBackup = true;
             }
         });
         SETTINGS.clear();

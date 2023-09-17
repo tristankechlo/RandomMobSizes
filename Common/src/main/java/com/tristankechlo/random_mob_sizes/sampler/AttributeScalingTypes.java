@@ -2,6 +2,7 @@ package com.tristankechlo.random_mob_sizes.sampler;
 
 import net.minecraft.util.StringRepresentable;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 public enum AttributeScalingTypes implements StringRepresentable {
@@ -32,7 +33,7 @@ public enum AttributeScalingTypes implements StringRepresentable {
     }
 
     public static AttributeScalingTypes byName(String name) {
-        return CODEC.byName(name, NONE);
+        return Objects.requireNonNull(CODEC.byName(name), "Unknown scaling type '" + name + "'");
     }
 
 }

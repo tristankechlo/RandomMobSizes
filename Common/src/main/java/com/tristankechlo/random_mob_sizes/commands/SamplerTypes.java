@@ -9,6 +9,7 @@ import com.tristankechlo.random_mob_sizes.sampler.StaticScalingSampler;
 import com.tristankechlo.random_mob_sizes.sampler.UniformScalingSampler;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NumericTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.util.StringRepresentable;
 
@@ -50,6 +51,9 @@ public enum SamplerTypes implements StringRepresentable {
             }
             if (id == Tag.TAG_BYTE) {
                 json.addProperty(entry.getKey(), ((NumericTag) entry.getValue()).getAsByte() != 0);
+            }
+            if (id == Tag.TAG_STRING) {
+                json.addProperty(entry.getKey(), entry.getValue().getAsString());
             }
         }
         return this.fromJson(json, entityType);

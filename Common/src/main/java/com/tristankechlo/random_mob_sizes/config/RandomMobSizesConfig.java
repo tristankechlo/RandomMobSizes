@@ -26,7 +26,8 @@ public final class RandomMobSizesConfig {
         SCALING_OVERRIDES.setToDefault();
     }
 
-    public static JsonObject serialize(JsonObject json) {
+    public static JsonObject serialize() {
+        JsonObject json = new JsonObject();
         json.add("default_sampler", defaultSampler.serialize());
         WHITELIST.serialize(json);
         BLACKLIST.serialize(json);
@@ -36,9 +37,9 @@ public final class RandomMobSizesConfig {
     }
 
     public static void deserialize(JsonObject json) {
-        KEEP_SCALING_ON_CONVERSION.deserialize(json);
         WHITELIST.deserialize(json);
         BLACKLIST.deserialize(json);
+        KEEP_SCALING_ON_CONVERSION.deserialize(json);
         SCALING_OVERRIDES.deserialize(json);
 
         // deserialize default sampler
@@ -47,8 +48,8 @@ public final class RandomMobSizesConfig {
             defaultSampler = ScalingSampler.deserializeSampler(defaultSamplerElement, "default_sampler");
         } catch (Exception e) {
             RandomMobSizes.LOGGER.error("Error while parsing 'default_sampler', using default value");
-            RandomMobSizes.LOGGER.error(e.getMessage());
             defaultSampler = createDefaultSampler();
+            throw new ConfigParseException(e.getMessage());
         }
     }
 

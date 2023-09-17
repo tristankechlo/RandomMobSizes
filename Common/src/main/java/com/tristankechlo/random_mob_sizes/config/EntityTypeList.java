@@ -51,15 +51,21 @@ public final class EntityTypeList implements Supplier<List<EntityType<?>>> {
     }
 
     public void deserialize(JsonObject json) {
-        JsonArray array = GsonHelper.getAsJsonArray(json, key);
-        List<JsonElement> elements = array.asList();
-        ImmutableList.Builder<String> builder = ImmutableList.builder();
-        for (JsonElement element : elements) {
-            String value = GsonHelper.convertToString(element, key);
-            builder.add(value);
+        try {
+            JsonArray array = GsonHelper.getAsJsonArray(json, key);
+            List<JsonElement> elements = array.asList();
+            ImmutableList.Builder<String> builder = ImmutableList.builder();
+            for (JsonElement element : elements) {
+                String value = GsonHelper.convertToString(element, key);
+                builder.add(value);
+            }
+            this.parsedValues = builder.build();
+            this.cachedValue = parseList(parsedValues, key);
+        } catch (Exception e) {
+            RandomMobSizes.LOGGER.error("Error while parsing config value '{}', using default value", key);
+            setToDefault();
+            throw new ConfigParseException(e.getMessage());
         }
-        this.parsedValues = builder.build();
-        this.cachedValue = parseList(parsedValues, key);
     }
 
     @Override

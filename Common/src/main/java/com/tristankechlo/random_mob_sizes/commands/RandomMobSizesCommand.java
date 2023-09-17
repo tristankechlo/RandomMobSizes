@@ -31,8 +31,8 @@ public final class RandomMobSizesCommand {
 
     private static int configReload(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
-        ConfigManager.reloadConfig();
-        ResponseHelper.sendMessageConfigReload(source);
+        boolean success = ConfigManager.reloadConfig();
+        ResponseHelper.sendMessageConfigReload(source, success);
         return 1;
     }
 
@@ -44,8 +44,8 @@ public final class RandomMobSizesCommand {
 
     private static int configReset(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
-        ConfigManager.resetConfig();
-        ResponseHelper.sendMessageConfigReset(source);
+        boolean success = ConfigManager.resetConfig();
+        ResponseHelper.sendMessageConfigReset(source, success);
         return 1;
     }
 

@@ -19,14 +19,16 @@ public final class ResponseHelper {
         sendMessage(source, message.withStyle(ChatFormatting.WHITE), false);
     }
 
-    public static void sendMessageConfigReload(CommandSourceStack source) {
-        MutableComponent message = Component.literal("Config was successfully reloaded.");
-        sendMessage(source, message.withStyle(ChatFormatting.WHITE), true);
+    public static void sendMessageConfigReload(CommandSourceStack source, boolean success) {
+        String text = success ? "Config was successfully reloaded." : "Error while reloading config. Using default config.";
+        MutableComponent message = Component.literal(text).withStyle(ChatFormatting.WHITE);
+        sendMessage(source, message, true);
     }
 
-    public static void sendMessageConfigReset(CommandSourceStack source) {
-        MutableComponent message = Component.literal("Config was successfully set to default.");
-        sendMessage(source, message.withStyle(ChatFormatting.WHITE), true);
+    public static void sendMessageConfigReset(CommandSourceStack source, boolean success) {
+        String text = success ? "Config was successfully reset." : "Error while saving the default config.";
+        MutableComponent message = Component.literal(text).withStyle(ChatFormatting.WHITE);
+        sendMessage(source, message, true);
     }
 
     public static MutableComponent start() {

@@ -60,7 +60,8 @@ public final class MobScalingsCommand {
 
             //updating and saving config
             RandomMobSizes.LOGGER.info("Setting scale for entity type '{}' to '{}' with data '{}'", entityType, scalingType, data);
-            boolean success = RandomMobSizesConfig.SCALING_OVERRIDES.setScalingSampler(entityType, scalingType.fromNBT(data, entityType.getDescriptionId()));
+            ScalingSampler sampler = scalingType.fromNBT(data, entityType.getDescriptionId());
+            boolean success = RandomMobSizesConfig.SCALING_OVERRIDES.setScalingSampler(entityType, sampler);
             if (success) {
                 ConfigManager.saveConfig();
                 ResponseHelper.sendSuccessScalingTypeSet(source, entityType, scalingType, data);
@@ -140,7 +141,10 @@ public final class MobScalingsCommand {
     private static int errorHandling(CommandSourceStack source, Exception e, String text) {
         MutableComponent message = Component.literal(text).withStyle(ChatFormatting.RED);
         ResponseHelper.sendMessage(source, message, false);
-        RandomMobSizes.LOGGER.error(message.getString(), e);
+        message = Component.literal(e.getMessage()).withStyle(ChatFormatting.RED);
+        ResponseHelper.sendMessage(source, message, false);
+        RandomMobSizes.LOGGER.error(text);
+        RandomMobSizes.LOGGER.error(e.getMessage());
         return 0;
     }
 

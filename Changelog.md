@@ -17,6 +17,10 @@
         - accepts wildcards like `minecraft:*`
     - all special scalings for mobs are now under `scaling_overrides`
         - all scalings defined here will bypass the default scaling
+- better overall config handling
+    - does not always overwrite the config file anymore, minor errors will just be ignored and loading continues
+    - on major errors the config file will be overwritten with the default config, and a backup of the old config will
+      be created
 
 ### Version 1.20.1 - 1.3
 
