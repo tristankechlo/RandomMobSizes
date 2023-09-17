@@ -10,9 +10,11 @@ import com.tristankechlo.random_mob_sizes.sampler.UniformScalingSampler;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobCategory;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Optional;
 
 public final class ScalingOverrides {
 
@@ -60,9 +62,7 @@ public final class ScalingOverrides {
     }
 
     public boolean setScalingSampler(EntityType<?> entityType, ScalingSampler scalingSampler) {
-        //disallow all entities from the spawn group "misc", except for golems, villagers
-        final List<EntityType<?>> allowedMisc = Arrays.asList(EntityType.IRON_GOLEM, EntityType.SNOW_GOLEM, EntityType.VILLAGER);
-        if (entityType.getCategory() == MobCategory.MISC && !allowedMisc.contains(entityType)) {
+        if (!RandomMobSizes.isEntityTypeAllowed(entityType)) {
             return false;
         }
         SETTINGS.put(entityType, scalingSampler);

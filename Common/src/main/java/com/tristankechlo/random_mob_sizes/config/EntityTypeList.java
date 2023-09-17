@@ -13,6 +13,7 @@ import net.minecraft.world.entity.EntityType;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public final class EntityTypeList implements Supplier<List<EntityType<?>>> {
@@ -85,12 +86,20 @@ public final class EntityTypeList implements Supplier<List<EntityType<?>>> {
                 }
                 BuiltInRegistries.ENTITY_TYPE.stream()
                         .filter(entityType -> EntityType.getKey(entityType).getNamespace().equals(namespace))
+                        .filter(RandomMobSizes::isEntityTypeAllowed)
                         .forEach(builder::add);
             } else {
                 // parse as normal entity type
-                EntityType.byString(value).ifPresentOrElse(builder::add, () -> {
+                Optional<EntityType<?>> type = EntityType.byString(value);
+                if (type.isPresent()) {
+                    if (RandomMobSizes.isEntityTypeAllowed(type.get())) {
+                        builder.add(type.get());
+                    } else {
+                        RandomMobSizes.LOGGER.error("Skipping disabled EntityType: '{}' of config value '{}'", value, key);
+                    }
+                } else {
                     RandomMobSizes.LOGGER.error("Skipping unknown EntityType: '{}' of config value '{}'", value, key);
-                });
+                }
             }
         }
         return builder.build();
