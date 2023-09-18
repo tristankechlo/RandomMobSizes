@@ -17,7 +17,7 @@ public abstract class ScalingSampler {
     protected final AttributeScalingTypes scaleSpeed;
 
     protected ScalingSampler() {
-        this(AttributeScalingTypes.NORMAL, AttributeScalingTypes.NORMAL, AttributeScalingTypes.NORMAL);
+        this(AttributeScalingTypes.NORMAL, AttributeScalingTypes.NORMAL, AttributeScalingTypes.INVERSE);
     }
 
     protected ScalingSampler(AttributeScalingTypes health, AttributeScalingTypes damage, AttributeScalingTypes speed) {

@@ -26,6 +26,12 @@ public class GaussianScalingSampler extends ScalingSampler {
         this.max_scaling = GsonHelper.getAsFloat(json, "max_scaling");
     }
 
+    public GaussianScalingSampler(float min, float max, AttributeScalingTypes health, AttributeScalingTypes damage, AttributeScalingTypes speed) {
+        super(health, damage, speed);
+        this.min_scaling = min;
+        this.max_scaling = max;
+    }
+
     @Override
     protected float sampleScalingFactor(RandomSource random) {
         return (float) (min_scaling + (randomGaussian(random) * (max_scaling - min_scaling)));

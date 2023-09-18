@@ -82,7 +82,7 @@ public final class ScalingOverrides {
         settings.put(EntityType.COW, new GaussianScalingSampler(0.5F, 1.5F));
         settings.put(EntityType.SHEEP, new GaussianScalingSampler(0.5F, 1.5F));
         settings.put(EntityType.PIG, new GaussianScalingSampler(0.5F, 1.5F));
-        settings.put(EntityType.CHICKEN, new UniformScalingSampler(0.5F, 1.5F, AttributeScalingTypes.SQUARE, AttributeScalingTypes.SQUARE, AttributeScalingTypes.SQUARE));
+        settings.put(EntityType.CHICKEN, new UniformScalingSampler(0.5F, 1.5F, AttributeScalingTypes.SQUARE, AttributeScalingTypes.NONE, AttributeScalingTypes.INVERSE_SQUARE));
         return settings;
     }
 
