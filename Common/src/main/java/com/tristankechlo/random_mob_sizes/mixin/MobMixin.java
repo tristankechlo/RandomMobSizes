@@ -54,25 +54,26 @@ public abstract class MobMixin implements MobMixinAddon {
 
             if (sampler.shouldScaleHealth()) {
                 float healthScaling = sampler.getHealthScaler().apply(scaling);
-                this.addModifier$RandomMobSizes(Attributes.MAX_HEALTH, healthScaling);
+                this.addModifier$RandomMobSizes(Attributes.MAX_HEALTH, healthScaling, true);
             }
             if (sampler.shouldScaleDamage()) {
                 float damageScaling = sampler.getDamageScaler().apply(scaling);
-                this.addModifier$RandomMobSizes(Attributes.ATTACK_DAMAGE, damageScaling);
+                this.addModifier$RandomMobSizes(Attributes.ATTACK_DAMAGE, damageScaling, true);
             }
             if (sampler.shouldScaleSpeed()) {
                 float speedScaling = sampler.getSpeedScaler().apply(scaling);
-                this.addModifier$RandomMobSizes(Attributes.MOVEMENT_SPEED, speedScaling);
+                this.addModifier$RandomMobSizes(Attributes.MOVEMENT_SPEED, speedScaling, false);
             }
         }
         this.setMobScaling$RandomMobSizes(scaling);
     }
 
-    private void addModifier$RandomMobSizes(Attribute attribute, float scaling) {
+    private void addModifier$RandomMobSizes(Attribute attribute, float scaling, boolean ceil) {
         AttributeInstance instance = ((LivingEntity) (Object) this).getAttribute(attribute);
         if (instance != null) {
             double baseValue = instance.getBaseValue();
-            instance.setBaseValue(baseValue * scaling);
+            float newValue = (float) (ceil ? Math.ceil(baseValue * scaling) : baseValue * scaling);
+            instance.setBaseValue(newValue);
             //RandomMobSizes.LOGGER.info("Scaled '{}' of '{}' from '{}' to '{}'", attribute.getDescriptionId(), this.getClass().getSimpleName(), baseValue, instance.getBaseValue());
         }
     }
