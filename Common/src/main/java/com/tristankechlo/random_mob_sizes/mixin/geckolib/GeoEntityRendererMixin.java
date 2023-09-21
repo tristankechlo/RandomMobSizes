@@ -20,7 +20,7 @@ public abstract class GeoEntityRendererMixin {
             T animatable, PoseStack poseStack, float partialTick, MultiBufferSource bufferSource, VertexConsumer buffer,
             int packedLight, int packedOverlay, float red, float green, float blue, float partialTicks, CallbackInfo ci) {
         if (animatable instanceof Mob) {
-            float scale = ((MobMixinAddon) animatable).getMobScaling();
+            float scale = ((MobMixinAddon) animatable).getMobScaling$RandomMobSizes();
             poseStack.scale(scale, scale, scale);
         }
     }

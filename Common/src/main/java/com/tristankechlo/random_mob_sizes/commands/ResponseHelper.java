@@ -3,13 +3,10 @@ package com.tristankechlo.random_mob_sizes.commands;
 import com.tristankechlo.random_mob_sizes.RandomMobSizes;
 import com.tristankechlo.random_mob_sizes.config.ConfigManager;
 import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
-import com.tristankechlo.random_mob_sizes.sampler.StaticScalingSampler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.chat.ClickEvent;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.*;
 import net.minecraft.world.entity.EntityType;
 
 public final class ResponseHelper {
@@ -20,14 +17,16 @@ public final class ResponseHelper {
         sendMessage(source, message.withStyle(ChatFormatting.WHITE), false);
     }
 
-    public static void sendMessageConfigReload(CommandSourceStack source) {
-        MutableComponent message = new TextComponent("Config was successfully reloaded.");
-        sendMessage(source, message.withStyle(ChatFormatting.WHITE), true);
+    public static void sendMessageConfigReload(CommandSourceStack source, boolean success) {
+        String text = success ? "Config was successfully reloaded." : "Error while reloading config. Using default config.";
+        MutableComponent message = new TextComponent(text).withStyle(ChatFormatting.WHITE);
+        sendMessage(source, message, true);
     }
 
-    public static void sendMessageConfigReset(CommandSourceStack source) {
-        MutableComponent message = new TextComponent("Config was successfully set to default.");
-        sendMessage(source, message.withStyle(ChatFormatting.WHITE), true);
+    public static void sendMessageConfigReset(CommandSourceStack source, boolean success) {
+        String text = success ? "Config was successfully reset." : "Error while saving the default config.";
+        MutableComponent message = new TextComponent(text).withStyle(ChatFormatting.WHITE);
+        sendMessage(source, message, true);
     }
 
     public static MutableComponent start() {
@@ -59,15 +58,13 @@ public final class ResponseHelper {
         return clickableLink(url, url);
     }
 
-    public static void sendSuccessScalingTypeSet(CommandSourceStack source, EntityType<?> entityType, SamplerTypes samplerTypes, float min_scaling, float max_scaling) {
+    public static void sendSuccessScalingTypeSet(CommandSourceStack source, EntityType<?> entityType, SamplerTypes samplerTypes, CompoundTag data) {
         MutableComponent message = new TextComponent("Scaling for ").withStyle(ChatFormatting.WHITE)
                 .append(new TextComponent(entityType.getDescription().getString()).withStyle(ChatFormatting.GREEN))
                 .append(new TextComponent(" was set to ").withStyle(ChatFormatting.WHITE))
                 .append(new TextComponent(samplerTypes.toString()).withStyle(ChatFormatting.GREEN))
-                .append(new TextComponent(" with min_scaling ").withStyle(ChatFormatting.WHITE))
-                .append(new TextComponent(String.valueOf(min_scaling)).withStyle(ChatFormatting.GREEN))
-                .append(new TextComponent(" and max_scaling ").withStyle(ChatFormatting.WHITE))
-                .append(new TextComponent(String.valueOf(max_scaling)).withStyle(ChatFormatting.GREEN));
+                .append(new TextComponent(" with data ").withStyle(ChatFormatting.WHITE))
+                .append(new TextComponent(data.toString()).withStyle(ChatFormatting.GREEN));
         sendMessage(source, message, true);
     }
 
@@ -101,11 +98,13 @@ public final class ResponseHelper {
     }
 
     public static void sendSuccessScalingType(CommandSourceStack source, EntityType<?> entityType, ScalingSampler sampler) {
-        String result = (sampler instanceof StaticScalingSampler) ? String.valueOf(sampler.sample()) : sampler.serialize().toString();
-        MutableComponent message = new TextComponent("Scaling for ").withStyle(ChatFormatting.WHITE)
-                .append(new TextComponent(entityType.getDescription().getString()).withStyle(ChatFormatting.GREEN))
-                .append(new TextComponent(" is set to ").withStyle(ChatFormatting.WHITE))
-                .append(new TextComponent(result).withStyle(ChatFormatting.GREEN));
+        sendSuccessScalingType(source, entityType.getDescription().getString(), sampler);
+    }
+
+    public static void sendSuccessScalingType(CommandSourceStack source, String entityType, ScalingSampler sampler) {
+        MutableComponent entity = new TextComponent(entityType).withStyle(ChatFormatting.GREEN);
+        MutableComponent result = new TextComponent(sampler.serialize().toString()).withStyle(ChatFormatting.GREEN);
+        MutableComponent message = new TranslatableComponent("Scaling for %s is set to %s", entity, result).withStyle(ChatFormatting.WHITE);
         sendMessage(source, message, false);
     }
 

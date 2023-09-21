@@ -7,13 +7,16 @@ import com.mojang.brigadier.context.CommandContext;
 import com.tristankechlo.random_mob_sizes.RandomMobSizes;
 import com.tristankechlo.random_mob_sizes.config.ConfigManager;
 import com.tristankechlo.random_mob_sizes.config.RandomMobSizesConfig;
+import com.tristankechlo.random_mob_sizes.config.ScalingOverrides;
 import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
 import com.tristankechlo.random_mob_sizes.sampler.StaticScalingSampler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.CompoundTagArgument;
 import net.minecraft.commands.arguments.EntitySummonArgument;
 import net.minecraft.commands.synchronization.SuggestionProviders;
 import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -33,9 +36,8 @@ public final class MobScalingsCommand {
                 .then(literal("set")
                         .then(argument("entity_type", EntitySummonArgument.id()).suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
                                 .then(argument("scaling_type", SamplerTypesArgumentType.get())
-                                        .then(argument("min_scaling", FloatArgumentType.floatArg(MINIMUM_SCALING, MAXIMUM_SCALING))
-                                                .then(argument("max_scaling", FloatArgumentType.floatArg(MINIMUM_SCALING, MAXIMUM_SCALING))
-                                                        .executes(MobScalingsCommand::setEntityScale))))
+                                        .then(argument("data", CompoundTagArgument.compoundTag())
+                                                .executes(MobScalingsCommand::setEntityScale)))
                                 .then(argument("scale", FloatArgumentType.floatArg(MINIMUM_SCALING, MAXIMUM_SCALING))
                                         .executes(MobScalingsCommand::setEntityScaleStatic))))
                 .then(literal("remove")
@@ -56,15 +58,15 @@ public final class MobScalingsCommand {
             final ResourceLocation entityId = EntitySummonArgument.getSummonableEntity(context, "entity_type");
             final EntityType<?> entityType = Registry.ENTITY_TYPE.get(entityId);
             final SamplerTypes scalingType = context.getArgument("scaling_type", SamplerTypes.class);
-            final float minScale = FloatArgumentType.getFloat(context, "min_scaling");
-            final float maxScale = FloatArgumentType.getFloat(context, "max_scaling");
+            final CompoundTag data = CompoundTagArgument.getCompoundTag(context, "data");
 
             //updating and saving config
-            RandomMobSizes.LOGGER.info("Setting scale for entity type '{}' to '{}' with min scale '{}' and max scale '{}'", entityType, scalingType, minScale, maxScale);
-            boolean success = RandomMobSizesConfig.setScalingSampler(entityType, scalingType.create(minScale, maxScale));
+            RandomMobSizes.LOGGER.info("Setting scale for entity type '{}' to '{}' with data '{}'", entityType, scalingType, data);
+            ScalingSampler sampler = scalingType.fromNBT(data, entityType.getDescriptionId());
+            boolean success = RandomMobSizesConfig.SCALING_OVERRIDES.setScalingSampler(entityType, sampler);
             if (success) {
                 ConfigManager.saveConfig();
-                ResponseHelper.sendSuccessScalingTypeSet(source, entityType, scalingType, minScale, maxScale);
+                ResponseHelper.sendSuccessScalingTypeSet(source, entityType, scalingType, data);
             } else {
                 ResponseHelper.sendErrorScalingTypeSet(source, entityType);
             }
@@ -84,7 +86,7 @@ public final class MobScalingsCommand {
 
             //updating and saving config
             RandomMobSizes.LOGGER.info("Setting scale for entity type '{}' to static scale of '{}'", entityType, scale);
-            boolean success = RandomMobSizesConfig.setScalingSampler(entityType, new StaticScalingSampler(scale));
+            boolean success = RandomMobSizesConfig.SCALING_OVERRIDES.setScalingSampler(entityType, new StaticScalingSampler(scale));
             if (success) {
                 ConfigManager.saveConfig();
                 ResponseHelper.sendSuccessStaticScalingTypeSet(source, entityType, scale);
@@ -106,7 +108,7 @@ public final class MobScalingsCommand {
 
             //updating and saving config
             RandomMobSizes.LOGGER.info("Removing scale for entity type '{}'", entityType);
-            RandomMobSizesConfig.removeScalingSampler(entityType);
+            RandomMobSizesConfig.SCALING_OVERRIDES.removeScalingSampler(entityType);
             ConfigManager.saveConfig();
             ResponseHelper.sendSuccessScalingTypeRemoved(source, entityType);
             return 1;
@@ -135,14 +137,19 @@ public final class MobScalingsCommand {
 
     private static int showAllEntityScales(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
-        RandomMobSizesConfig.getIterator().forEachRemaining(entry -> ResponseHelper.sendSuccessScalingType(source, entry.getKey(), entry.getValue()));
+        ScalingSampler defaultSampler = RandomMobSizesConfig.getDefaultSampler();
+        ResponseHelper.sendSuccessScalingType(source, "DefaultScaling", defaultSampler);
+        ScalingOverrides.getIterator().forEachRemaining(entry -> ResponseHelper.sendSuccessScalingType(source, entry.getKey(), entry.getValue()));
         return 1;
     }
 
     private static int errorHandling(CommandSourceStack source, Exception e, String text) {
         MutableComponent message = new TextComponent(text).withStyle(ChatFormatting.RED);
         ResponseHelper.sendMessage(source, message, false);
-        RandomMobSizes.LOGGER.error(message.getString(), e);
+        message = new TextComponent(e.getMessage()).withStyle(ChatFormatting.RED);
+        ResponseHelper.sendMessage(source, message, false);
+        RandomMobSizes.LOGGER.error(text);
+        RandomMobSizes.LOGGER.error(e.getMessage());
         return 0;
     }
 

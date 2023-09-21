@@ -1,5 +1,27 @@
 # Changelog
 
+### Version 1.18.2 - 2.0
+
+- random scaling is now tied to the world random
+- allow scaling of mob attributes
+    - health, damage and speed can now be scaled along with the mob size
+    - five options to scale those attributes
+        - `none` => no scaling
+        - `normal` => same scaling as the mob size
+        - `square` => scaling is squared $(scaling*scaling)$
+        - `inverse` => scaling is inverted $(1 / scaling)$
+        - `inverse_square` => scaling is squared and inverted $(1 / (scaling * scaling))$
+- new config format
+    - allows to set a default scaling for all mobs
+        - uses whitelist/blacklist to include/exclude mobs from the default scaling
+        - accepts wildcards like `minecraft:*`
+    - all special scalings for mobs are now under `scaling_overrides`
+        - all scalings defined here will bypass the default scaling
+- better overall config handling
+    - does not always overwrite the config file anymore, minor errors will just be ignored and loading continues
+    - on major errors the config file will be overwritten with the default config, and a backup of the old config will
+      be created
+
 ### Version 1.18.2 - 1.3
 
 - fix incorrect suggestions for the `/mobScalings` command

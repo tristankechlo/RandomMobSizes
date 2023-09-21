@@ -2,126 +2,82 @@ package com.tristankechlo.random_mob_sizes.config;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.reflect.TypeToken;
 import com.tristankechlo.random_mob_sizes.RandomMobSizes;
-import com.tristankechlo.random_mob_sizes.commands.SamplerTypes;
-import com.tristankechlo.random_mob_sizes.sampler.GaussianSampler;
+import com.tristankechlo.random_mob_sizes.sampler.AttributeScalingTypes;
+import com.tristankechlo.random_mob_sizes.sampler.GaussianScalingSampler;
 import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
-import com.tristankechlo.random_mob_sizes.sampler.StaticScalingSampler;
-import com.tristankechlo.random_mob_sizes.sampler.UniformScalingSampler;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobCategory;
 
-import java.lang.reflect.Type;
-import java.util.*;
+import java.util.List;
 
 public final class RandomMobSizesConfig {
 
-    private static Map<EntityType<?>, ScalingSampler> SETTINGS = new HashMap<>();
-    private static final Type MAP_TYPE = new TypeToken<Map<String, JsonElement>>() {}.getType();
-    private static boolean keepScalingOnConversion = true;
+    private static final BooleanValue KEEP_SCALING_ON_CONVERSION = new BooleanValue("keep_scaling_on_conversion", true);
+    private static ScalingSampler defaultSampler = createDefaultSampler();
+    private static final String DEFAULT_SAMPLER_NAME = "default_scaling";
+    private static final EntityTypeList WHITELIST = new EntityTypeList("whitelist", List.of("minecraft:*"));
+    private static final EntityTypeList BLACKLIST = new EntityTypeList("blacklist", EntityType.SHULKER, EntityType.WITHER);
+    public static final ScalingOverrides SCALING_OVERRIDES = new ScalingOverrides();
 
     public static void setToDefault() {
-        SETTINGS = getDefaultSettings();
-        keepScalingOnConversion = true;
+        KEEP_SCALING_ON_CONVERSION.setToDefault();
+        defaultSampler = createDefaultSampler();
+        WHITELIST.setToDefault();
+        BLACKLIST.setToDefault();
+        SCALING_OVERRIDES.setToDefault();
     }
 
-    public static JsonObject serialize(JsonObject json) {
-        json.addProperty("keep_scaling_on_conversion", keepScalingOnConversion);
-
-        // serialize entity specific samplers
-        SETTINGS.forEach((entityType, scalingSampler) -> {
-            ResourceLocation location = EntityType.getKey(entityType);
-            JsonElement element = scalingSampler.serialize();
-            json.add(location.toString(), element);
-        });
+    public static JsonObject serialize() {
+        JsonObject json = new JsonObject();
+        json.add(DEFAULT_SAMPLER_NAME, defaultSampler.serialize());
+        WHITELIST.serialize(json);
+        BLACKLIST.serialize(json);
+        KEEP_SCALING_ON_CONVERSION.serialize(json);
+        SCALING_OVERRIDES.serialize(json);
         return json;
     }
 
     public static void deserialize(JsonObject json) {
+        WHITELIST.deserialize(json);
+        BLACKLIST.deserialize(json);
+        KEEP_SCALING_ON_CONVERSION.deserialize(json);
+        SCALING_OVERRIDES.deserialize(json);
+
+        // deserialize default sampler
         try {
-            keepScalingOnConversion = GsonHelper.getAsBoolean(json, "keep_scaling_on_conversion");
-            json.remove("keep_scaling_on_conversion");
+            JsonElement defaultSamplerElement = json.get(DEFAULT_SAMPLER_NAME);
+            defaultSampler = ScalingSampler.deserializeSampler(defaultSamplerElement, DEFAULT_SAMPLER_NAME);
         } catch (Exception e) {
-            RandomMobSizes.LOGGER.error("Error while parsing config value 'keep_scaling_on_conversion' using default value.");
-            RandomMobSizes.LOGGER.error(e.getMessage());
-            keepScalingOnConversion = true;
+            RandomMobSizes.LOGGER.error("Error while parsing '{}', using default value", DEFAULT_SAMPLER_NAME);
+            defaultSampler = createDefaultSampler();
+            throw new ConfigParseException(e.getMessage());
         }
-
-        // deserialize entity specific samplers
-        Map<String, JsonElement> settings = ConfigManager.GSON.fromJson(json, MAP_TYPE);
-        Map<EntityType<?>, ScalingSampler> newSettings = new HashMap<>();
-        settings.forEach((key, value) -> {
-            Optional<EntityType<?>> entityType = EntityType.byString(key);
-            if (entityType.isPresent()) {
-                try {
-                    EntityType<?> type = entityType.get();
-                    ScalingSampler scalingSampler = deserializeSampler(value, key);
-                    newSettings.put(type, scalingSampler);
-                } catch (Exception e) {
-                    RandomMobSizes.LOGGER.error("Error while parsing scaling for entity {}", key);
-                    RandomMobSizes.LOGGER.error(e.getMessage());
-                }
-            } else {
-                RandomMobSizes.LOGGER.error("Error loading config, unknown EntityType: '{}'", key);
-            }
-        });
-        SETTINGS.clear();
-        SETTINGS.putAll(newSettings);
     }
 
-    private static ScalingSampler deserializeSampler(JsonElement jsonElement, String entityType) {
-        if (jsonElement.isJsonPrimitive()) {
-            return new StaticScalingSampler(jsonElement, entityType);
-        } else if (jsonElement.isJsonObject()) {
-            JsonObject jsonObject = jsonElement.getAsJsonObject();
-            String type = jsonObject.get("type").getAsString();
-            SamplerTypes samplerType = SamplerTypes.byName(type, null);
-            if (samplerType == null) {
-                throw new JsonParseException("Unknown ScalingType: " + type);
-            }
-            return samplerType.fromJson(jsonElement, entityType);
-        }
-        throw new JsonParseException("ScalingType must be a JsonPrimitive or JsonObject");
-    }
-
-    public static Map<EntityType<?>, ScalingSampler> getDefaultSettings() {
-        Map<EntityType<?>, ScalingSampler> settings = new HashMap<>();
-        settings.put(EntityType.BAT, new StaticScalingSampler(0.75F));
-        settings.put(EntityType.COW, new UniformScalingSampler(0.5F, 1.5F));
-        settings.put(EntityType.SHEEP, new GaussianSampler(0.5F, 1.5F));
-        settings.put(EntityType.PIG, new GaussianSampler(0.5F, 1.5F));
-        settings.put(EntityType.CHICKEN, new GaussianSampler(0.5F, 1.5F));
-        return settings;
+    private static GaussianScalingSampler createDefaultSampler() {
+        return new GaussianScalingSampler(0.5F, 1.5F, AttributeScalingTypes.NORMAL, AttributeScalingTypes.NORMAL, AttributeScalingTypes.INVERSE);
     }
 
     public static ScalingSampler getScalingSampler(EntityType<?> entityType) {
-        return SETTINGS.get(entityType);
-    }
-
-    public static boolean setScalingSampler(EntityType<?> entityType, ScalingSampler scalingSampler) {
-        //disallow all entities from the spawn group "misc", except for golems, villagers
-        final List<EntityType<?>> allowedMisc = Arrays.asList(EntityType.IRON_GOLEM, EntityType.SNOW_GOLEM, EntityType.VILLAGER);
-        if (entityType.getCategory() == MobCategory.MISC && !allowedMisc.contains(entityType)) {
-            return false;
+        ScalingSampler override = SCALING_OVERRIDES.getSampler(entityType);
+        if (override != null) {
+            return override;
         }
-        SETTINGS.put(entityType, scalingSampler);
-        return true;
-    }
-
-    public static void removeScalingSampler(EntityType<?> entityType) {
-        SETTINGS.remove(entityType);
-    }
-
-    public static Iterator<Map.Entry<EntityType<?>, ScalingSampler>> getIterator() {
-        return SETTINGS.entrySet().iterator();
+        if (BLACKLIST.get().contains(entityType)) {
+            return null;
+        }
+        if (WHITELIST.get().contains(entityType)) {
+            return defaultSampler;
+        }
+        return null;
     }
 
     public static boolean keepScalingOnConversion() {
-        return keepScalingOnConversion;
+        return KEEP_SCALING_ON_CONVERSION.get();
+    }
+
+    public static ScalingSampler getDefaultSampler() {
+        return defaultSampler;
     }
 
 }
