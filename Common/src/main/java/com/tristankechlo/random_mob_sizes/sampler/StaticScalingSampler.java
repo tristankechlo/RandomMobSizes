@@ -20,7 +20,7 @@ public class StaticScalingSampler extends ScalingSampler {
             this.static_scaling = jsonElement.getAsFloat();
         } else {
             JsonObject json = GsonHelper.convertToJsonObject(jsonElement, entityType);
-            this.static_scaling = GsonHelper.getAsFloat(json, "scaling");
+            this.static_scaling = getFloatSafe(json, "scaling", entityType);
         }
     }
 

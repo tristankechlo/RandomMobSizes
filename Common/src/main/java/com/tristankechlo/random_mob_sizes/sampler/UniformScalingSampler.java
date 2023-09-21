@@ -19,8 +19,8 @@ public class UniformScalingSampler extends ScalingSampler {
     public UniformScalingSampler(JsonElement jsonElement, String entityType) {
         super(jsonElement, entityType);
         JsonObject json = GsonHelper.convertToJsonObject(jsonElement, entityType);
-        this.min_scaling = GsonHelper.getAsFloat(json, "min_scaling");
-        this.max_scaling = GsonHelper.getAsFloat(json, "max_scaling");
+        this.min_scaling = getFloatSafe(json, "min_scaling", entityType);
+        this.max_scaling = getFloatSafe(json, "max_scaling", entityType);
     }
 
     public UniformScalingSampler(float min_scaling, float max_scaling, AttributeScalingTypes health, AttributeScalingTypes damage, AttributeScalingTypes speed) {

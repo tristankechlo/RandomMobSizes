@@ -89,4 +89,20 @@ public abstract class ScalingSampler {
         throw new JsonParseException("ScalingType must be a NumberValue or JsonObject");
     }
 
+    public static float getFloatSafe(JsonObject json, String key, String entityType) {
+        return getFloatSafe(json, key, MINIMUM_SCALING, MAXIMUM_SCALING, entityType);
+    }
+
+    public static float getFloatSafe(JsonObject json, String key, float min, float max, String entityType) {
+        float temp = GsonHelper.getAsFloat(json, key);
+        if (Float.isNaN(temp) || Float.isInfinite(temp) || isScalingOutOfBounds(temp, min, max)) {
+            throw new JsonParseException("'" + key + "' must be a valid float between " + min + " and " + max + " for '" + entityType + "'");
+        }
+        return temp;
+    }
+
+    public static boolean isScalingOutOfBounds(float value, float min, float max) {
+        return value < min || value > max;
+    }
+
 }

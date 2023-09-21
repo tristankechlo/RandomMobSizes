@@ -18,7 +18,7 @@ import java.util.Optional;
 
 public final class ScalingOverrides {
 
-    private static final String key = "scaling_overrides";
+    private static final String jsonKey = "scaling_overrides";
     private static Map<EntityType<?>, ScalingSampler> SETTINGS = new HashMap<>();
 
     public void setToDefault() {
@@ -32,11 +32,11 @@ public final class ScalingOverrides {
             JsonElement element = scalingSampler.serialize();
             scalingOverrides.add(location.toString(), element);
         });
-        json.add(key, scalingOverrides);
+        json.add(jsonKey, scalingOverrides);
     }
 
     public void deserialize(JsonObject jsonObject) {
-        JsonObject json = GsonHelper.getAsJsonObject(jsonObject, key);
+        JsonObject json = GsonHelper.getAsJsonObject(jsonObject, jsonKey);
         Map<EntityType<?>, ScalingSampler> newSettings = new HashMap<>();
         json.asMap().forEach((key, value) -> {
             Optional<EntityType<?>> entityType = EntityType.byString(key);
@@ -49,7 +49,7 @@ public final class ScalingOverrides {
                 ScalingSampler scalingSampler = ScalingSampler.deserializeSampler(value, key);
                 newSettings.put(type, scalingSampler);
             } catch (Exception e) {
-                RandomMobSizes.LOGGER.error("Error while parsing scaling, skipping scaling for entity '{}'", key);
+                RandomMobSizes.LOGGER.error("Error while parsing '{}', skipping scaling for entity '{}'", jsonKey, key);
                 RandomMobSizes.LOGGER.error(e.getMessage());
             }
         });
