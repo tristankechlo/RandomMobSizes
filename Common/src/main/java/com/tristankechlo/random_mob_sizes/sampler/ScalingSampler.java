@@ -3,6 +3,7 @@ package com.tristankechlo.random_mob_sizes.sampler;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.tristankechlo.random_mob_sizes.RandomMobSizes;
 import com.tristankechlo.random_mob_sizes.commands.SamplerTypes;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.Mth;
@@ -89,19 +90,26 @@ public abstract class ScalingSampler {
         throw new JsonParseException("ScalingType must be a NumberValue or JsonObject");
     }
 
-    public static float getFloatSafe(JsonObject json, String key, String entityType) {
+    protected static void ensureMinSmallerMax(float min, float max, String entityType) {
+        if (min >= max) {
+            throw new JsonParseException("'min_scaling' must be smaller than 'max_scaling' for '" + entityType + "'");
+        }
+    }
+
+    protected static float getFloatSafe(JsonObject json, String key, String entityType) {
         return getFloatSafe(json, key, MINIMUM_SCALING, MAXIMUM_SCALING, entityType);
     }
 
-    public static float getFloatSafe(JsonObject json, String key, float min, float max, String entityType) {
+    protected static float getFloatSafe(JsonObject json, String key, float min, float max, String entityType) {
         float temp = GsonHelper.getAsFloat(json, key);
-        if (Float.isNaN(temp) || Float.isInfinite(temp) || isScalingOutOfBounds(temp, min, max)) {
-            throw new JsonParseException("'" + key + "' must be a valid float between " + min + " and " + max + " for '" + entityType + "'");
+        if(isFloatOutOfBounds(temp, min, max)){
+            temp = Mth.clamp(temp, min, max);
+            RandomMobSizes.LOGGER.error("'{}' for '{}' is out of range[{} - {}], changing to {}", key, entityType, min, max, temp);
         }
         return temp;
     }
 
-    public static boolean isScalingOutOfBounds(float value, float min, float max) {
+    protected static boolean isFloatOutOfBounds(float value, float min, float max) {
         return value < min || value > max;
     }
 

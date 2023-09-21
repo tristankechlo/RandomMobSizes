@@ -2,7 +2,9 @@ package com.tristankechlo.random_mob_sizes.sampler;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.tristankechlo.random_mob_sizes.RandomMobSizes;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 
 public class StaticScalingSampler extends ScalingSampler {
@@ -17,7 +19,12 @@ public class StaticScalingSampler extends ScalingSampler {
     public StaticScalingSampler(JsonElement jsonElement, String entityType) {
         super(jsonElement, entityType);
         if (GsonHelper.isNumberValue(jsonElement)) {
-            this.static_scaling = jsonElement.getAsFloat();
+            float scaling = jsonElement.getAsFloat();
+            if (isFloatOutOfBounds(scaling, MINIMUM_SCALING, MAXIMUM_SCALING)) {
+                RandomMobSizes.LOGGER.error("'scaling' for '{}' is out of range[{} - {}], changing to {}", entityType, MINIMUM_SCALING, MAXIMUM_SCALING, scaling);
+                scaling = Mth.clamp(scaling, MINIMUM_SCALING, MAXIMUM_SCALING);
+            }
+            this.static_scaling = scaling;
         } else {
             JsonObject json = GsonHelper.convertToJsonObject(jsonElement, entityType);
             this.static_scaling = getFloatSafe(json, "scaling", entityType);
