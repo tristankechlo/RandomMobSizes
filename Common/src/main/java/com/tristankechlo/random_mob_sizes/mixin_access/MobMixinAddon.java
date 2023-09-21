@@ -4,10 +4,10 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 
 public interface MobMixinAddon {
 
-    float getMobScaling();
+    float getMobScaling$RandomMobSizes();
 
-    void setMobScaling(float scale);
+    void setMobScaling$RandomMobSizes(float scale);
 
-    EntityDataAccessor<Float> getTracker(); //needed for accessing the tracker from EntityMixin
+    EntityDataAccessor<Float> getTracker$RandomMobSizes(); //needed for accessing the tracker from EntityMixin
 
 }

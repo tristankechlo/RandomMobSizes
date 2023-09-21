@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class AbstractPiglinMixin implements EyeHeightAddon {
 
     @Override
-    public float getStandingEyeHeight(Pose pose, EntityDimensions dimensions) {
+    public float getStandingEyeHeight$RandomMobSizes(Pose pose, EntityDimensions dimensions) {
         return dimensions.height * 0.9179F;
     }
 

@@ -5,6 +5,6 @@ import net.minecraft.world.entity.Pose;
 
 public interface EyeHeightAddon {
 
-    float getStandingEyeHeight(Pose pose, EntityDimensions dimensions);
+    float getStandingEyeHeight$RandomMobSizes(Pose pose, EntityDimensions dimensions);
 
 }
