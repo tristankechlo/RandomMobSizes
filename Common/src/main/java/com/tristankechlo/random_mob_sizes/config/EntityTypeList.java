@@ -2,8 +2,8 @@ package com.tristankechlo.random_mob_sizes.config;
 
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.tristankechlo.random_mob_sizes.IPlatformHelper;
 import com.tristankechlo.random_mob_sizes.RandomMobSizes;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -46,7 +46,7 @@ public final class EntityTypeList implements Supplier<List<EntityType<?>>> {
     public void serialize(JsonObject json) {
         JsonArray array = new JsonArray();
         for (String value : parsedValues) {
-            array.add(value);
+            array.add(new JsonPrimitive(value));
         }
         json.add(key, array);
     }
@@ -54,12 +54,11 @@ public final class EntityTypeList implements Supplier<List<EntityType<?>>> {
     public void deserialize(JsonObject json) {
         try {
             JsonArray array = GsonHelper.getAsJsonArray(json, key);
-            List<JsonElement> elements = array.asList();
             ImmutableList.Builder<String> builder = ImmutableList.builder();
-            for (JsonElement element : elements) {
+            array.forEach(element -> {
                 String value = GsonHelper.convertToString(element, key);
                 builder.add(value);
-            }
+            });
             this.parsedValues = builder.build();
             this.cachedValue = parseList(parsedValues, key);
         } catch (Exception e) {

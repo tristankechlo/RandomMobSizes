@@ -18,7 +18,7 @@ import java.util.Optional;
 
 public final class ScalingOverrides {
 
-    private static final String key = "scaling_overrides";
+    private static final String jsonKey = "scaling_overrides";
     private static Map<EntityType<?>, ScalingSampler> SETTINGS = new HashMap<>();
 
     public void setToDefault() {
@@ -32,24 +32,24 @@ public final class ScalingOverrides {
             JsonElement element = scalingSampler.serialize();
             scalingOverrides.add(location.toString(), element);
         });
-        json.add(key, scalingOverrides);
+        json.add(jsonKey, scalingOverrides);
     }
 
     public void deserialize(JsonObject jsonObject) {
-        JsonObject json = GsonHelper.getAsJsonObject(jsonObject, key);
+        JsonObject json = GsonHelper.getAsJsonObject(jsonObject, jsonKey);
         Map<EntityType<?>, ScalingSampler> newSettings = new HashMap<>();
-        json.asMap().forEach((key, value) -> {
-            Optional<EntityType<?>> entityType = EntityType.byString(key);
+        json.entrySet().forEach((entry) -> {
+            Optional<EntityType<?>> entityType = EntityType.byString(entry.getKey());
             if (entityType.isEmpty()) {
-                RandomMobSizes.LOGGER.error("Error loading config, skipping unknown entity: '{}'", key);
+                RandomMobSizes.LOGGER.error("Error loading config, skipping unknown entity: '{}'", entry.getKey());
                 return;
             }
             try {
                 EntityType<?> type = entityType.get();
-                ScalingSampler scalingSampler = ScalingSampler.deserializeSampler(value, key);
+                ScalingSampler scalingSampler = ScalingSampler.deserializeSampler(entry.getValue(), entry.getKey());
                 newSettings.put(type, scalingSampler);
             } catch (Exception e) {
-                RandomMobSizes.LOGGER.error("Error while parsing scaling, skipping scaling for entity '{}'", key);
+                RandomMobSizes.LOGGER.error("Error while parsing scaling, skipping scaling for entity '{}'", entry.getKey());
                 RandomMobSizes.LOGGER.error(e.getMessage());
             }
         });
