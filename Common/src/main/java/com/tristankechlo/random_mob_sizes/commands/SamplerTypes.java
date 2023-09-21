@@ -1,26 +1,35 @@
 package com.tristankechlo.random_mob_sizes.commands;
 
 import com.google.gson.JsonElement;
-import com.tristankechlo.random_mob_sizes.sampler.GaussianSampler;
+import com.google.gson.JsonObject;
+import com.tristankechlo.random_mob_sizes.mixin.CompoundTagInvoker;
+import com.tristankechlo.random_mob_sizes.sampler.GaussianScalingSampler;
 import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
+import com.tristankechlo.random_mob_sizes.sampler.StaticScalingSampler;
 import com.tristankechlo.random_mob_sizes.sampler.UniformScalingSampler;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NumericTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.util.StringRepresentable;
+
+import java.util.Map;
+import java.util.function.BiFunction;
 
 public enum SamplerTypes implements StringRepresentable {
 
-    UNIFORM("uniform", UniformScalingSampler::new, UniformScalingSampler::new),
-    GAUSSIAN("gaussian", GaussianSampler::new, GaussianSampler::new);
+    STATIC(StaticScalingSampler.TYPE, StaticScalingSampler::new),
+    UNIFORM(UniformScalingSampler.TYPE, UniformScalingSampler::new),
+    GAUSSIAN(GaussianScalingSampler.TYPE, GaussianScalingSampler::new);
 
     @SuppressWarnings("deprecation")
     public static final StringRepresentable.EnumCodec<SamplerTypes> CODEC;
     private final String name;
-    private final IDeserializer deserializer;
-    private final IConstructor constructor;
+    private final BiFunction<JsonElement, String, ScalingSampler> jsonDeserializer;
 
-    private SamplerTypes(String name, IDeserializer deserializer, IConstructor constructor) {
+    private SamplerTypes(String name, BiFunction<JsonElement, String, ScalingSampler> fromJson) {
         this.name = name;
-        this.deserializer = deserializer;
-        this.constructor = constructor;
+        this.jsonDeserializer = fromJson;
     }
 
     public static SamplerTypes byName(String name, SamplerTypes fallback) {
@@ -29,11 +38,25 @@ public enum SamplerTypes implements StringRepresentable {
     }
 
     public ScalingSampler fromJson(JsonElement json, String entityType) {
-        return deserializer.apply(json, entityType);
+        return this.jsonDeserializer.apply(json, entityType);
     }
 
-    public ScalingSampler create(float minScaling, float maxScaling) {
-        return constructor.create(minScaling, maxScaling);
+    public ScalingSampler fromNBT(CompoundTag nbt, String entityType) {
+        Map<String, Tag> map = ((CompoundTagInvoker) nbt).getEntries();
+        JsonObject json = new JsonObject();
+        for (Map.Entry<String, Tag> entry : map.entrySet()) {
+            final int id = entry.getValue().getId();
+            if (id == Tag.TAG_FLOAT || id == Tag.TAG_DOUBLE || id == Tag.TAG_INT || id == Tag.TAG_LONG) {
+                json.addProperty(entry.getKey(), ((NumericTag) entry.getValue()).getAsNumber());
+            }
+            if (id == Tag.TAG_BYTE) {
+                json.addProperty(entry.getKey(), ((NumericTag) entry.getValue()).getAsByte() != 0);
+            }
+            if (id == Tag.TAG_STRING) {
+                json.addProperty(entry.getKey(), entry.getValue().getAsString());
+            }
+        }
+        return this.fromJson(json, entityType);
     }
 
     @Override
@@ -43,16 +66,6 @@ public enum SamplerTypes implements StringRepresentable {
 
     static {
         CODEC = StringRepresentable.fromEnum(SamplerTypes::values);
-    }
-
-    @FunctionalInterface
-    public interface IDeserializer {
-        ScalingSampler apply(JsonElement json, String entityType);
-    }
-
-    @FunctionalInterface
-    public interface IConstructor {
-        ScalingSampler create(float min_scaling, float max_scaling);
     }
 
 }

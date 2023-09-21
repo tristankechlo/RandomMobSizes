@@ -17,4 +17,6 @@ public interface IPlatformHelper {
         return loadedService;
     }
 
+    boolean isModLoaded(String modid);
+
 }

@@ -11,4 +11,9 @@ public class FabricPlatformHelper implements IPlatformHelper {
         return FabricLoader.getInstance().getConfigDir();
     }
 
+    @Override
+    public boolean isModLoaded(String modid) {
+        return FabricLoader.getInstance().isModLoaded(modid);
+    }
+
 }
