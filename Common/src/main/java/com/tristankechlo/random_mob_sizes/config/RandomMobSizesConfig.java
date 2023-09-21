@@ -4,8 +4,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.tristankechlo.random_mob_sizes.RandomMobSizes;
 import com.tristankechlo.random_mob_sizes.sampler.AttributeScalingTypes;
-import com.tristankechlo.random_mob_sizes.sampler.GaussianScalingSampler;
 import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
+import com.tristankechlo.random_mob_sizes.sampler.StaticScalingSampler;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.EntityType;
 
@@ -55,8 +55,8 @@ public final class RandomMobSizesConfig {
         }
     }
 
-    private static GaussianScalingSampler createDefaultSampler() {
-        return new GaussianScalingSampler(0.5F, 1.5F, AttributeScalingTypes.NORMAL, AttributeScalingTypes.NORMAL, AttributeScalingTypes.INVERSE);
+    private static ScalingSampler createDefaultSampler() {
+        return new StaticScalingSampler(1F, AttributeScalingTypes.NONE, AttributeScalingTypes.NONE, AttributeScalingTypes.NONE);
     }
 
     public static ScalingSampler getScalingSampler(EntityType<?> entityType) {

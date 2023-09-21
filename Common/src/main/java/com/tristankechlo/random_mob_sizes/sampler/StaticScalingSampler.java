@@ -24,6 +24,11 @@ public class StaticScalingSampler extends ScalingSampler {
         }
     }
 
+    public StaticScalingSampler(float static_scaling, AttributeScalingTypes health, AttributeScalingTypes damage, AttributeScalingTypes speed) {
+        super(health, damage, speed);
+        this.static_scaling = static_scaling;
+    }
+
     @Override
     protected float sampleScalingFactor(RandomSource random) {
         return static_scaling;
