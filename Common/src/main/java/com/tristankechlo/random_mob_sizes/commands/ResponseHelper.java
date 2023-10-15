@@ -20,7 +20,7 @@ public final class ResponseHelper {
     }
 
     public static void sendMessageConfigReload(CommandSourceStack source, boolean success) {
-        String text = success ? "Config was successfully reloaded." : "Error while reloading config. Using default config.";
+        String text = success ? "Config was successfully reloaded." : "Error while reloading config. Check the logs for further details.";
         MutableComponent message = Component.literal(text).withStyle(ChatFormatting.WHITE);
         sendMessage(source, message, true);
     }

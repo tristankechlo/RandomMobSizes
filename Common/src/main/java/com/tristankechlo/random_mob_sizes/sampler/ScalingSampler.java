@@ -92,7 +92,7 @@ public abstract class ScalingSampler {
 
     protected static void ensureMinSmallerMax(float min, float max, String entityType) {
         if (min >= max) {
-            throw new JsonParseException("'min_scaling' must be smaller than 'max_scaling' for '" + entityType + "'");
+            throw new JsonParseException("'min_scaling' must be smaller than 'max_scaling' for '" + entityType + "' (can not be equal)");
         }
     }
 
@@ -102,9 +102,10 @@ public abstract class ScalingSampler {
 
     protected static float getFloatSafe(JsonObject json, String key, float min, float max, String entityType) {
         float temp = GsonHelper.getAsFloat(json, key);
-        if(isFloatOutOfBounds(temp, min, max)){
+        if (isFloatOutOfBounds(temp, min, max)) {
             temp = Mth.clamp(temp, min, max);
-            RandomMobSizes.LOGGER.error("'{}' for '{}' is out of range[{} - {}], changing to {}", key, entityType, min, max, temp);
+            //RandomMobSizes.LOGGER.error("'{}' for '{}' is out of range[{} - {}], using {} instead", key, entityType, min, max, temp);
+            throw new JsonParseException("'" + key + "' for '" + entityType + "' is out of range[" + min + " - " + max + "], using " + temp + " instead");
         }
         return temp;
     }

@@ -35,13 +35,14 @@ public final class ScalingOverrides {
         json.add(jsonKey, scalingOverrides);
     }
 
-    public void deserialize(JsonObject jsonObject) {
+    public void deserialize(JsonObject jsonObject, Runnable setMakeBackup) {
         JsonObject json = GsonHelper.getAsJsonObject(jsonObject, jsonKey);
         Map<EntityType<?>, ScalingSampler> newSettings = new HashMap<>();
         json.asMap().forEach((key, value) -> {
             Optional<EntityType<?>> entityType = EntityType.byString(key);
             if (entityType.isEmpty()) {
                 RandomMobSizes.LOGGER.error("Error loading config, skipping unknown entity: '{}'", key);
+                setMakeBackup.run();
                 return;
             }
             try {
@@ -51,6 +52,7 @@ public final class ScalingOverrides {
             } catch (Exception e) {
                 RandomMobSizes.LOGGER.error("Error while parsing '{}', skipping scaling for entity '{}'", jsonKey, key);
                 RandomMobSizes.LOGGER.error(e.getMessage());
+                setMakeBackup.run();
             }
         });
         SETTINGS.clear();

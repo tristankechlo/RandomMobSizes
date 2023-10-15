@@ -24,7 +24,7 @@ public final class EntityTypeList implements Supplier<List<EntityType<?>>> {
     private final ImmutableList<String> defaultValue;
 
     public EntityTypeList(String key, List<String> stringValues) {
-        this(key, stringValues, parseList(stringValues, key));
+        this(key, stringValues, parseList(stringValues, key, () -> {}));
     }
 
     public EntityTypeList(String key, EntityType<?>... entityTypes) {
@@ -39,7 +39,7 @@ public final class EntityTypeList implements Supplier<List<EntityType<?>>> {
     }
 
     public void setToDefault() {
-        this.cachedValue = parseList(defaultValue, key);
+        this.cachedValue = parseList(defaultValue, key, () -> {});
         this.parsedValues = ImmutableList.copyOf(defaultValue);
     }
 
@@ -51,7 +51,7 @@ public final class EntityTypeList implements Supplier<List<EntityType<?>>> {
         json.add(key, array);
     }
 
-    public void deserialize(JsonObject json) {
+    public void deserialize(JsonObject json, Runnable setMakeBackup) {
         try {
             JsonArray array = GsonHelper.getAsJsonArray(json, key);
             List<JsonElement> elements = array.asList();
@@ -61,11 +61,12 @@ public final class EntityTypeList implements Supplier<List<EntityType<?>>> {
                 builder.add(value);
             }
             this.parsedValues = builder.build();
-            this.cachedValue = parseList(parsedValues, key);
+            this.cachedValue = parseList(parsedValues, key, setMakeBackup);
         } catch (Exception e) {
             RandomMobSizes.LOGGER.error("Error while parsing config value '{}', using default value", key);
+            RandomMobSizes.LOGGER.error(e.getMessage());
             setToDefault();
-            throw new ConfigParseException(e.getMessage());
+            setMakeBackup.run();
         }
     }
 
@@ -74,7 +75,7 @@ public final class EntityTypeList implements Supplier<List<EntityType<?>>> {
         return cachedValue;
     }
 
-    private static ImmutableList<EntityType<?>> parseList(List<String> values, String key) {
+    private static ImmutableList<EntityType<?>> parseList(List<String> values, String key, Runnable setMakeBackup) {
         ImmutableList.Builder<EntityType<?>> builder = ImmutableList.builder();
         for (String value : values) {
             if (value.endsWith(":*")) {
@@ -82,6 +83,7 @@ public final class EntityTypeList implements Supplier<List<EntityType<?>>> {
                 String namespace = value.substring(0, value.length() - 2);
                 if (!IPlatformHelper.INSTANCE.isModLoaded(namespace)) {
                     RandomMobSizes.LOGGER.error("Skipping unknown wildcard: '{}' of config value '{}'", namespace, key);
+                    setMakeBackup.run();
                     continue;
                 }
                 BuiltInRegistries.ENTITY_TYPE.stream()
@@ -96,9 +98,11 @@ public final class EntityTypeList implements Supplier<List<EntityType<?>>> {
                         builder.add(type.get());
                     } else {
                         RandomMobSizes.LOGGER.error("Skipping disabled EntityType: '{}' of config value '{}'", value, key);
+                        setMakeBackup.run();
                     }
                 } else {
                     RandomMobSizes.LOGGER.error("Skipping unknown EntityType: '{}' of config value '{}'", value, key);
+                    setMakeBackup.run();
                 }
             }
         }

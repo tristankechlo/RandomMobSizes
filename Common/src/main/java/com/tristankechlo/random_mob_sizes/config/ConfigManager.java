@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public final class ConfigManager {
 
@@ -25,18 +26,24 @@ public final class ConfigManager {
         ConfigManager.createConfigFolder();
         RandomMobSizesConfig.setToDefault();
         if (CONFIG_FILE.exists()) {
+            boolean success = true;
+            AtomicBoolean makeBackup = new AtomicBoolean(false);
             try {
-                ConfigManager.loadConfigFromFile();
+                ConfigManager.loadConfigFromFile(() -> makeBackup.set(true));
                 RandomMobSizes.LOGGER.info("Config '{}' was successfully loaded.", FILE_NAME);
-                return true;
             } catch (Exception e) {
                 RandomMobSizes.LOGGER.error(e.getMessage());
                 RandomMobSizes.LOGGER.error("Error loading config '{}', config hasn't been loaded. Using default config.", FILE_NAME);
                 ConfigManager.backupConfig(); // save content of old config to a backup file
                 RandomMobSizesConfig.setToDefault();
-                ConfigManager.writeConfigToFile(); // write default config to file
-                return false;
+                success = false;
             }
+            if (makeBackup.get()) {
+                ConfigManager.backupConfig();
+                success = false;
+            }
+            ConfigManager.writeConfigToFile(); // always write the parsed config to file
+            return success;
         } else {
             ConfigManager.writeConfigToFile();
             RandomMobSizes.LOGGER.warn("No config '{}' was found, created a new one.", FILE_NAME);
@@ -44,11 +51,11 @@ public final class ConfigManager {
         }
     }
 
-    private static void loadConfigFromFile() throws FileNotFoundException {
+    private static void loadConfigFromFile(Runnable setMakeBackup) throws FileNotFoundException {
         JsonParser parser = new JsonParser();
         JsonElement jsonElement = parser.parse(new FileReader(CONFIG_FILE));
         JsonObject json = jsonElement.getAsJsonObject();
-        RandomMobSizesConfig.deserialize(json);
+        RandomMobSizesConfig.deserialize(json, setMakeBackup);
     }
 
     private static void writeConfigToFile() {

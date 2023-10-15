@@ -38,20 +38,21 @@ public final class RandomMobSizesConfig {
         return json;
     }
 
-    public static void deserialize(JsonObject json) {
-        WHITELIST.deserialize(json);
-        BLACKLIST.deserialize(json);
-        KEEP_SCALING_ON_CONVERSION.deserialize(json);
-        SCALING_OVERRIDES.deserialize(json);
+    public static void deserialize(JsonObject json, Runnable setMakeBackup) {
+        WHITELIST.deserialize(json, setMakeBackup);
+        BLACKLIST.deserialize(json, setMakeBackup);
+        KEEP_SCALING_ON_CONVERSION.deserialize(json, setMakeBackup);
+        SCALING_OVERRIDES.deserialize(json, setMakeBackup);
 
         // deserialize default sampler
         try {
             JsonElement defaultSamplerElement = GsonHelper.getNonNull(json, DEFAULT_SAMPLER_NAME);
             defaultSampler = ScalingSampler.deserializeSampler(defaultSamplerElement, DEFAULT_SAMPLER_NAME);
         } catch (Exception e) {
-            RandomMobSizes.LOGGER.error("Error while parsing '{}', using default value", DEFAULT_SAMPLER_NAME);
+            RandomMobSizes.LOGGER.error("Error while parsing '{}', using default value.", DEFAULT_SAMPLER_NAME);
+            RandomMobSizes.LOGGER.error(e.getMessage());
             defaultSampler = createDefaultSampler();
-            throw new ConfigParseException(e.getMessage());
+            setMakeBackup.run();
         }
     }
 
