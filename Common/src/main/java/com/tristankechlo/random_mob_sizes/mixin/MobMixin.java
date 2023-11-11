@@ -50,7 +50,7 @@ public abstract class MobMixin implements MobMixinAddon {
         ScalingSampler sampler = RandomMobSizesConfig.getScalingSampler(type);
         float scaling = 1.0F;
         if (sampler != null) {
-            scaling = sampler.sample(level.getRandom());
+            scaling = sampler.sample(level.getRandom(), level.getDifficulty());
 
             if (sampler.shouldScaleHealth()) {
                 float healthScaling = sampler.getHealthScaler().apply(scaling);

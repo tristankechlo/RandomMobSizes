@@ -2,6 +2,7 @@ package com.tristankechlo.random_mob_sizes.commands;
 
 import com.tristankechlo.random_mob_sizes.RandomMobSizes;
 import com.tristankechlo.random_mob_sizes.config.ConfigManager;
+import com.tristankechlo.random_mob_sizes.sampler.SamplerTypes;
 import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;

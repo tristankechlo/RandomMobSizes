@@ -3,11 +3,11 @@ package com.tristankechlo.random_mob_sizes.sampler;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.tristankechlo.random_mob_sizes.RandomMobSizes;
-import com.tristankechlo.random_mob_sizes.commands.SamplerTypes;
+import com.tristankechlo.random_mob_sizes.sampler.types.StaticScalingSampler;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.Difficulty;
 
 public abstract class ScalingSampler {
 
@@ -16,6 +16,7 @@ public abstract class ScalingSampler {
     protected final AttributeScalingTypes scaleHealth;
     protected final AttributeScalingTypes scaleDamage;
     protected final AttributeScalingTypes scaleSpeed;
+    protected boolean addAttributeModifiers = true;
 
     protected ScalingSampler() {
         this(AttributeScalingTypes.NORMAL, AttributeScalingTypes.NORMAL, AttributeScalingTypes.INVERSE);
@@ -34,10 +35,11 @@ public abstract class ScalingSampler {
         this.scaleSpeed = AttributeScalingTypes.byName(GsonHelper.getAsString(json, "scale_speed", "none"));
     }
 
-    protected abstract float sampleScalingFactor(RandomSource random);
+    protected abstract float sampleScalingFactor(RandomSource random, Difficulty difficulty);
 
-    public final float sample(RandomSource random) {
-        return Mth.clamp(sampleScalingFactor(random), MINIMUM_SCALING, MAXIMUM_SCALING);
+    public final float sample(RandomSource random, Difficulty difficulty) {
+        float value = sampleScalingFactor(random, difficulty);
+        return Mth.clamp(value, MINIMUM_SCALING, MAXIMUM_SCALING);
     }
 
     protected abstract JsonObject serialize(JsonObject json);
@@ -45,9 +47,11 @@ public abstract class ScalingSampler {
     public final JsonElement serialize() {
         JsonObject json = new JsonObject();
         json = serialize(json);
-        json.addProperty("scale_health", scaleHealth.getSerializedName());
-        json.addProperty("scale_damage", scaleDamage.getSerializedName());
-        json.addProperty("scale_speed", scaleSpeed.getSerializedName());
+        if (this.addAttributeModifiers) {
+            json.addProperty("scale_health", scaleHealth.getSerializedName());
+            json.addProperty("scale_damage", scaleDamage.getSerializedName());
+            json.addProperty("scale_speed", scaleSpeed.getSerializedName());
+        }
         return json;
     }
 

@@ -13,7 +13,7 @@
         - `inverse_square` => scaling is squared and inverted $(1 / (scaling * scaling))$
 - new config format
     - allows to set a default scaling for all mobs
-        - uses whitelist/blacklist to include/exclude mobs from the default scaling
+        - uses include/excludelist to include/exclude mobs from the default scaling
         - accepts wildcards like `minecraft:*`
     - all special scalings for mobs are now under `scaling_overrides`
         - all scalings defined here will bypass the default scaling
@@ -21,6 +21,15 @@
     - does not always overwrite the config file anymore, minor errors will just be ignored and loading continues
     - on major errors the config file will be overwritten with the default config, and a backup of the old config will
       be created
+- add new option to `gaussian` scaling
+    - `close_to_original = true` => the mean of the gaussian distribution is dynamically calculated so that most mobs are sized close to their original size (which is 1.0)
+        - `min_scaling` needs to be below 1.0 for this to work
+        - `max_scaling` needs to be above 1.0 for this to work
+    - `close_to_original = false` => the mean of the gaussian distribution is at 0.5
+- add new scaling type `difficulty`
+  - scaling is based on the world difficulty
+  - has the options `easy`, `normal`, `hard` and `hardcore`
+  - each option is parsed like all other scalings, so you can use `gaussian` or `static` for example
 
 ### Version 1.20.1 - 1.3
 

@@ -1,10 +1,17 @@
-package com.tristankechlo.random_mob_sizes.sampler;
+package com.tristankechlo.random_mob_sizes.sampler.types;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.tristankechlo.random_mob_sizes.sampler.AttributeScalingTypes;
+import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.Difficulty;
 
+/**
+ * creates random floats that are uniformly distributed between min and max,
+ * basically random values between min and max
+ */
 public class UniformScalingSampler extends ScalingSampler {
 
     public static final String TYPE = "uniform";
@@ -31,7 +38,7 @@ public class UniformScalingSampler extends ScalingSampler {
     }
 
     @Override
-    protected float sampleScalingFactor(RandomSource random) {
+    protected float sampleScalingFactor(RandomSource random, Difficulty difficulty) {
         return min_scaling + (float) (random.nextDouble() * (max_scaling - min_scaling));
     }
 

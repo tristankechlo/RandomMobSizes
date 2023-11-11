@@ -4,11 +4,15 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.tristankechlo.random_mob_sizes.RandomMobSizes;
 import com.tristankechlo.random_mob_sizes.sampler.AttributeScalingTypes;
-import com.tristankechlo.random_mob_sizes.sampler.GaussianScalingSampler;
 import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
-import com.tristankechlo.random_mob_sizes.sampler.UniformScalingSampler;
+import com.tristankechlo.random_mob_sizes.sampler.types.DifficultyScalingSampler;
+import com.tristankechlo.random_mob_sizes.sampler.types.GaussianScalingSampler;
+import com.tristankechlo.random_mob_sizes.sampler.types.StaticScalingSampler;
+import com.tristankechlo.random_mob_sizes.sampler.types.UniformScalingSampler;
+import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.EntityType;
 
 import java.util.HashMap;
@@ -22,7 +26,19 @@ public final class ScalingOverrides {
     private static Map<EntityType<?>, ScalingSampler> SETTINGS = new HashMap<>();
 
     public void setToDefault() {
-        SETTINGS = getDefaultSettings();
+        SETTINGS = new HashMap<>();
+        SETTINGS.put(EntityType.COW, new GaussianScalingSampler(0.5F, 1.5F));
+        SETTINGS.put(EntityType.SHEEP, new GaussianScalingSampler(0.5F, 1.5F));
+        SETTINGS.put(EntityType.PIG, new GaussianScalingSampler(0.5F, 1.5F));
+        SETTINGS.put(EntityType.CHICKEN, new UniformScalingSampler(0.5F, 1.5F, AttributeScalingTypes.SQUARE, AttributeScalingTypes.NONE, AttributeScalingTypes.INVERSE_SQUARE));
+        SETTINGS.put(EntityType.FROG, new GaussianScalingSampler(0.5F, 1.5F));
+
+        NonNullList<ScalingSampler> samplers = NonNullList.withSize(Difficulty.values().length, new StaticScalingSampler(1.0F));
+        samplers.set(Difficulty.PEACEFUL.getId(), new StaticScalingSampler(1.3F));
+        samplers.set(Difficulty.EASY.getId(), new StaticScalingSampler(1.15F));
+        samplers.set(Difficulty.NORMAL.getId(), new StaticScalingSampler(1.0F));
+        samplers.set(Difficulty.HARD.getId(), new StaticScalingSampler(0.75F));
+        SETTINGS.put(EntityType.ZOMBIE, new DifficultyScalingSampler(samplers));
     }
 
     public void serialize(JsonObject json) {
@@ -77,16 +93,6 @@ public final class ScalingOverrides {
 
     public static Iterator<Map.Entry<EntityType<?>, ScalingSampler>> getIterator() {
         return SETTINGS.entrySet().iterator();
-    }
-
-    private static Map<EntityType<?>, ScalingSampler> getDefaultSettings() {
-        Map<EntityType<?>, ScalingSampler> settings = new HashMap<>();
-        settings.put(EntityType.COW, new GaussianScalingSampler(0.5F, 1.5F));
-        settings.put(EntityType.SHEEP, new GaussianScalingSampler(0.5F, 1.5F));
-        settings.put(EntityType.PIG, new GaussianScalingSampler(0.5F, 1.5F));
-        settings.put(EntityType.CHICKEN, new UniformScalingSampler(0.5F, 1.5F, AttributeScalingTypes.SQUARE, AttributeScalingTypes.NONE, AttributeScalingTypes.INVERSE_SQUARE));
-        settings.put(EntityType.FROG, new GaussianScalingSampler(0.5F, 1.5F));
-        return settings;
     }
 
 }

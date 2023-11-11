@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.tristankechlo.random_mob_sizes.RandomMobSizes;
 import com.tristankechlo.random_mob_sizes.sampler.AttributeScalingTypes;
 import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
-import com.tristankechlo.random_mob_sizes.sampler.StaticScalingSampler;
+import com.tristankechlo.random_mob_sizes.sampler.types.StaticScalingSampler;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.EntityType;
 
@@ -16,31 +16,31 @@ public final class RandomMobSizesConfig {
     private static final BooleanValue KEEP_SCALING_ON_CONVERSION = new BooleanValue("keep_scaling_on_conversion", true);
     private static ScalingSampler defaultSampler = createDefaultSampler();
     private static final String DEFAULT_SAMPLER_NAME = "default_scaling";
-    private static final EntityTypeList WHITELIST = new EntityTypeList("whitelist", List.of("minecraft:*"));
-    private static final EntityTypeList BLACKLIST = new EntityTypeList("blacklist", EntityType.SHULKER, EntityType.WITHER);
+    private static final EntityTypeList INCLUDE_LIST = new EntityTypeList("include_list", List.of("minecraft:*"));
+    private static final EntityTypeList EXCLUDE_LIST = new EntityTypeList("exclude_list", EntityType.SHULKER, EntityType.WITHER);
     public static final ScalingOverrides SCALING_OVERRIDES = new ScalingOverrides();
 
     public static void setToDefault() {
         KEEP_SCALING_ON_CONVERSION.setToDefault();
         defaultSampler = createDefaultSampler();
-        WHITELIST.setToDefault();
-        BLACKLIST.setToDefault();
+        INCLUDE_LIST.setToDefault();
+        EXCLUDE_LIST.setToDefault();
         SCALING_OVERRIDES.setToDefault();
     }
 
     public static JsonObject serialize() {
         JsonObject json = new JsonObject();
         json.add(DEFAULT_SAMPLER_NAME, defaultSampler.serialize());
-        WHITELIST.serialize(json);
-        BLACKLIST.serialize(json);
+        INCLUDE_LIST.serialize(json);
+        EXCLUDE_LIST.serialize(json);
         KEEP_SCALING_ON_CONVERSION.serialize(json);
         SCALING_OVERRIDES.serialize(json);
         return json;
     }
 
     public static void deserialize(JsonObject json, Runnable setMakeBackup) {
-        WHITELIST.deserialize(json, setMakeBackup);
-        BLACKLIST.deserialize(json, setMakeBackup);
+        INCLUDE_LIST.deserialize(json, setMakeBackup);
+        EXCLUDE_LIST.deserialize(json, setMakeBackup);
         KEEP_SCALING_ON_CONVERSION.deserialize(json, setMakeBackup);
         SCALING_OVERRIDES.deserialize(json, setMakeBackup);
 
@@ -65,10 +65,10 @@ public final class RandomMobSizesConfig {
         if (override != null) {
             return override;
         }
-        if (BLACKLIST.get().contains(entityType)) {
+        if (EXCLUDE_LIST.get().contains(entityType)) {
             return null;
         }
-        if (WHITELIST.get().contains(entityType)) {
+        if (INCLUDE_LIST.get().contains(entityType)) {
             return defaultSampler;
         }
         return null;

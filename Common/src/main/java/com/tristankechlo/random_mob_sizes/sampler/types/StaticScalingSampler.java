@@ -1,11 +1,14 @@
-package com.tristankechlo.random_mob_sizes.sampler;
+package com.tristankechlo.random_mob_sizes.sampler.types;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.tristankechlo.random_mob_sizes.RandomMobSizes;
+import com.tristankechlo.random_mob_sizes.sampler.AttributeScalingTypes;
+import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.Difficulty;
 
 public class StaticScalingSampler extends ScalingSampler {
 
@@ -37,7 +40,7 @@ public class StaticScalingSampler extends ScalingSampler {
     }
 
     @Override
-    protected float sampleScalingFactor(RandomSource random) {
+    protected float sampleScalingFactor(RandomSource random, Difficulty difficulty) {
         return static_scaling;
     }
 

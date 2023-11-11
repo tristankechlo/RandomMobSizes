@@ -1,15 +1,14 @@
-package com.tristankechlo.random_mob_sizes.commands;
+package com.tristankechlo.random_mob_sizes.sampler;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.tristankechlo.random_mob_sizes.mixin.CompoundTagInvoker;
-import com.tristankechlo.random_mob_sizes.sampler.GaussianScalingSampler;
-import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
-import com.tristankechlo.random_mob_sizes.sampler.StaticScalingSampler;
-import com.tristankechlo.random_mob_sizes.sampler.UniformScalingSampler;
+import com.tristankechlo.random_mob_sizes.sampler.types.DifficultyScalingSampler;
+import com.tristankechlo.random_mob_sizes.sampler.types.GaussianScalingSampler;
+import com.tristankechlo.random_mob_sizes.sampler.types.StaticScalingSampler;
+import com.tristankechlo.random_mob_sizes.sampler.types.UniformScalingSampler;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NumericTag;
-import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.util.StringRepresentable;
 
@@ -20,7 +19,8 @@ public enum SamplerTypes implements StringRepresentable {
 
     STATIC(StaticScalingSampler.TYPE, StaticScalingSampler::new),
     UNIFORM(UniformScalingSampler.TYPE, UniformScalingSampler::new),
-    GAUSSIAN(GaussianScalingSampler.TYPE, GaussianScalingSampler::new);
+    GAUSSIAN(GaussianScalingSampler.TYPE, GaussianScalingSampler::new),
+    DIFFICULTY(DifficultyScalingSampler.TYPE, DifficultyScalingSampler::new);
 
     @SuppressWarnings("deprecation")
     public static final StringRepresentable.EnumCodec<SamplerTypes> CODEC;
