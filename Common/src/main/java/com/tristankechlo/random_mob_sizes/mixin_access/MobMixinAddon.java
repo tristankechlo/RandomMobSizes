@@ -10,4 +10,12 @@ public interface MobMixinAddon {
 
     EntityDataAccessor<Float> getTracker$RandomMobSizes(); //needed for accessing the tracker from EntityMixin
 
+    boolean shouldScaleLoot$RandomMobSizes();
+
+    void setShouldScaleLoot$RandomMobSizes(boolean shouldScale);
+
+    boolean shouldScaleXP$RandomMobSizes();
+
+    void setShouldScaleXP$RandomMobSizes(boolean shouldScale);
+
 }

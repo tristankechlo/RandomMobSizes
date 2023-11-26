@@ -30,6 +30,9 @@
   - scaling is based on the world difficulty
   - has the options `easy`, `normal`, `hard` and `hardcore`
   - each option is parsed like all other scalings, so you can use `gaussian` or `static` for example
+- allow scaling of loot and experience when the mob dies
+  - option `scale_loot` to adjust whether or not the amount of dropped loot should be adjusted according to the scaling
+  - option `scale_xp` to adjust whether or not the amount of dropped xp points should be adjusted according to the scaling
 
 ### Version 1.20.1 - 1.3
 
