@@ -108,8 +108,8 @@ public abstract class ScalingSampler {
         float temp = GsonHelper.getAsFloat(json, key);
         if (isFloatOutOfBounds(temp, min, max)) {
             temp = Mth.clamp(temp, min, max);
-            //RandomMobSizes.LOGGER.error("'{}' for '{}' is out of range[{} - {}], using {} instead", key, entityType, min, max, temp);
-            throw new JsonParseException("'" + key + "' for '" + entityType + "' is out of range[" + min + " - " + max + "], using " + temp + " instead");
+            RandomMobSizes.LOGGER.error("'{}' for '{}' is out of range[{} - {}], using {} instead", key, entityType, min, max, temp);
+            //throw new JsonParseException("'" + key + "' for '" + entityType + "' is out of range[" + min + " - " + max + "], using " + temp + " instead");
         }
         return temp;
     }
