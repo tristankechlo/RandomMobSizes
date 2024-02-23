@@ -76,7 +76,10 @@ public abstract class MobMixin implements MobMixinAddon {
 
             if (sampler.shouldScaleHealth()) {
                 float healthScaling = sampler.getHealthScaler().apply(scaling);
-                this.addModifier$RandomMobSizes(Attributes.MAX_HEALTH, healthScaling, true);
+                // only sets the new max possible health
+                float maxHealth = this.addModifier$RandomMobSizes(Attributes.MAX_HEALTH, healthScaling, true);
+                // adjust the actual health as well
+                ((LivingEntity) (Object) this).setHealth(maxHealth);
             }
             if (sampler.shouldScaleDamage()) {
                 float damageScaling = sampler.getDamageScaler().apply(scaling);
@@ -94,14 +97,16 @@ public abstract class MobMixin implements MobMixinAddon {
         this.setMobScaling$RandomMobSizes(scaling);
     }
 
-    private void addModifier$RandomMobSizes(Attribute attribute, float scaling, boolean ceil) {
+    private float addModifier$RandomMobSizes(Attribute attribute, float scaling, boolean ceil) {
         AttributeInstance instance = ((LivingEntity) (Object) this).getAttribute(attribute);
         if (instance != null) {
             double baseValue = instance.getBaseValue();
             float newValue = (float) (ceil ? Math.ceil(baseValue * scaling) : baseValue * scaling);
             instance.setBaseValue(newValue);
             //RandomMobSizes.LOGGER.info("Scaled '{}' of '{}' from '{}' to '{}'", attribute.getDescriptionId(), this.getClass().getSimpleName(), baseValue, instance.getBaseValue());
+            return newValue;
         }
+        return 1.0F;
     }
 
     @Inject(at = @At("TAIL"), method = "defineSynchedData")
