@@ -2,6 +2,7 @@ package com.tristankechlo.random_mob_sizes.config;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.datafixers.util.Pair;
 import com.tristankechlo.random_mob_sizes.RandomMobSizes;
 import com.tristankechlo.random_mob_sizes.sampler.AttributeScalingTypes;
 import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
@@ -15,14 +16,11 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.EntityType;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public final class ScalingOverrides {
 
-    private static final String jsonKey = "scaling_overrides";
+    private static final String JSON_KEY = "scaling_overrides";
     private static Map<EntityType<?>, ScalingSampler> SETTINGS = new HashMap<>();
 
     public void setToDefault() {
@@ -43,16 +41,24 @@ public final class ScalingOverrides {
 
     public void serialize(JsonObject json) {
         JsonObject scalingOverrides = new JsonObject();
-        SETTINGS.forEach((entityType, scalingSampler) -> {
-            ResourceLocation location = EntityType.getKey(entityType);
-            JsonElement element = scalingSampler.serialize();
-            scalingOverrides.add(location.toString(), element);
+
+        // sort settings by resource location
+        List<Pair<ResourceLocation, ScalingSampler>> settings = SETTINGS.entrySet().parallelStream().map((entry) -> {
+            ResourceLocation location = EntityType.getKey(entry.getKey());
+            return new Pair<>(location, entry.getValue());
+        }).sorted(Comparator.comparing(Pair::getFirst)).toList();
+
+        // write to json
+        settings.forEach((pair) -> {
+            String location = pair.getFirst().toString();
+            JsonElement element = pair.getSecond().serialize();
+            scalingOverrides.add(location, element);
         });
-        json.add(jsonKey, scalingOverrides);
+        json.add(JSON_KEY, scalingOverrides);
     }
 
     public void deserialize(JsonObject jsonObject, Runnable setMakeBackup) {
-        JsonObject json = GsonHelper.getAsJsonObject(jsonObject, jsonKey);
+        JsonObject json = GsonHelper.getAsJsonObject(jsonObject, JSON_KEY);
         Map<EntityType<?>, ScalingSampler> newSettings = new HashMap<>();
         json.asMap().forEach((key, value) -> {
             Optional<EntityType<?>> entityType = EntityType.byString(key);
@@ -66,7 +72,7 @@ public final class ScalingOverrides {
                 ScalingSampler scalingSampler = ScalingSampler.deserializeSampler(value, key);
                 newSettings.put(type, scalingSampler);
             } catch (Exception e) {
-                RandomMobSizes.LOGGER.error("Error while parsing '{}', skipping scaling for entity '{}'", jsonKey, key);
+                RandomMobSizes.LOGGER.error("Error while parsing '{}', skipping scaling for entity '{}'", JSON_KEY, key);
                 RandomMobSizes.LOGGER.error(e.getMessage());
                 setMakeBackup.run();
             }

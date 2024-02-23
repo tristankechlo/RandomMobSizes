@@ -21,18 +21,23 @@
     - does not always overwrite the config file anymore, minor errors will just be ignored and loading continues
     - on major errors the config file will be overwritten with the default config, and a backup of the old config will
       be created
+    - entries in `scaling_overrides` are now sorted alphabetically, to stop the shuffling of values that sometimes
+      occurs on loading
 - add new option to `gaussian` scaling
-    - `close_to_original = true` => the mean of the gaussian distribution is dynamically calculated so that most mobs are sized close to their original size (which is 1.0)
+    - `close_to_original = true` => the mean of the gaussian distribution is dynamically calculated so that most mobs
+      are sized close to their original size (which is 1.0)
         - `min_scaling` needs to be below 1.0 for this to work
         - `max_scaling` needs to be above 1.0 for this to work
     - `close_to_original = false` => the mean of the gaussian distribution is at 0.5
 - add new scaling type `difficulty`
-  - scaling is based on the world difficulty
-  - has the options `easy`, `normal`, `hard` and `hardcore`
-  - each option is parsed like all other scalings, so you can use `gaussian` or `static` for example
+    - scaling is based on the world difficulty
+    - has the options `easy`, `normal`, `hard` and `hardcore`
+    - each option is parsed like all other scalings, so you can use `gaussian` or `static` for example
 - allow scaling of loot and experience when the mob dies
-  - option `scale_loot` to adjust whether or not the amount of dropped loot should be adjusted according to the scaling
-  - option `scale_xp` to adjust whether or not the amount of dropped xp points should be adjusted according to the scaling
+    - option `scale_loot` to adjust whether or not the amount of dropped loot should be adjusted according to the
+      scaling
+    - option `scale_xp` to adjust whether or not the amount of dropped xp points should be adjusted according to the
+      scaling
 - rename command `/mobScalings` to `/mobscalings`
 
 ### Version 1.20.1 - 1.3
