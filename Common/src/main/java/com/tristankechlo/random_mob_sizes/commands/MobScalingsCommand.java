@@ -29,7 +29,7 @@ import static net.minecraft.commands.Commands.literal;
 
 public final class MobScalingsCommand {
 
-    private static final String COMMAND_NAME = "mobScalings";
+    private static final String COMMAND_NAME = "mobscalings";
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context) {
         LiteralArgumentBuilder<CommandSourceStack> command = literal(COMMAND_NAME).requires((source) -> source.hasPermission(3))
