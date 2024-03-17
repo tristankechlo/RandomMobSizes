@@ -4,7 +4,6 @@ import com.tristankechlo.random_mob_sizes.mixin_access.MobMixinAddon;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -31,14 +30,15 @@ public abstract class LivingEntityMixin {
         }
         float scaling = mob.getMobScaling$RandomMobSizes();
         RandomSource random = params.getLevel().getRandom();
-        instance.getRandomItems(params, seed, (stack) -> handleLoot$RandomMobSizes(scaling, random, stack, spawnAtLocation));
+        Consumer<ItemStack> stackSplitter = LootTable.createStackSplitter(params.getLevel(), spawnAtLocation);
+        instance.getRandomItems(params, seed, (stack) -> handleLoot$RandomMobSizes(scaling, random, stack, stackSplitter));
     }
 
-    private void handleLoot$RandomMobSizes(float scaling, RandomSource random, ItemStack stack, Consumer<ItemStack> spawnAtLocation) {
+    private void handleLoot$RandomMobSizes(float scaling, RandomSource random, ItemStack stack, Consumer<ItemStack> stackSplitter) {
         if (scaling <= 1.0F && stack.getCount() == 1) {
             // special case where the scaling will be used as a chance to determine if the item should be dropped
             if (random.nextDouble() <= scaling) {
-                spawnAtLocation.accept(stack);
+                stackSplitter.accept(stack);
             }
             return;
         }
@@ -46,25 +46,9 @@ public abstract class LivingEntityMixin {
         if (count == 0 || stack.getCount() == 0) {
             return;
         }
-        int maxStackSize = stack.getMaxStackSize();
-
-        // calculated stack size is still smaller than maxStackSize, so spawn the stack normally
-        if (count <= maxStackSize) {
-            stack.setCount(count);
-            spawnAtLocation.accept(stack);
-            return;
-        }
-
-        // spawn multiple itemstacks with maxStackSize or the remaining count
-        Item item = stack.getItem();
-        do {
-            // either use maxStackSize, or the remaining count when smaller than maxStackSize
-            int tempCount = Math.min(count, maxStackSize);
-            ItemStack temp = new ItemStack(item, tempCount);
-            spawnAtLocation.accept(temp);
-            count -= maxStackSize;
-        }
-        while (count > maxStackSize && count > 0);
+        stack.setCount(count);
+        // let minecraft handle the splitting of the stacks to their max stack size
+        stackSplitter.accept(stack);
     }
 
     /* adjust the amount of dropped xp points according to the scaling of the mob */
