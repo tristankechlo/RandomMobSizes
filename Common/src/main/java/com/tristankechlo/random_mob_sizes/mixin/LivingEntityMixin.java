@@ -1,18 +1,16 @@
 package com.tristankechlo.random_mob_sizes.mixin;
 
 import com.tristankechlo.random_mob_sizes.mixin_access.MobMixinAddon;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.util.function.Consumer;
@@ -34,22 +32,6 @@ public abstract class LivingEntityMixin {
         float scaling = mob.getMobScaling$RandomMobSizes();
         RandomSource random = params.getLevel().getRandom();
         instance.getRandomItems(params, seed, (stack) -> handleLoot$RandomMobSizes(scaling, random, stack, spawnAtLocation));
-    }
-
-    /* adjust the amount of dropped xp points according to the scaling of the mob */
-    @Redirect(method = "dropExperience", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/ExperienceOrb;award(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/phys/Vec3;I)V"))
-    private void dropExperience$RandomMobSizes(ServerLevel level, Vec3 pos, int xp) {
-        LivingEntity entity = (LivingEntity) (Object) this;
-        if (!(entity instanceof Mob)) {
-            return;
-        }
-        MobMixinAddon mob = (MobMixinAddon) entity;
-        if (!mob.shouldScaleLoot$RandomMobSizes()) { // xp manipulation disabled for this mob
-            return;
-        }
-        float scaling = mob.getMobScaling$RandomMobSizes();
-        int newExp = Math.round(xp * scaling);
-        ExperienceOrb.award(level, pos, newExp);
     }
 
     private void handleLoot$RandomMobSizes(float scaling, RandomSource random, ItemStack stack, Consumer<ItemStack> spawnAtLocation) {
@@ -83,6 +65,21 @@ public abstract class LivingEntityMixin {
             count -= maxStackSize;
         }
         while (count > maxStackSize && count > 0);
+    }
+
+    /* adjust the amount of dropped xp points according to the scaling of the mob */
+    @ModifyArg(method = "dropExperience", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/ExperienceOrb;award(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/phys/Vec3;I)V"), index = 2)
+    private int calculateExperienceOnDeath$RandomMobSizes(int xp) {
+        LivingEntity entity = (LivingEntity) (Object) this;
+        if (!(entity instanceof Mob)) {
+            return xp;
+        }
+        MobMixinAddon mob = (MobMixinAddon) entity;
+        if (!mob.shouldScaleLoot$RandomMobSizes()) { // xp manipulation disabled for this mob
+            return xp;
+        }
+        float scaling = mob.getMobScaling$RandomMobSizes();
+        return Math.round(xp * scaling);
     }
 
 }

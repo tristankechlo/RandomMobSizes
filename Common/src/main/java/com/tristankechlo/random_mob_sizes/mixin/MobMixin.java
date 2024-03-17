@@ -138,7 +138,7 @@ public abstract class MobMixin implements MobMixinAddon {
 
     @Inject(at = @At("TAIL"), method = "convertTo")
     private <T extends Mob> void convertTo$RandomMobSizes(EntityType<T> type, boolean $$1, CallbackInfoReturnable<T> cir) {
-        if (!RandomMobSizesConfig.keepScalingOnConversion()) {
+        if (!RandomMobSizesConfig.keepScalingOnConversion() || !RandomMobSizes.isEntityTypeAllowed(type)) {
             return;
         }
         float scaling = ((MobMixinAddon) this).getMobScaling$RandomMobSizes();
