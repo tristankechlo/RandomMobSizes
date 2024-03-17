@@ -1,5 +1,9 @@
 # Changelog
 
+### Version 1.20.4 - 2.0
+
+- port to 1.20.4
+
 ### Version 1.20.1 - 2.0
 
 - random scaling is now tied to the world random
