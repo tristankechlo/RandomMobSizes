@@ -10,7 +10,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-/* reapply all EntityDimensions scaling factors, after vanilla changes them */
 @Mixin(Entity.class)
 public abstract class EntityMixin {
 
@@ -34,19 +33,6 @@ public abstract class EntityMixin {
                 ((Entity) (Object) this).refreshDimensions();
             }
         }
-    }
-
-    @Redirect(method = "refreshDimensions", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/world/entity/Entity;getDimensions(Lnet/minecraft/world/entity/Pose;)Lnet/minecraft/world/entity/EntityDimensions;"))
-    private EntityDimensions getDimensions$RandomMobSizes(Entity entity, Pose pose) {
-        if (((Entity) (Object) this) instanceof Mob) {
-            MobMixinAddon mob = (MobMixinAddon) this;
-            float scaling = mob.getMobScaling$RandomMobSizes();
-            float scaleFactor = ((LivingEntity) (Object) this).getScale();
-            EntityDimensions dimensions = entity.getType().getDimensions();
-            return dimensions.scale(scaling).scale(scaleFactor);
-        }
-        return entity.getDimensions(pose);
     }
 
 }
