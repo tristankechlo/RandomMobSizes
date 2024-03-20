@@ -4,6 +4,7 @@
 
 - port to 1.20.4
 - add neoforge support
+- improved mixin (results in smaller file size)
 
 ### Version 1.20.1 - 2.0
 
