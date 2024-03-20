@@ -20,9 +20,13 @@ public class RandomMobSizes {
     public static final String CURSEFORGE_URL = "https://curseforge.com/minecraft/mc-mods/random-mob-sizes";
     public static final String MODRINTH_URL = "https://modrinth.com/mod/random-mob-sizes";
 
+    private static List<EntityType<?>> allowedMisc = null;
+
     public static boolean isEntityTypeAllowed(EntityType<?> type) {
+        if (allowedMisc == null) {
+            allowedMisc = Arrays.asList(EntityType.IRON_GOLEM, EntityType.SNOW_GOLEM, EntityType.VILLAGER);
+        }
         //disallow all entities from the group "misc", except for golems, villagers
-        final List<EntityType<?>> allowedMisc = Arrays.asList(EntityType.IRON_GOLEM, EntityType.SNOW_GOLEM, EntityType.VILLAGER);
         return type.getCategory() != MobCategory.MISC || allowedMisc.contains(type);
     }
 

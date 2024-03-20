@@ -2,8 +2,8 @@ package com.tristankechlo.random_mob_sizes.commands;
 
 import com.tristankechlo.random_mob_sizes.RandomMobSizes;
 import com.tristankechlo.random_mob_sizes.config.ConfigManager;
+import com.tristankechlo.random_mob_sizes.sampler.SamplerTypes;
 import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
-import com.tristankechlo.random_mob_sizes.sampler.StaticScalingSampler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.nbt.CompoundTag;
@@ -21,7 +21,7 @@ public final class ResponseHelper {
     }
 
     public static void sendMessageConfigReload(CommandSourceStack source, boolean success) {
-        String text = success ? "Config was successfully reloaded." : "Error while reloading config. Using default config.";
+        String text = success ? "Config was successfully reloaded." : "Error while reloading config. Check the logs for further details.";
         MutableComponent message = Component.literal(text).withStyle(ChatFormatting.WHITE);
         sendMessage(source, message, true);
     }
@@ -75,14 +75,6 @@ public final class ResponseHelper {
         MutableComponent message = Component.literal("Scaling for ").withStyle(ChatFormatting.RED)
                 .append(Component.literal(entityType.getDescription().getString()).withStyle(ChatFormatting.DARK_RED))
                 .append(Component.literal(" is now allowed!").withStyle(ChatFormatting.RED));
-        sendMessage(source, message, true);
-    }
-
-    public static void sendSuccessStaticScalingTypeSet(CommandSourceStack source, EntityType<?> entityType, float scaling) {
-        MutableComponent message = Component.literal("Scaling for ").withStyle(ChatFormatting.WHITE)
-                .append(Component.literal(entityType.getDescription().getString()).withStyle(ChatFormatting.GREEN))
-                .append(Component.literal(" was set to static scaling of ").withStyle(ChatFormatting.WHITE))
-                .append(Component.literal(String.valueOf(scaling)).withStyle(ChatFormatting.GREEN));
         sendMessage(source, message, true);
     }
 

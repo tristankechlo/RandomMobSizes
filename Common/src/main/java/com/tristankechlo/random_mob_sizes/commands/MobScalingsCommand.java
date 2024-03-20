@@ -8,17 +8,19 @@ import com.tristankechlo.random_mob_sizes.RandomMobSizes;
 import com.tristankechlo.random_mob_sizes.config.ConfigManager;
 import com.tristankechlo.random_mob_sizes.config.RandomMobSizesConfig;
 import com.tristankechlo.random_mob_sizes.config.ScalingOverrides;
+import com.tristankechlo.random_mob_sizes.sampler.SamplerTypes;
 import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
-import com.tristankechlo.random_mob_sizes.sampler.StaticScalingSampler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.CompoundTagArgument;
 import net.minecraft.commands.arguments.ResourceArgument;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 
 import static com.tristankechlo.random_mob_sizes.sampler.ScalingSampler.MAXIMUM_SCALING;
@@ -28,7 +30,7 @@ import static net.minecraft.commands.Commands.literal;
 
 public final class MobScalingsCommand {
 
-    private static final String COMMAND_NAME = "mobScalings";
+    private static final String COMMAND_NAME = "mobscalings";
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context) {
         LiteralArgumentBuilder<CommandSourceStack> command = literal(COMMAND_NAME).requires((source) -> source.hasPermission(3))
@@ -57,18 +59,7 @@ public final class MobScalingsCommand {
             final EntityType<?> entityType = ResourceArgument.getEntityType(context, "entity_type").value();
             final SamplerTypes scalingType = context.getArgument("scaling_type", SamplerTypes.class);
             final CompoundTag data = CompoundTagArgument.getCompoundTag(context, "data");
-
-            //updating and saving config
-            RandomMobSizes.LOGGER.info("Setting scale for entity type '{}' to '{}' with data '{}'", entityType, scalingType, data);
-            ScalingSampler sampler = scalingType.fromNBT(data, entityType.getDescriptionId());
-            boolean success = RandomMobSizesConfig.SCALING_OVERRIDES.setScalingSampler(entityType, sampler);
-            if (success) {
-                ConfigManager.saveConfig();
-                ResponseHelper.sendSuccessScalingTypeSet(source, entityType, scalingType, data);
-            } else {
-                ResponseHelper.sendErrorScalingTypeSet(source, entityType);
-            }
-            return 1;
+            return setEntityScale(source, entityType, scalingType, data);
         } catch (Exception e) {
             return errorHandling(source, e, "An error occurred while setting the scale for the entity type!");
         }
@@ -80,20 +71,27 @@ public final class MobScalingsCommand {
             //read values from command
             final EntityType<?> entityType = ResourceArgument.getEntityType(context, "entity_type").value();
             final float scale = FloatArgumentType.getFloat(context, "scale");
-
-            //updating and saving config
-            RandomMobSizes.LOGGER.info("Setting scale for entity type '{}' to static scale of '{}'", entityType, scale);
-            boolean success = RandomMobSizesConfig.SCALING_OVERRIDES.setScalingSampler(entityType, new StaticScalingSampler(scale));
-            if (success) {
-                ConfigManager.saveConfig();
-                ResponseHelper.sendSuccessStaticScalingTypeSet(source, entityType, scale);
-            } else {
-                ResponseHelper.sendErrorScalingTypeSet(source, entityType);
-            }
-            return 1;
+            final CompoundTag nbt = new CompoundTag();
+            nbt.putFloat("scaling", scale);
+            return setEntityScale(source, entityType, SamplerTypes.STATIC, nbt);
         } catch (Exception e) {
             return errorHandling(source, e, "An error occurred while setting the static scale for the entity type!");
         }
+    }
+
+    private static int setEntityScale(CommandSourceStack source, EntityType<?> entityType, SamplerTypes scalingType, CompoundTag nbt) {
+        //updating and saving config
+        RandomMobSizes.LOGGER.info("Setting scale for entity type '{}' to '{}' with data '{}'", entityType, scalingType, nbt);
+        ResourceLocation loc = BuiltInRegistries.ENTITY_TYPE.getKey(entityType);
+        ScalingSampler sampler = scalingType.fromNBT(nbt, loc.toString());
+        boolean success = RandomMobSizesConfig.SCALING_OVERRIDES.setScalingSampler(entityType, sampler);
+        if (success) {
+            ConfigManager.saveConfig();
+            ResponseHelper.sendSuccessScalingTypeSet(source, entityType, scalingType, nbt);
+        } else {
+            ResponseHelper.sendErrorScalingTypeSet(source, entityType);
+        }
+        return 1;
     }
 
     private static int removeEntityScale(CommandContext<CommandSourceStack> context) {

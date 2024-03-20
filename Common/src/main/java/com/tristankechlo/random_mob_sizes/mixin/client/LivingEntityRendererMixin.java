@@ -1,7 +1,7 @@
-package com.tristankechlo.random_mob_sizes.mixin;
+package com.tristankechlo.random_mob_sizes.mixin.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.tristankechlo.random_mob_sizes.mixin_access.MobMixinAddon;
+import com.tristankechlo.random_mob_sizes.mixin_helper.MobMixinAddon;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.world.entity.LivingEntity;
