@@ -17,7 +17,12 @@ import java.util.function.Consumer;
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
 
-    /* adjust the amount of dropped loot according to the scaling of the mob */
+    /**
+     * adjust the amount of dropped loot according to the scaling of the mob<br/>
+     * <br/>
+     * this mixin will fail to apply for forge, since they modify how the loot is loaded<br/>
+     * special handling for forge is done in TODO
+     */
     @Redirect(method = "dropFromLootTable", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/storage/loot/LootTable;getRandomItems(Lnet/minecraft/world/level/storage/loot/LootContext;Ljava/util/function/Consumer;)V"))
     private void dropFromLootTable$RandomMobSizes(LootTable instance, LootContext context, Consumer<ItemStack> spawnAtLocation) {
         LivingEntity entity = (LivingEntity) (Object) this;
