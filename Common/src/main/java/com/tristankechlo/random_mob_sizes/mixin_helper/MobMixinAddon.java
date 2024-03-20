@@ -1,4 +1,4 @@
-package com.tristankechlo.random_mob_sizes.mixin_access;
+package com.tristankechlo.random_mob_sizes.mixin_helper;
 
 import net.minecraft.network.syncher.EntityDataAccessor;
 

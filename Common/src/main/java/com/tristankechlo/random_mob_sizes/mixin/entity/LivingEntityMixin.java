@@ -1,6 +1,6 @@
-package com.tristankechlo.random_mob_sizes.mixin;
+package com.tristankechlo.random_mob_sizes.mixin.entity;
 
-import com.tristankechlo.random_mob_sizes.mixin_access.MobMixinAddon;
+import com.tristankechlo.random_mob_sizes.mixin_helper.MobMixinAddon;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
