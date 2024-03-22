@@ -1,12 +1,15 @@
 package com.tristankechlo.random_mob_sizes;
 
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.item.ItemStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class RandomMobSizes {
 
@@ -28,6 +31,23 @@ public class RandomMobSizes {
         }
         //disallow all entities from the group "misc", except for golems, villagers
         return type.getCategory() != MobCategory.MISC || allowedMisc.contains(type);
+    }
+
+    public static void handleLoot(float scaling, RandomSource random, ItemStack stack, Consumer<ItemStack> stackSplitter) {
+        if (scaling <= 1.0F && stack.getCount() == 1) {
+            // special case where the scaling will be used as a chance to determine if the item should be dropped
+            if (random.nextDouble() <= scaling) {
+                stackSplitter.accept(stack);
+            }
+            return;
+        }
+        int count = Math.round(stack.getCount() * scaling);
+        if (count == 0 || stack.getCount() == 0) {
+            return;
+        }
+        stack.setCount(count);
+        // let minecraft handle the splitting of the stacks to their max stack size
+        stackSplitter.accept(stack);
     }
 
 }

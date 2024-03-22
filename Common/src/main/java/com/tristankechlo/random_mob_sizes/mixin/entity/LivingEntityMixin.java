@@ -1,5 +1,6 @@
 package com.tristankechlo.random_mob_sizes.mixin.entity;
 
+import com.tristankechlo.random_mob_sizes.RandomMobSizes;
 import com.tristankechlo.random_mob_sizes.mixin_helper.MobMixinAddon;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -36,24 +37,7 @@ public abstract class LivingEntityMixin {
         float scaling = mob.getMobScaling$RandomMobSizes();
         RandomSource random = context.getRandom();
         Consumer<ItemStack> stackSplitter = LootTable.createStackSplitter(context, spawnAtLocation);
-        instance.getRandomItems(context, (stack) -> handleLoot$RandomMobSizes(scaling, random, stack, stackSplitter));
-    }
-
-    private void handleLoot$RandomMobSizes(float scaling, RandomSource random, ItemStack stack, Consumer<ItemStack> stackSplitter) {
-        if (scaling <= 1.0F && stack.getCount() == 1) {
-            // special case where the scaling will be used as a chance to determine if the item should be dropped
-            if (random.nextDouble() <= scaling) {
-                stackSplitter.accept(stack);
-            }
-            return;
-        }
-        int count = Math.round(stack.getCount() * scaling);
-        if (count == 0 || stack.getCount() == 0) {
-            return;
-        }
-        stack.setCount(count);
-        // let minecraft handle the splitting of the stacks to their max stack size
-        stackSplitter.accept(stack);
+        instance.getRandomItems(context, (stack) -> RandomMobSizes.handleLoot(scaling, random, stack, stackSplitter));
     }
 
     /* adjust the amount of dropped xp points according to the scaling of the mob */
