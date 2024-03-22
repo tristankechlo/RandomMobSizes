@@ -1,4 +1,7 @@
-# Random Mob Sizes [![Curseforge](http://cf.way2muchnoise.eu/full_555230_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/random-mob-sizes) [![Discord](https://img.shields.io/discord/639540436524072970?color=0a48c4&label=%20&logo=discord&logoColor=FFF)](https://discord.gg/bhUaWhq)
+# Random Mob Sizes
+[![Curseforge](https://img.shields.io/curseforge/dt/555230?style=for-the-badge&logo=curseforge&color=e05d44)](https://www.curseforge.com/minecraft/mc-mods/random-mob-sizes)&nbsp;
+[![Modrinth](https://img.shields.io/modrinth/dt/ccz0Dj7d?style=for-the-badge&logo=modrinth&color=e05d44)](https://modrinth.com/mod/random-mob-sizes)&nbsp;
+[![Discord](https://img.shields.io/discord/639540436524072970?style=for-the-badge&logo=discord&logoColor=fff&label=%20&color=0a48c4)](https://discord.gg/bhUaWhq)
 
 ### let's you configure mobs, to spawn in different sizes
 According to the configuration, the mobs will spawn with random sizes.  
