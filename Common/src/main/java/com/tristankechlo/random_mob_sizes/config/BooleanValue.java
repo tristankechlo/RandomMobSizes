@@ -27,7 +27,7 @@ public final class BooleanValue implements Supplier<Boolean> {
         json.addProperty(key, value);
     }
 
-    public void deserialize(JsonObject json) {
+    public void deserialize(JsonObject json, Runnable setMakeBackup) {
         try {
             if (GsonHelper.isBooleanValue(json, key)) {
                 value = GsonHelper.getAsBoolean(json, key);
@@ -36,8 +36,9 @@ public final class BooleanValue implements Supplier<Boolean> {
             }
         } catch (Exception e) {
             RandomMobSizes.LOGGER.error("Error while parsing config value '{}' using default value.", key);
+            RandomMobSizes.LOGGER.error(e.getMessage());
             value = defaultValue;
-            throw new ConfigParseException(e.getMessage());
+            setMakeBackup.run();
         }
     }
 

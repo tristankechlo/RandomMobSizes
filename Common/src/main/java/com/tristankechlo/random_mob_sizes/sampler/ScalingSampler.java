@@ -3,9 +3,11 @@ package com.tristankechlo.random_mob_sizes.sampler;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.tristankechlo.random_mob_sizes.commands.SamplerTypes;
+import com.tristankechlo.random_mob_sizes.RandomMobSizes;
+import com.tristankechlo.random_mob_sizes.sampler.types.StaticScalingSampler;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.Mth;
+import net.minecraft.world.Difficulty;
 
 import java.util.Random;
 
@@ -16,6 +18,9 @@ public abstract class ScalingSampler {
     protected final AttributeScalingTypes scaleHealth;
     protected final AttributeScalingTypes scaleDamage;
     protected final AttributeScalingTypes scaleSpeed;
+    protected boolean addAttributeModifiers = true;
+    protected boolean shouldScaleLoot = true;
+    protected boolean shouldScaleXP = true;
 
     protected ScalingSampler() {
         this(AttributeScalingTypes.NORMAL, AttributeScalingTypes.NORMAL, AttributeScalingTypes.INVERSE);
@@ -32,12 +37,15 @@ public abstract class ScalingSampler {
         this.scaleHealth = AttributeScalingTypes.byName(GsonHelper.getAsString(json, "scale_health", "none"));
         this.scaleDamage = AttributeScalingTypes.byName(GsonHelper.getAsString(json, "scale_damage", "none"));
         this.scaleSpeed = AttributeScalingTypes.byName(GsonHelper.getAsString(json, "scale_speed", "none"));
+        this.shouldScaleLoot = getBooleanSafe(json, "scale_loot", entityType, true);
+        this.shouldScaleXP = getBooleanSafe(json, "scale_xp", entityType, true);
     }
 
-    protected abstract float sampleScalingFactor(Random random);
+    protected abstract float sampleScalingFactor(Random random, Difficulty difficulty);
 
-    public final float sample(Random random) {
-        return Mth.clamp(sampleScalingFactor(random), MINIMUM_SCALING, MAXIMUM_SCALING);
+    public final float sample(Random random, Difficulty difficulty) {
+        float value = sampleScalingFactor(random, difficulty);
+        return Mth.clamp(value, MINIMUM_SCALING, MAXIMUM_SCALING);
     }
 
     protected abstract JsonObject serialize(JsonObject json);
@@ -45,9 +53,13 @@ public abstract class ScalingSampler {
     public final JsonElement serialize() {
         JsonObject json = new JsonObject();
         json = serialize(json);
-        json.addProperty("scale_health", scaleHealth.getSerializedName());
-        json.addProperty("scale_damage", scaleDamage.getSerializedName());
-        json.addProperty("scale_speed", scaleSpeed.getSerializedName());
+        if (this.addAttributeModifiers) {
+            json.addProperty("scale_loot", this.shouldScaleLoot);
+            json.addProperty("scale_xp", this.shouldScaleXP);
+            json.addProperty("scale_health", scaleHealth.getSerializedName());
+            json.addProperty("scale_damage", scaleDamage.getSerializedName());
+            json.addProperty("scale_speed", scaleSpeed.getSerializedName());
+        }
         return json;
     }
 
@@ -75,6 +87,14 @@ public abstract class ScalingSampler {
         return scaleSpeed;
     }
 
+    public boolean shouldScaleLoot() {
+        return shouldScaleLoot;
+    }
+
+    public boolean shouldScaleXP() {
+        return shouldScaleXP;
+    }
+
     public static ScalingSampler deserializeSampler(JsonElement jsonElement, String entityType) {
         if (GsonHelper.isNumberValue(jsonElement)) {
             return new StaticScalingSampler(jsonElement.getAsFloat());
@@ -88,6 +108,40 @@ public abstract class ScalingSampler {
             return samplerType.fromJson(jsonElement, entityType);
         }
         throw new JsonParseException("ScalingType must be a NumberValue or JsonObject");
+    }
+
+    protected static void ensureMinSmallerMax(float min, float max, String entityType) {
+        if (min >= max) {
+            throw new JsonParseException("'min_scaling' must be smaller than 'max_scaling' for '" + entityType + "' (can not be equal)");
+        }
+    }
+
+    protected static float getFloatSafe(JsonObject json, String key, String entityType) {
+        return getFloatSafe(json, key, MINIMUM_SCALING, MAXIMUM_SCALING, entityType);
+    }
+
+    protected static float getFloatSafe(JsonObject json, String key, float min, float max, String entityType) {
+        float temp = GsonHelper.getAsFloat(json, key);
+        if (isFloatOutOfBounds(temp, min, max)) {
+            temp = Mth.clamp(temp, min, max);
+            RandomMobSizes.LOGGER.error("'{}' for '{}' is out of range[{} - {}], using {} instead", key, entityType, min, max, temp);
+            //throw new JsonParseException("'" + key + "' for '" + entityType + "' is out of range[" + min + " - " + max + "], using " + temp + " instead");
+        }
+        return temp;
+    }
+
+    protected static boolean isFloatOutOfBounds(float value, float min, float max) {
+        return value < min || value > max;
+    }
+
+    private boolean getBooleanSafe(JsonObject json, String key, String entityType, boolean def) {
+        if (GsonHelper.isBooleanValue(json, key)) {
+            return GsonHelper.getAsBoolean(json, key);
+        } else {
+            RandomMobSizes.LOGGER.error("Expected '{}' to be a Boolean", key);
+            RandomMobSizes.LOGGER.error("Error while parsing config value '{}' for entity '{}', using default value.", key, entityType);
+        }
+        return def;
     }
 
 }

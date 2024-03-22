@@ -1,11 +1,18 @@
-package com.tristankechlo.random_mob_sizes.sampler;
+package com.tristankechlo.random_mob_sizes.sampler.types;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.tristankechlo.random_mob_sizes.sampler.AttributeScalingTypes;
+import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.Difficulty;
 
 import java.util.Random;
 
+/**
+ * creates random floats that are uniformly distributed between min and max,
+ * basically random values between min and max
+ */
 public class UniformScalingSampler extends ScalingSampler {
 
     public static final String TYPE = "uniform";
@@ -20,8 +27,9 @@ public class UniformScalingSampler extends ScalingSampler {
     public UniformScalingSampler(JsonElement jsonElement, String entityType) {
         super(jsonElement, entityType);
         JsonObject json = GsonHelper.convertToJsonObject(jsonElement, entityType);
-        this.min_scaling = GsonHelper.getAsFloat(json, "min_scaling");
-        this.max_scaling = GsonHelper.getAsFloat(json, "max_scaling");
+        this.min_scaling = getFloatSafe(json, "min_scaling", entityType);
+        this.max_scaling = getFloatSafe(json, "max_scaling", entityType);
+        ensureMinSmallerMax(min_scaling, max_scaling, entityType);
     }
 
     public UniformScalingSampler(float min_scaling, float max_scaling, AttributeScalingTypes health, AttributeScalingTypes damage, AttributeScalingTypes speed) {
@@ -31,7 +39,7 @@ public class UniformScalingSampler extends ScalingSampler {
     }
 
     @Override
-    protected float sampleScalingFactor(Random random) {
+    protected float sampleScalingFactor(Random random, Difficulty difficulty) {
         return min_scaling + (float) (random.nextDouble() * (max_scaling - min_scaling));
     }
 

@@ -1,12 +1,12 @@
-package com.tristankechlo.random_mob_sizes.commands;
+package com.tristankechlo.random_mob_sizes.sampler;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.tristankechlo.random_mob_sizes.mixin.CompoundTagInvoker;
-import com.tristankechlo.random_mob_sizes.sampler.GaussianScalingSampler;
-import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
-import com.tristankechlo.random_mob_sizes.sampler.StaticScalingSampler;
-import com.tristankechlo.random_mob_sizes.sampler.UniformScalingSampler;
+import com.tristankechlo.random_mob_sizes.sampler.types.DifficultyScalingSampler;
+import com.tristankechlo.random_mob_sizes.sampler.types.GaussianScalingSampler;
+import com.tristankechlo.random_mob_sizes.sampler.types.StaticScalingSampler;
+import com.tristankechlo.random_mob_sizes.sampler.types.UniformScalingSampler;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.nbt.Tag;
@@ -21,7 +21,8 @@ public enum SamplerTypes implements StringRepresentable {
 
     STATIC(StaticScalingSampler.TYPE, StaticScalingSampler::new),
     UNIFORM(UniformScalingSampler.TYPE, UniformScalingSampler::new),
-    GAUSSIAN(GaussianScalingSampler.TYPE, GaussianScalingSampler::new);
+    GAUSSIAN(GaussianScalingSampler.TYPE, GaussianScalingSampler::new),
+    DIFFICULTY(DifficultyScalingSampler.TYPE, DifficultyScalingSampler::new);
 
     public static final Map<String, SamplerTypes> BY_NAME;
     private final String name;
@@ -33,7 +34,8 @@ public enum SamplerTypes implements StringRepresentable {
     }
 
     public static SamplerTypes byName(String name, SamplerTypes fallback) {
-        return BY_NAME.getOrDefault(name, fallback);
+        SamplerTypes type = BY_NAME.get(name);
+        return type != null ? type : fallback;
     }
 
     public ScalingSampler fromJson(JsonElement json, String entityType) {

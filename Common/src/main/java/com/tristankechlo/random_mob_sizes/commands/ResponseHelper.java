@@ -2,6 +2,7 @@ package com.tristankechlo.random_mob_sizes.commands;
 
 import com.tristankechlo.random_mob_sizes.RandomMobSizes;
 import com.tristankechlo.random_mob_sizes.config.ConfigManager;
+import com.tristankechlo.random_mob_sizes.sampler.SamplerTypes;
 import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -72,14 +73,6 @@ public final class ResponseHelper {
         MutableComponent message = new TextComponent("Scaling for ").withStyle(ChatFormatting.RED)
                 .append(new TextComponent(entityType.getDescription().getString()).withStyle(ChatFormatting.DARK_RED))
                 .append(new TextComponent(" is now allowed!").withStyle(ChatFormatting.RED));
-        sendMessage(source, message, true);
-    }
-
-    public static void sendSuccessStaticScalingTypeSet(CommandSourceStack source, EntityType<?> entityType, float scaling) {
-        MutableComponent message = new TextComponent("Scaling for ").withStyle(ChatFormatting.WHITE)
-                .append(new TextComponent(entityType.getDescription().getString()).withStyle(ChatFormatting.GREEN))
-                .append(new TextComponent(" was set to static scaling of ").withStyle(ChatFormatting.WHITE))
-                .append(new TextComponent(String.valueOf(scaling)).withStyle(ChatFormatting.GREEN));
         sendMessage(source, message, true);
     }
 
