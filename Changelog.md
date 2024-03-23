@@ -1,5 +1,10 @@
 # Changelog
 
+### Version 1.19.4 - 2.1
+
+- fix incorrect creeper model
+- fix cave spiders not having scaling
+
 ### Version 1.19.4 - 2.0
 
 - random scaling is now tied to the world random

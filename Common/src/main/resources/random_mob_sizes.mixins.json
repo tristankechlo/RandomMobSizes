@@ -6,6 +6,7 @@
     "mixins": [
         "ArgumentTypesMixin",
         "CompoundTagInvoker",
+        "entity.CaveSpiderMixin",
         "entity.EntityMixin",
         "entity.EyeHeightMixin",
         "entity.LivingEntityMixin",
@@ -14,7 +15,8 @@
     "client": [
         "client.EntityRenderDispatcherMixin",
         "client.LivingEntityRendererMixin",
-        "geckolib.GeoEntityRendererMixin"
+        "geckolib.GeoEntityRendererMixin",
+        "geckolib.GeoReplacedEntityRendererMixin"
     ],
     "refmap": "random_mob_sizes.refmap.json"
 }
