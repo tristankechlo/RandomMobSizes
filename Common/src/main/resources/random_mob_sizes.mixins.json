@@ -6,6 +6,7 @@
     "mixins": [
         "ArgumentTypesMixin",
         "CompoundTagInvoker",
+        "entity.CaveSpiderMixin",
         "entity.EntityMixin",
         "entity.EyeHeightMixin",
         "entity.LivingEntityMixin",

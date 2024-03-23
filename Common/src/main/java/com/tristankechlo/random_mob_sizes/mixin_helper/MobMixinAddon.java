@@ -1,6 +1,11 @@
 package com.tristankechlo.random_mob_sizes.mixin_helper;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.level.ServerLevelAccessor;
 
 public interface MobMixinAddon {
 
@@ -17,5 +22,8 @@ public interface MobMixinAddon {
     boolean shouldScaleXP$RandomMobSizes();
 
     void setShouldScaleXP$RandomMobSizes(boolean shouldScale);
+
+    // called by CaveSpiderMixin to apply scaling to CaveSpiders
+    void doFinalizeSpawn$RandomMobSizes(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, SpawnGroupData groupData, CompoundTag nbt);
 
 }

@@ -4,6 +4,7 @@
 
 - fix incorrect Piglin eye height
 - fix incorrect creeper model
+- fix cave spiders not having scaling
 
 ### Version 1.18.2 - 2.0
 
