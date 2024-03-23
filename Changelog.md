@@ -3,6 +3,7 @@
 ### Version 1.18.2 - 2.1
 
 - fix incorrect Piglin eye height
+- fix incorrect creeper model
 
 ### Version 1.18.2 - 2.0
 
