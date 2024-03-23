@@ -3,7 +3,6 @@ package com.tristankechlo.random_mob_sizes.mixin_helper;
 import net.minecraft.world.entity.animal.*;
 import net.minecraft.world.entity.monster.*;
 import net.minecraft.world.entity.monster.piglin.Piglin;
-import net.minecraft.world.entity.monster.piglin.PiglinBrute;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.npc.WanderingTrader;
 
@@ -15,10 +14,6 @@ public final class MixinHelper {
     public static final Map<Class<?>, Float> EYE_HEIGHTS = new HashMap<>();
 
     static {
-        // AbstractPiglin.class => 0.9179F
-        EYE_HEIGHTS.put(Piglin.class, 0.9179F);
-        EYE_HEIGHTS.put(PiglinBrute.class, 0.9179F);
-
         // AbstractSkeleton.class => 0.8743F
         EYE_HEIGHTS.put(Skeleton.class, 0.8743F);
         EYE_HEIGHTS.put(Stray.class, 0.8743F);
@@ -49,6 +44,7 @@ public final class MixinHelper {
         EYE_HEIGHTS.put(Endermite.class, 0.4333F);
         EYE_HEIGHTS.put(Fox.class, 0.85F);
         EYE_HEIGHTS.put(Ghast.class, 0.65F);
+        EYE_HEIGHTS.put(Piglin.class, 0.9179F);
         EYE_HEIGHTS.put(Shulker.class, 0.5F);
         EYE_HEIGHTS.put(Silverfish.class, 0.4333F);
         EYE_HEIGHTS.put(SnowGolem.class, 0.8947F);

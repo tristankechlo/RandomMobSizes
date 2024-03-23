@@ -1,5 +1,9 @@
 # Changelog
 
+### Version 1.18.2 - 2.1
+
+- fix incorrect Piglin eye height
+
 ### Version 1.18.2 - 2.0
 
 - random scaling is now tied to the world random
