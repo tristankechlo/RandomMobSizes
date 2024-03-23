@@ -15,7 +15,7 @@ public abstract class GeoReplacedEntityRendererMixin {
 
     @Inject(method = "render*", at = @At(value = "INVOKE",
             target = "Lsoftware/bernie/geckolib3/renderers/geo/GeoReplacedEntityRenderer;preRenderCallback(Lnet/minecraft/world/entity/LivingEntity;Lcom/mojang/blaze3d/vertex/PoseStack;F)V",
-            shift = At.Shift.AFTER))
+            shift = At.Shift.AFTER), remap = false)
     private void preRenderCallback$RandomMobSizes(Entity entity, software.bernie.geckolib3.core.IAnimatable animatable,
                                                   float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, CallbackInfo ci) {
         if (entity instanceof Mob) {
