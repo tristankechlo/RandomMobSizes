@@ -64,7 +64,7 @@ public abstract class MobMixin implements MobMixinAddon {
     }
 
     @Override
-    public void doFinalizeSpawn$RandomMobSizes(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, SpawnGroupData groupData, CompoundTag nbt) {
+    public void doFinalizeSpawn$RandomMobSizes(ServerLevelAccessor level) {
         if (level.isClientSide()) {
             return;
         }
@@ -99,7 +99,7 @@ public abstract class MobMixin implements MobMixinAddon {
 
     @Inject(at = @At("TAIL"), method = "finalizeSpawn")
     private void finalizeSpawn$RandomMobSizes(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, SpawnGroupData data, CompoundTag nbt, CallbackInfoReturnable<SpawnGroupData> cir) {
-        this.doFinalizeSpawn$RandomMobSizes(level, difficulty, spawnType, data, nbt);
+        this.doFinalizeSpawn$RandomMobSizes(level);
     }
 
     private float addModifier$RandomMobSizes(Attribute attribute, float scaling, boolean ceil) {

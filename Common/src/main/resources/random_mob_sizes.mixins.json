@@ -6,6 +6,8 @@
     "mixins": [
         "ArgumentTypesMixin",
         "CompoundTagInvoker",
+        "SpawnEggItemMixin",
+        "entity.AnimalMixin",
         "entity.CaveSpiderMixin",
         "entity.EntityMixin",
         "entity.EyeHeightMixin",
