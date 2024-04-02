@@ -2,6 +2,7 @@ package com.tristankechlo.random_mob_sizes.mixin.entity;
 
 import com.tristankechlo.random_mob_sizes.mixin_helper.MobMixinAddon;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnGroupData;
@@ -19,7 +20,7 @@ public abstract class CaveSpiderMixin {
     private void finalizeSpawn$RandomMobSizes(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, SpawnGroupData groupData, CompoundTag nbt, CallbackInfoReturnable<SpawnGroupData> cir) {
         // finalizeSpawn in CaveSpider.class does not call super method where scaling would be applied
         // call custom doFinalizeSpawn instead
-        ((MobMixinAddon) this).doFinalizeSpawn$RandomMobSizes(level, difficulty, spawnType, groupData, nbt);
+        ((MobMixinAddon) this).doFinalizeSpawn$RandomMobSizes(level);
     }
 
 }

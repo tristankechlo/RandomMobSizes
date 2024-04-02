@@ -6,11 +6,13 @@
     "mixins": [
         "ArgumentTypesMixin",
         "CompoundTagInvoker",
+        "entity.AnimalMixin",
         "entity.CaveSpiderMixin",
         "entity.EntityMixin",
         "entity.EyeHeightMixin",
         "entity.LivingEntityMixin",
         "entity.MobMixin",
+        "SpawnEggItemMixin",
         "geckolib.GeoReplacedEntityRendererMixin"
     ],
     "client": [
