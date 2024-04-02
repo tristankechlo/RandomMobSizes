@@ -4,6 +4,7 @@
 
 - fix incorrect creeper model
 - fix cave spiders not having scaling
+- fix child mob scaling
 
 ### Version 1.19.4 - 2.0
 

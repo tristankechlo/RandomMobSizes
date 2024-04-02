@@ -19,7 +19,7 @@ public abstract class CaveSpiderMixin {
     private void finalizeSpawn$RandomMobSizes(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, SpawnGroupData groupData, CompoundTag nbt, CallbackInfoReturnable<SpawnGroupData> cir) {
         // finalizeSpawn in CaveSpider.class does not call super method where scaling would be applied
         // call custom doFinalizeSpawn instead
-        ((MobMixinAddon) this).doFinalizeSpawn$RandomMobSizes(level, difficulty, spawnType, groupData, nbt);
+        ((MobMixinAddon) this).doFinalizeSpawn$RandomMobSizes(level);
     }
 
 }
