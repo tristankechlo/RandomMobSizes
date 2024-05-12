@@ -59,8 +59,8 @@ jobs:
       webhook-url: ${{ secrets.DISCORD_WEBHOOK_URL }}
     with:
       changelog: ${{ needs.prepare.outputs.changelog }}
-      mc-version: ${{ needs.build-release.outputs.mc-version }}
-      mod-version: ${{ needs.build-release.outputs.mod-version }}
+      mc-version: ${{ needs.prepare.outputs.mc-version }}
+      mod-version: ${{ needs.prepare.outputs.mod-version }}
       color: 27392
       ping: "<@1052731702927163453>"
       curseforge: "https://www.curseforge.com/minecraft/mc-mods/random-mob-sizes"
