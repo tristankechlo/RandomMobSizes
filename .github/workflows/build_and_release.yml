@@ -1,0 +1,67 @@
+name: Build and Publish Release
+
+on:
+  release:
+    types: [ published ]
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      mc-version: ${{ steps.properties.outputs.minecraft_version }}
+      mod-version: ${{ steps.properties.outputs.mod_version }}
+      version-range: ${{ steps.properties.outputs.version_range }}
+      changelog: ${{ steps.changelog.outputs.changelog }}
+    steps:
+      - name: calculate versions
+        id: properties
+        uses: christian-draeger/read-properties@1.1.1
+        with:
+          path: './gradle.properties'
+          properties: 'minecraft_version mod_version version_range'
+      - name: Changelog
+        id: changelog
+        shell: bash
+        run: |
+          echo "changelog=${cat ./Changelog.latest.md}" >> $GITHUB_OUTPUT
+          echo '# Changelog\n\n${cat ./Changelog.latest.md}' >> $GITHUB_STEP_SUMMARY
+
+  build-release:
+    needs: prepare
+    uses: tristankechlo/tristankechlo/.github/workflows/build_and_release_mod.yml@main
+    secrets:
+      curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+      modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+    with:
+      curseforge-id: 555230
+      modrinth-id: "ccz0Dj7d"
+      modid: "randommobsizes"
+      mc-version: ${{ needs.prepare.mc-version }}
+      mod-version: ${{ needs.prepare.outputs.mod-version }}
+      changelog: ${{ needs.prepare.outputs.changelog }}
+      version-range: ${{ needs.prepare.outputs.version-range }}
+
+  send-discord:
+    needs: build-release
+    uses: tristankechlo/tristankechlo/.github/workflows/send_discord.yml@main
+    secrets:
+      webhook-url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+    with:
+      changelog: ${{ needs.prepare.outputs.changelog }}
+      mc-version: ${{ needs.build-release.outputs.mc-version }}
+      mod-version: ${{ needs.build-release.outputs.mod-version }}
+      color: 27392
+      ping: "<@1052731702927163453>"
+      curseforge: "https://www.curseforge.com/minecraft/mc-mods/random-mob-sizes"
+      modrinth: "https://modrinth.com/mod/random-mob-sizes"
+      description: "Available for **Forge**, **Fabric** and **NeoForge**"
+      avatar: "https://cdn.modrinth.com/data/ccz0Dj7d/38df3132103baf5d4ef4a3f41e7ce6b305dfd3c6.png"
+
+  reset-changelog:
+    needs: send-discord
+    permissions:
+      contents: write
+    uses: tristankechlo/tristankechlo/.github/workflows/reset_changelog.yml@main
+    with:
+      changelog: ./Changelog.latest.md
+      full-changelog: ./Changelog.md
