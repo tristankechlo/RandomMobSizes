@@ -13,22 +13,33 @@ jobs:
       version-range: ${{ steps.properties.outputs.version_range }}
       changelog: ${{ steps.changelog.outputs.changelog }}
     steps:
+      - name: Checkout Sourcecode
+        uses: actions/checkout@v4
       - name: calculate versions
         id: properties
         uses: christian-draeger/read-properties@1.1.1
         with:
-          path: './gradle.properties'
+          path: 'gradle.properties'
           properties: 'minecraft_version mod_version version_range'
       - name: Changelog
         id: changelog
         shell: bash
         run: |
-          echo "changelog=${cat ./Changelog.latest.md}" >> $GITHUB_OUTPUT
-          echo '# Changelog\n\n${cat ./Changelog.latest.md}' >> $GITHUB_STEP_SUMMARY
+          {
+            echo 'changelog<<EOF'
+            cat ./Changelog.latest.md
+            echo 
+            echo EOF
+          } >> $GITHUB_OUTPUT
+          echo "# Changelog" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "$(cat ./Changelog.latest.md)" >> $GITHUB_STEP_SUMMARY
 
   build-release:
     needs: prepare
     uses: tristankechlo/tristankechlo/.github/workflows/build_and_release_mod.yml@main
+    permissions:
+      contents: write
     secrets:
       curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
       modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
