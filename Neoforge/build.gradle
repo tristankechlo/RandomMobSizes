@@ -44,9 +44,4 @@ tasks.withType(Javadoc).matching(notNeoTask).configureEach {
 
 processResources {
     from project(":Common").sourceSets.main.resources
-    inputs.property "version", project.version
-
-    filesMatching("META-INF/mods.toml") {
-        expand "version": project.version
-    }
 }

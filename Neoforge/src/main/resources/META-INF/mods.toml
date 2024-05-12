@@ -25,6 +25,6 @@ showAsResourcePack=false
 [[dependencies.random_mob_sizes]]
     modId="minecraft"
     type="required"
-    versionRange="[1.20.4,1.21)"
+    versionRange="${version_range}"
     ordering="NONE"
     side="BOTH"

@@ -47,7 +47,7 @@ jobs:
       curseforge-id: 555230
       modrinth-id: "ccz0Dj7d"
       modid: "randommobsizes"
-      mc-version: ${{ needs.prepare.mc-version }}
+      mc-version: ${{ needs.prepare.outputs.mc-version }}
       mod-version: ${{ needs.prepare.outputs.mod-version }}
       changelog: ${{ needs.prepare.outputs.changelog }}
       version-range: ${{ needs.prepare.outputs.version-range }}
