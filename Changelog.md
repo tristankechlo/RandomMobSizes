@@ -2,7 +2,7 @@
 
 ### Version 1.18.2 - 2.1
 
-- fix incorrect Piglin eye height
+- fix incorrect piglin eye height
 - fix incorrect creeper model
 - fix cave spiders not having scaling
 - fix child mob scaling
