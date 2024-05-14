@@ -27,13 +27,13 @@ jobs:
         run: |
           {
             echo 'changelog<<EOF'
-            cat ./Changelog.latest.md
+            echo "${{ github.event.release.body }}"
             echo 
             echo EOF
           } >> $GITHUB_OUTPUT
-          echo "# Changelog" >> $GITHUB_STEP_SUMMARY
+          echo "# Changelog ${{ steps.properties.outputs.minecraft_version }} - ${{ steps.properties.outputs.mod_version }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "$(cat ./Changelog.latest.md)" >> $GITHUB_STEP_SUMMARY
+          echo "${{ github.event.release.body }}" >> $GITHUB_STEP_SUMMARY
 
   build-release:
     needs: prepare
@@ -51,9 +51,9 @@ jobs:
       mod-version: ${{ needs.prepare.outputs.mod-version }}
       changelog: ${{ needs.prepare.outputs.changelog }}
       version-range: ${{ needs.prepare.outputs.version-range }}
-      forge: ${{ !contains(github.event.release.name, '[QUIET]') }}
-      fabric: ${{ !contains(github.event.release.name, '[QUIET]') }}
-      neoforge: ${{ !contains(github.event.release.name, '[QUIET]') }}
+      forge: ${{ contains(github.event.release.name, '[RELEASE]') }}
+      fabric: ${{ contains(github.event.release.name, '[RELEASE]') }}
+      neoforge: ${{ contains(github.event.release.name, '[RELEASE]') }}
 
   send-discord:
     needs: [ "prepare", "build-release" ]
@@ -61,21 +61,14 @@ jobs:
     secrets:
       WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
     with:
+      released: ${{ contains(github.event.release.name, '[RELEASE]') }}
       changelog: "${{ needs.prepare.outputs.changelog }}"
-      mc-version: "${{ needs.prepare.outputs.mc-version }}"
-      mod-version: "${{ needs.prepare.outputs.mod-version }}"
+      version: "${{ needs.prepare.outputs.mc-version }} - ${{ needs.prepare.outputs.mod-version }}"
       color: 27392
-      ping: "<@1052731702927163453>"
+      content: "${{ contains(github.event.release.name, '[RELEASE]') && '<@&1052731702927163453>' || ''}}"
+      title: "New version for RandomMobSizes just released :exclamation:"
+      description: "${{ contains(github.event.release.name, '[RELEASE]') && 'The update is available for *Forge*, *Fabric* and *NeoForge*' || 'The update will *not* be released to Curseforge or Modrinth'}}"
       curseforge: "https://www.curseforge.com/minecraft/mc-mods/random-mob-sizes"
       modrinth: "https://modrinth.com/mod/random-mob-sizes"
-      description: "Available for **Forge**, **Fabric** and **NeoForge**"
-      avatar: "https://cdn.modrinth.com/data/ccz0Dj7d/38df3132103baf5d4ef4a3f41e7ce6b305dfd3c6.png"
-
-  reset-changelog:
-    needs: send-discord
-    permissions:
-      contents: write
-    uses: tristankechlo/tristankechlo/.github/workflows/reset_changelog.yml@main
-    with:
-      changelog: ./Changelog.latest.md
-      full-changelog: ./Changelog.md
+      github: "${{ github.event.release.html_url }}"
+      thumbnail: "https://cdn.modrinth.com/data/ccz0Dj7d/38df3132103baf5d4ef4a3f41e7ce6b305dfd3c6.png"
