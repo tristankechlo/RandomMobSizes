@@ -67,7 +67,7 @@ jobs:
       color: 27392
       content: "${{ contains(github.event.release.name, '[RELEASE]') && '<@&1052731702927163453>' || ''}}"
       title: "New version for RandomMobSizes just released :exclamation:"
-      description: "The update is available for *Forge* and  *Fabric*"
+      description: "${{ contains(github.event.release.name, '[RELEASE]') && 'The update is available for *Forge* and *Fabric*' || 'The update will *not* be released to Curseforge or Modrinth'}}"
       curseforge: "https://www.curseforge.com/minecraft/mc-mods/random-mob-sizes"
       modrinth: "https://modrinth.com/mod/random-mob-sizes"
       github: "${{ github.event.release.html_url }}"
