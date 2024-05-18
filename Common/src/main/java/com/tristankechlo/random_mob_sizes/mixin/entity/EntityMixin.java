@@ -1,12 +1,11 @@
-package com.tristankechlo.random_mob_sizes.mixin;
+package com.tristankechlo.random_mob_sizes.mixin.entity;
 
-import com.tristankechlo.random_mob_sizes.mixin_access.MobMixinAddon;
+import com.tristankechlo.random_mob_sizes.mixin_helper.MobMixinAddon;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.entity.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 

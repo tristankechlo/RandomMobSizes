@@ -24,6 +24,6 @@ description = '''configure mobs to spawn in different sizes'''
 [[dependencies.random_mob_sizes]]
     modId = "minecraft"
     mandatory = true
-    versionRange = "[1.20,1.21)"
+    versionRange = "${version_range}"
     ordering = "NONE"
     side = "BOTH"

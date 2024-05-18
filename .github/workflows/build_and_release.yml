@@ -1,0 +1,73 @@
+name: Build and Publish Release
+
+on:
+  release:
+    types: [ published ]
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      mc-version: ${{ steps.properties.outputs.minecraft_version }}
+      mod-version: ${{ steps.properties.outputs.mod_version }}
+      version-range: ${{ steps.properties.outputs.version_range }}
+      changelog: ${{ steps.changelog.outputs.changelog }}
+    steps:
+      - name: Checkout Sourcecode
+        uses: actions/checkout@v4
+      - name: calculate versions
+        id: properties
+        uses: christian-draeger/read-properties@1.1.1
+        with:
+          path: 'gradle.properties'
+          properties: 'minecraft_version mod_version version_range'
+      - name: Changelog
+        id: changelog
+        shell: bash
+        run: |
+          {
+            echo 'changelog<<EOF'
+            echo "${{ github.event.release.body }}"
+            echo 
+            echo EOF
+          } >> $GITHUB_OUTPUT
+          echo "# Changelog ${{ steps.properties.outputs.minecraft_version }} - ${{ steps.properties.outputs.mod_version }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "${{ github.event.release.body }}" >> $GITHUB_STEP_SUMMARY
+  build-release:
+    needs: prepare
+    uses: tristankechlo/tristankechlo/.github/workflows/build_and_release_mod.yml@main
+    permissions:
+      contents: write
+    secrets:
+      curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+      modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+    with:
+      curseforge-id: 555230
+      modrinth-id: "ccz0Dj7d"
+      modid: "randommobsizes"
+      mc-version: ${{ needs.prepare.outputs.mc-version }}
+      mod-version: ${{ needs.prepare.outputs.mod-version }}
+      changelog: ${{ needs.prepare.outputs.changelog }}
+      version-range: ${{ needs.prepare.outputs.version-range }}
+      forge: ${{ contains(github.event.release.name, '[RELEASE]') }}
+      fabric: ${{ contains(github.event.release.name, '[RELEASE]') }}
+      neoforge: false
+
+  send-discord:
+    needs: [ "prepare", "build-release" ]
+    uses: tristankechlo/tristankechlo/.github/workflows/send_discord.yml@main
+    secrets:
+      WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+    with:
+      released: ${{ contains(github.event.release.name, '[RELEASE]') }}
+      changelog: "${{ needs.prepare.outputs.changelog }}"
+      version: "${{ needs.prepare.outputs.mc-version }} - ${{ needs.prepare.outputs.mod-version }}"
+      color: 27392
+      content: "${{ contains(github.event.release.name, '[RELEASE]') && '<@&1052731702927163453>' || ''}}"
+      title: "New version for RandomMobSizes just released :exclamation:"
+      description: "${{ contains(github.event.release.name, '[RELEASE]') && 'The update is available for *Forge* and *Fabric*' || 'The update will *not* be released to Curseforge or Modrinth'}}"
+      curseforge: "https://www.curseforge.com/minecraft/mc-mods/random-mob-sizes"
+      modrinth: "https://modrinth.com/mod/random-mob-sizes"
+      github: "${{ github.event.release.html_url }}"
+      thumbnail: "https://cdn.modrinth.com/data/ccz0Dj7d/38df3132103baf5d4ef4a3f41e7ce6b305dfd3c6.png"

@@ -78,14 +78,6 @@ public final class ResponseHelper {
         sendMessage(source, message, true);
     }
 
-    public static void sendSuccessStaticScalingTypeSet(CommandSourceStack source, EntityType<?> entityType, float scaling) {
-        MutableComponent message = Component.literal("Scaling for ").withStyle(ChatFormatting.WHITE)
-                .append(Component.literal(entityType.getDescription().getString()).withStyle(ChatFormatting.GREEN))
-                .append(Component.literal(" was set to static scaling of ").withStyle(ChatFormatting.WHITE))
-                .append(Component.literal(String.valueOf(scaling)).withStyle(ChatFormatting.GREEN));
-        sendMessage(source, message, true);
-    }
-
     public static void sendSuccessScalingTypeRemoved(CommandSourceStack source, EntityType<?> entityType) {
         MutableComponent message = Component.literal("Scaling for ").withStyle(ChatFormatting.WHITE)
                 .append(Component.literal(entityType.getDescription().getString()).withStyle(ChatFormatting.GREEN))

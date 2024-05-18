@@ -6,32 +6,19 @@
     "mixins": [
         "ArgumentTypesMixin",
         "CompoundTagInvoker",
-        "EntityMixin",
-        "LivingEntityMixin",
-        "MobMixin",
-        "entities.AbstractPiglinMixin",
-        "entities.AbstractSkeletonMixin",
-        "entities.AbstractVillagerMixin",
-        "entities.CaveSpiderMixin",
-        "entities.CowMixin",
-        "entities.DolphinMixin",
-        "entities.EndermanMixin",
-        "entities.EndermiteMixin",
-        "entities.FoxMixin",
-        "entities.GhastMixin",
-        "entities.ShulkerMixin",
-        "entities.SilverfishMixin",
-        "entities.SnowGolemMixin",
-        "entities.SpiderMixin",
-        "entities.WitchMixin",
-        "entities.WitherSkeletonMixin",
-        "entities.ZombieMixin",
-        "entities.ZombifiedPiglinMixin"
+        "SpawnEggItemMixin",
+        "entity.AnimalMixin",
+        "entity.CaveSpiderMixin",
+        "entity.EntityMixin",
+        "entity.EyeHeightMixin",
+        "entity.LivingEntityMixin",
+        "entity.MobMixin"
     ],
     "client": [
-        "EntityRenderDispatcherMixin",
-        "LivingEntityRendererMixin",
-        "geckolib.GeoEntityRendererMixin"
+        "client.EntityRenderDispatcherMixin",
+        "client.LivingEntityRendererMixin",
+        "geckolib.GeoEntityRendererMixin",
+        "geckolib.GeoReplacedEntityRendererMixin"
     ],
     "refmap": "random_mob_sizes.refmap.json"
 }

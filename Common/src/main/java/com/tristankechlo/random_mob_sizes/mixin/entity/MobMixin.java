@@ -1,8 +1,8 @@
-package com.tristankechlo.random_mob_sizes.mixin;
+package com.tristankechlo.random_mob_sizes.mixin.entity;
 
 import com.tristankechlo.random_mob_sizes.RandomMobSizes;
 import com.tristankechlo.random_mob_sizes.config.RandomMobSizesConfig;
-import com.tristankechlo.random_mob_sizes.mixin_access.MobMixinAddon;
+import com.tristankechlo.random_mob_sizes.mixin_helper.MobMixinAddon;
 import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -63,8 +63,8 @@ public abstract class MobMixin implements MobMixinAddon {
         ((Mob) (Object) this).getEntityData().set(SCALE_XP$RANDOM_MOB_SIZES, shouldScale);
     }
 
-    @Inject(at = @At("TAIL"), method = "finalizeSpawn")
-    private void finalizeSpawn$RandomMobSizes(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, SpawnGroupData data, CompoundTag nbt, CallbackInfoReturnable<SpawnGroupData> cir) {
+    @Override
+    public void doFinalizeSpawn$RandomMobSizes(ServerLevelAccessor level) {
         if (level.isClientSide()) {
             return;
         }
@@ -97,13 +97,17 @@ public abstract class MobMixin implements MobMixinAddon {
         this.setMobScaling$RandomMobSizes(scaling);
     }
 
+    @Inject(at = @At("TAIL"), method = "finalizeSpawn")
+    private void finalizeSpawn$RandomMobSizes(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, SpawnGroupData data, CompoundTag nbt, CallbackInfoReturnable<SpawnGroupData> cir) {
+        this.doFinalizeSpawn$RandomMobSizes(level);
+    }
+
     private float addModifier$RandomMobSizes(Attribute attribute, float scaling, boolean ceil) {
         AttributeInstance instance = ((LivingEntity) (Object) this).getAttribute(attribute);
         if (instance != null) {
             double baseValue = instance.getBaseValue();
             float newValue = (float) (ceil ? Math.ceil(baseValue * scaling) : baseValue * scaling);
             instance.setBaseValue(newValue);
-            //RandomMobSizes.LOGGER.info("Scaled '{}' of '{}' from '{}' to '{}'", attribute.getDescriptionId(), this.getClass().getSimpleName(), baseValue, instance.getBaseValue());
             return newValue;
         }
         return 1.0F;

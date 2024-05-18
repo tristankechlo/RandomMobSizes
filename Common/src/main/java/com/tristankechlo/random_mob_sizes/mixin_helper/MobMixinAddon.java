@@ -1,6 +1,7 @@
-package com.tristankechlo.random_mob_sizes.mixin_access;
+package com.tristankechlo.random_mob_sizes.mixin_helper;
 
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.world.level.ServerLevelAccessor;
 
 public interface MobMixinAddon {
 
@@ -17,5 +18,8 @@ public interface MobMixinAddon {
     boolean shouldScaleXP$RandomMobSizes();
 
     void setShouldScaleXP$RandomMobSizes(boolean shouldScale);
+
+    // called by CaveSpiderMixin to apply scaling to CaveSpiders
+    void doFinalizeSpawn$RandomMobSizes(ServerLevelAccessor level);
 
 }

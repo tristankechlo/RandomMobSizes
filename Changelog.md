@@ -1,5 +1,12 @@
 # Changelog
 
+### Version 1.20.1 - 2.1
+
+- fix incorrect creeper model
+- fix cave spiders not having scaling
+- fix child mobs not having scaling
+- improved mixin (results in smaller file size)
+
 ### Version 1.20.1 - 2.0
 
 - random scaling is now tied to the world random
