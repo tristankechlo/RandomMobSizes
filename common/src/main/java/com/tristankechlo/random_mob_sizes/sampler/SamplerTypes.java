@@ -2,7 +2,7 @@ package com.tristankechlo.random_mob_sizes.sampler;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.tristankechlo.random_mob_sizes.mixin.CompoundTagInvoker;
+import com.tristankechlo.random_mob_sizes.mixin.CompoundTagAccessor;
 import com.tristankechlo.random_mob_sizes.sampler.types.DifficultyScalingSampler;
 import com.tristankechlo.random_mob_sizes.sampler.types.GaussianScalingSampler;
 import com.tristankechlo.random_mob_sizes.sampler.types.StaticScalingSampler;
@@ -42,7 +42,7 @@ public enum SamplerTypes implements StringRepresentable {
     }
 
     public ScalingSampler fromNBT(CompoundTag nbt, String entityType) {
-        Map<String, Tag> map = ((CompoundTagInvoker) nbt).getEntries();
+        Map<String, Tag> map = ((CompoundTagAccessor) nbt).getEntries();
         JsonObject json = new JsonObject();
         for (Map.Entry<String, Tag> entry : map.entrySet()) {
             final int id = entry.getValue().getId();

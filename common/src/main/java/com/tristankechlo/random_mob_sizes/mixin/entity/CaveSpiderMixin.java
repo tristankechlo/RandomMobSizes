@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class CaveSpiderMixin {
 
     @Inject(method = "finalizeSpawn", at = @At("HEAD"))
-    private void finalizeSpawn$RandomMobSizes(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, SpawnGroupData groupData, CompoundTag nbt, CallbackInfoReturnable<SpawnGroupData> cir) {
+    private void finalizeSpawn$RandomMobSizes(ServerLevelAccessor level, DifficultyInstance $$1, MobSpawnType $$2, SpawnGroupData $$3, CallbackInfoReturnable<SpawnGroupData> cir) {
         // finalizeSpawn in CaveSpider.class does not call super method where scaling would be applied
         // call custom doFinalizeSpawn instead
         ((MobMixinAddon) this).doFinalizeSpawn$RandomMobSizes(level);
