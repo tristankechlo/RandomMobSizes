@@ -17,6 +17,17 @@ pluginManagement {
         exclusiveContent {
             forRepository {
                 maven {
+                    name = 'Forge'
+                    url = uri("https://maven.minecraftforge.net")
+                }
+            }
+            filter {
+                includeGroup("net.minecraftforge.gradle")
+            }
+        }
+        exclusiveContent {
+            forRepository {
+                maven {
                     name = 'NeoForge'
                     url = uri("https://maven.neoforged.net/releases")
                 }
@@ -46,4 +57,4 @@ plugins {
 }
 
 rootProject.name = 'RandomMobSizes'
-include("common", "fabric", "neoforge")
+include("common", "fabric", "forge", "neoforge")
