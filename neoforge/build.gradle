@@ -20,5 +20,5 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
     implementation "net.neoforged:neoforge:${neoforge_version}"
-    implementation "software.bernie.geckolib:geckolib-neoforge-${geckolib_mc_version}:${geckolib_version_neoforge}"
+    //implementation "software.bernie.geckolib:geckolib-neoforge-${geckolib_mc_version}:${geckolib_version_neoforge}"
 }
