@@ -18,6 +18,8 @@ public final class ResponseHelper {
         MutableComponent clickableFile = clickableConfig();
         MutableComponent message = Component.literal("Config-file can be found here: ").append(clickableFile);
         sendMessage(source, message.withStyle(ChatFormatting.WHITE), false);
+        MutableComponent message2 = Component.literal("Click on the underlined filename to copy the full path to your clipboard.");
+        sendMessage(source, message2.withStyle(ChatFormatting.WHITE), false);
     }
 
     public static void sendMessageConfigReload(CommandSourceStack source, boolean success) {
@@ -46,7 +48,7 @@ public final class ResponseHelper {
         String filePath = ConfigManager.getConfigPath();
         MutableComponent mutableComponent = Component.literal(fileName);
         mutableComponent.withStyle(ChatFormatting.GREEN, ChatFormatting.UNDERLINE);
-        mutableComponent.withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, filePath)));
+        mutableComponent.withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, filePath)));
         return mutableComponent;
     }
 
