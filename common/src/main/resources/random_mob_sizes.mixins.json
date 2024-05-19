@@ -6,12 +6,11 @@
     "mixins": [
         "ArgumentTypesMixin",
         "CompoundTagAccessor",
+        "SpawnEggItemMixin",
         "entity.AnimalMixin",
         "entity.CaveSpiderMixin",
-        "entity.EyeHeightMixin",
         "entity.LivingEntityMixin",
-        "entity.MobMixin",
-        "SpawnEggItemMixin"
+        "entity.MobMixin"
     ],
     "client": [
     ],
