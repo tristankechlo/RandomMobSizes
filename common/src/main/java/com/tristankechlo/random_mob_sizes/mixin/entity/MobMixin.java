@@ -4,6 +4,7 @@ import com.tristankechlo.random_mob_sizes.RandomMobSizes;
 import com.tristankechlo.random_mob_sizes.config.RandomMobSizesConfig;
 import com.tristankechlo.random_mob_sizes.mixin_helper.MobMixinAddon;
 import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -24,24 +25,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Mob.class)
 public abstract class MobMixin implements MobMixinAddon {
 
-    private static final EntityDataAccessor<Float> SCALING$RANDOM_MOB_SIZES = SynchedEntityData.defineId(Mob.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Boolean> SCALE_LOOT$RANDOM_MOB_SIZES = SynchedEntityData.defineId(Mob.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> SCALE_XP$RANDOM_MOB_SIZES = SynchedEntityData.defineId(Mob.class, EntityDataSerializers.BOOLEAN);
-
-    @Override
-    public float getMobScaling$RandomMobSizes() {
-        return ((Mob) (Object) this).getEntityData().get(SCALING$RANDOM_MOB_SIZES);
-    }
-
-    @Override
-    public void setMobScaling$RandomMobSizes(float scale) {
-        ((Mob) (Object) this).getEntityData().set(SCALING$RANDOM_MOB_SIZES, scale);
-    }
-
-    @Override
-    public EntityDataAccessor<Float> getTracker$RandomMobSizes() {
-        return SCALING$RANDOM_MOB_SIZES;
-    }
 
     @Override
     public boolean shouldScaleLoot$RandomMobSizes() {
@@ -94,15 +79,15 @@ public abstract class MobMixin implements MobMixinAddon {
         this.setShouldScaleLoot$RandomMobSizes(shouldScaleLoot);
         boolean shouldScaleXP = sampler == null || sampler.shouldScaleXP();
         this.setShouldScaleXP$RandomMobSizes(shouldScaleXP);
-        this.setMobScaling$RandomMobSizes(scaling);
+        this.addModifier$RandomMobSizes(Attributes.SCALE, scaling, false);
     }
 
     @Inject(at = @At("TAIL"), method = "finalizeSpawn")
-    private void finalizeSpawn$RandomMobSizes(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, SpawnGroupData data, CompoundTag nbt, CallbackInfoReturnable<SpawnGroupData> cir) {
+    private void finalizeSpawn$RandomMobSizes(ServerLevelAccessor level, DifficultyInstance $$1, MobSpawnType $$2, SpawnGroupData $$3, CallbackInfoReturnable<SpawnGroupData> cir) {
         this.doFinalizeSpawn$RandomMobSizes(level);
     }
 
-    private float addModifier$RandomMobSizes(Attribute attribute, float scaling, boolean ceil) {
+    private float addModifier$RandomMobSizes(Holder<Attribute> attribute, float scaling, boolean ceil) {
         AttributeInstance instance = ((LivingEntity) (Object) this).getAttribute(attribute);
         if (instance != null) {
             double baseValue = instance.getBaseValue();
@@ -114,17 +99,13 @@ public abstract class MobMixin implements MobMixinAddon {
     }
 
     @Inject(at = @At("TAIL"), method = "defineSynchedData")
-    private void defineSyncedData$RandomMobSizes(CallbackInfo ci) {
-        ((Mob) (Object) this).getEntityData().define(SCALING$RANDOM_MOB_SIZES, 1.0F);
-        ((Mob) (Object) this).getEntityData().define(SCALE_LOOT$RANDOM_MOB_SIZES, true);
-        ((Mob) (Object) this).getEntityData().define(SCALE_XP$RANDOM_MOB_SIZES, true);
+    private void defineSyncedData$RandomMobSizes(SynchedEntityData.Builder builder, CallbackInfo ci) {
+        builder.define(SCALE_LOOT$RANDOM_MOB_SIZES, true);
+        builder.define(SCALE_XP$RANDOM_MOB_SIZES, true);
     }
 
     @Inject(at = @At("TAIL"), method = "readAdditionalSaveData")
     private void readAdditionalSaveData$RandomMobSizes(CompoundTag tag, CallbackInfo ci) {
-        if (tag.contains("ScaleFactor")) {
-            this.setMobScaling$RandomMobSizes(tag.getFloat("ScaleFactor"));
-        }
         if (tag.contains("ScaleLoot")) {
             this.setShouldScaleLoot$RandomMobSizes(tag.getBoolean("ScaleLoot"));
         }
@@ -135,7 +116,6 @@ public abstract class MobMixin implements MobMixinAddon {
 
     @Inject(at = @At("TAIL"), method = "addAdditionalSaveData")
     private void addAdditionalSaveData$RandomMobSizes(CompoundTag tag, CallbackInfo ci) {
-        tag.putFloat("ScaleFactor", this.getMobScaling$RandomMobSizes());
         tag.putBoolean("ScaleLoot", this.shouldScaleLoot$RandomMobSizes());
         tag.putBoolean("ScaleExperience", this.shouldScaleXP$RandomMobSizes());
     }
@@ -145,11 +125,11 @@ public abstract class MobMixin implements MobMixinAddon {
         if (!RandomMobSizesConfig.keepScalingOnConversion() || !RandomMobSizes.isEntityTypeAllowed(type)) {
             return;
         }
-        float scaling = ((MobMixinAddon) this).getMobScaling$RandomMobSizes();
+        float scaling = ((LivingEntity) (Object) this).getScale();
         boolean scaleLoot = ((MobMixinAddon) this).shouldScaleLoot$RandomMobSizes();
         boolean scaleXP = ((MobMixinAddon) this).shouldScaleXP$RandomMobSizes();
         T entity = cir.getReturnValue();
-        ((MobMixinAddon) entity).setMobScaling$RandomMobSizes(scaling);
+        this.addModifier$RandomMobSizes(Attributes.SCALE, scaling, false);
         ((MobMixinAddon) entity).setShouldScaleLoot$RandomMobSizes(scaleLoot);
         ((MobMixinAddon) entity).setShouldScaleXP$RandomMobSizes(scaleXP);
         RandomMobSizes.LOGGER.info("Converted '{}' to '{}' with scaling '{}'", this.getClass().getSimpleName(), entity.getClass().getSimpleName(), scaling);

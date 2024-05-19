@@ -28,7 +28,7 @@ public abstract class LivingEntityMixin {
         if (!mob.shouldScaleLoot$RandomMobSizes()) { // loot manipulation disabled for this mob
             return;
         }
-        float scaling = mob.getMobScaling$RandomMobSizes();
+        float scaling = entity.getScale();
         RandomSource random = params.getLevel().getRandom();
         Consumer<ItemStack> stackSplitter = LootTable.createStackSplitter(params.getLevel(), spawnAtLocation);
         instance.getRandomItems(params, seed, (stack) -> handleLoot$RandomMobSizes(scaling, random, stack, stackSplitter));
@@ -62,7 +62,7 @@ public abstract class LivingEntityMixin {
         if (!mob.shouldScaleLoot$RandomMobSizes()) { // xp manipulation disabled for this mob
             return xp;
         }
-        float scaling = mob.getMobScaling$RandomMobSizes();
+        float scaling = entity.getScale();
         return Math.round(xp * scaling);
     }
 

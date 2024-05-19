@@ -1,5 +1,5 @@
 plugins {
-    id 'idea'
+    id 'rms-loader'
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
     id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
 }
@@ -12,16 +12,10 @@ base {
 mixin {
     add(sourceSets.main, "${mod_id}.refmap.json")
     config("${mod_id}.mixins.json")
-    //config("${mod_id}.forge.mixins.json")
 }
 
 minecraft {
     mappings channel: 'official', version: minecraft_version
-
-    if (file('src/main/resources/META-INF/accesstransformer.cfg').exists()) {
-        accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-        project.logger.debug('Forge Access Transformers are enabled for this project.')
-    }
 
     runs {
         client {
@@ -33,7 +27,7 @@ minecraft {
             mods {
                 modClientRun {
                     source sourceSets.main
-                    source project(":Common").sourceSets.main
+                    source project(":common").sourceSets.main
                 }
             }
         }
@@ -47,7 +41,7 @@ minecraft {
             mods {
                 modServerRun {
                     source sourceSets.main
-                    source project(":Common").sourceSets.main
+                    source project(":common").sourceSets.main
                 }
             }
         }
@@ -56,24 +50,6 @@ minecraft {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    compileOnly project(":Common")
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
     implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${geckolib_mc_version}:${geckolib_version_forge}")
-}
-
-tasks.withType(JavaCompile).configureEach {
-    source(project(":Common").sourceSets.main.allSource)
-}
-tasks.withType(Javadoc).configureEach {
-    source(project(":Common").sourceSets.main.allJava)
-}
-
-processResources {
-    from project(":Common").sourceSets.main.resources
-}
-
-sourceSets.each {
-    def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
-    it.output.resourcesDir = dir
-    it.java.destinationDirectory = dir
 }

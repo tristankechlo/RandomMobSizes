@@ -1,5 +1,10 @@
 # Changelog
 
+### Version 1.20.6 - 2.1
+
+- port to 1.20.6
+- use vanilla minecraft attribute for scaling
+
 ### Version 1.20.4 - 2.1
 
 - fix incorrect creeper model

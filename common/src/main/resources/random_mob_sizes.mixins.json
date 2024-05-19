@@ -8,17 +8,12 @@
         "CompoundTagInvoker",
         "entity.AnimalMixin",
         "entity.CaveSpiderMixin",
-        "entity.EntityMixin",
         "entity.EyeHeightMixin",
         "entity.LivingEntityMixin",
         "entity.MobMixin",
-        "SpawnEggItemMixin",
-        "geckolib.GeoReplacedEntityRendererMixin"
+        "SpawnEggItemMixin"
     ],
     "client": [
-        "client.EntityRenderDispatcherMixin",
-        "client.LivingEntityRendererMixin",
-        "geckolib.GeoEntityRendererMixin"
     ],
     "refmap": "random_mob_sizes.refmap.json"
 }

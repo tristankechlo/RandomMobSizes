@@ -1,0 +1,30 @@
+plugins {
+    id 'rms-common'
+}
+
+configurations {
+    commonJava{
+        canBeResolved = true
+    }
+    commonResources{
+        canBeResolved = true
+    }
+}
+
+dependencies {
+    compileOnly(project(':common')) {
+        capabilities {
+            requireCapability "$group:$mod_id"
+        }
+    }
+}
+
+tasks.named('compileJava', JavaCompile) {
+    dependsOn(configurations.commonJava)
+    source(configurations.commonJava)
+}
+
+processResources {
+    dependsOn(configurations.commonResources)
+    from(configurations.commonResources)
+}
