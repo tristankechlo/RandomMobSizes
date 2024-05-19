@@ -59,9 +59,11 @@ jar {
 
 processResources {
     def expandProps = [
-            "version"          : "${minecraft_version}-${mod_version}",
-            "version_range"    : version_range,
-            "minecraft_version": minecraft_version
+            "version"                   : "${minecraft_version}-${mod_version}",
+            "version_range"             : version_range,
+            "minecraft_version"         : minecraft_version,
+            "fabric_range_min_inclusive": fabric_range_min_inclusive,
+            "fabric_range_max_exclusive": fabric_range_max_exclusive
     ]
 
     filesMatching(['pack.mcmeta', 'fabric.mod.json', 'META-INF/mods.toml', 'META-INF/neoforge.mods.toml', '*.mixins.json']) {
