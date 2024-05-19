@@ -13,12 +13,12 @@ public class GaussianScalingSampler extends ScalingSampler {
 
     private static final double STD_DEV = 0.13D;
     public static final String TYPE = "gaussian";
-    private final float min_scaling;
-    private final float max_scaling;
-    private final float mean;
+    private final double min_scaling;
+    private final double max_scaling;
+    private final double mean;
     private final boolean close_to_original;
 
-    public GaussianScalingSampler(float min_scaling, float max_scaling) {
+    public GaussianScalingSampler(double min_scaling, double max_scaling) {
         this.min_scaling = min_scaling;
         this.max_scaling = max_scaling;
         this.close_to_original = false;
@@ -29,8 +29,8 @@ public class GaussianScalingSampler extends ScalingSampler {
         super(jsonElement, entityType);
         JsonObject json = GsonHelper.convertToJsonObject(jsonElement, entityType);
 
-        this.min_scaling = getFloatSafe(json, "min_scaling", entityType);
-        this.max_scaling = getFloatSafe(json, "max_scaling", entityType);
+        this.min_scaling = getDoubleSafe(json, "min_scaling", entityType);
+        this.max_scaling = getDoubleSafe(json, "max_scaling", entityType);
         ensureMinSmallerMax(min_scaling, max_scaling, entityType);
 
         this.close_to_original = GsonHelper.getAsBoolean(json, "close_to_original", false);
@@ -51,8 +51,8 @@ public class GaussianScalingSampler extends ScalingSampler {
     }
 
     @Override
-    protected float sampleScalingFactor(RandomSource random, Difficulty difficulty) {
-        return (float) (this.min_scaling + (randomGaussian(random) * (this.max_scaling - this.min_scaling)));
+    protected double sampleScalingFactor(RandomSource random, Difficulty difficulty) {
+        return (this.min_scaling + (randomGaussian(random) * (this.max_scaling - this.min_scaling)));
     }
 
     /* returns a random number from a Gaussian distribution, clamped to [0, 1] */

@@ -44,7 +44,7 @@ public class DifficultyScalingSampler extends ScalingSampler {
     }
 
     @Override
-    protected float sampleScalingFactor(RandomSource random, Difficulty difficulty) {
+    protected double sampleScalingFactor(RandomSource random, Difficulty difficulty) {
         return samplers.get(difficulty.getId()).sample(random, difficulty);
     }
 

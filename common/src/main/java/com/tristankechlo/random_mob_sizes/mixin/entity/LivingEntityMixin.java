@@ -34,7 +34,7 @@ public abstract class LivingEntityMixin {
         instance.getRandomItems(params, seed, (stack) -> handleLoot$RandomMobSizes(scaling, random, stack, stackSplitter));
     }
 
-    private void handleLoot$RandomMobSizes(float scaling, RandomSource random, ItemStack stack, Consumer<ItemStack> stackSplitter) {
+    private void handleLoot$RandomMobSizes(double scaling, RandomSource random, ItemStack stack, Consumer<ItemStack> stackSplitter) {
         if (scaling <= 1.0F && stack.getCount() == 1) {
             // special case where the scaling will be used as a chance to determine if the item should be dropped
             if (random.nextDouble() <= scaling) {
@@ -42,7 +42,7 @@ public abstract class LivingEntityMixin {
             }
             return;
         }
-        int count = Math.round(stack.getCount() * scaling);
+        int count = (int) Math.round(stack.getCount() * scaling);
         if (count == 0 || stack.getCount() == 0) {
             return;
         }

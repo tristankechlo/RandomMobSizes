@@ -7,18 +7,18 @@ import java.util.function.Function;
 
 public enum AttributeScalingTypes implements StringRepresentable {
 
-    NONE("none", (value) -> 1.0F),
+    NONE("none", (value) -> 1.0),
     NORMAL("normal", (value) -> value),
     SQUARE("square", (value) -> (value * value)),
-    INVERSE("inverse", (value) -> (1.0F / value)),
-    INVERSE_SQUARE("inverse_square", (value) -> (1.0F / (value * value)));
+    INVERSE("inverse", (value) -> (1.0 / value)),
+    INVERSE_SQUARE("inverse_square", (value) -> (1.0 / (value * value)));
 
     @SuppressWarnings("deprecation")
     public static final EnumCodec<AttributeScalingTypes> CODEC = StringRepresentable.fromEnum(AttributeScalingTypes::values);
     private final String name;
-    private final Function<Float, Float> modifier;
+    private final Function<Double, Double> modifier;
 
-    private AttributeScalingTypes(String name, Function<Float, Float> modifier) {
+    private AttributeScalingTypes(String name, Function<Double, Double> modifier) {
         this.name = name;
         this.modifier = modifier;
     }
@@ -28,7 +28,7 @@ public enum AttributeScalingTypes implements StringRepresentable {
         return name;
     }
 
-    public float apply(float value) {
+    public double apply(double value) {
         return modifier.apply(value);
     }
 

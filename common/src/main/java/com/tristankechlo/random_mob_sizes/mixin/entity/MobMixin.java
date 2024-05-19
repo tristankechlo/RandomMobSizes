@@ -55,23 +55,23 @@ public abstract class MobMixin implements MobMixinAddon {
         }
         EntityType<?> type = ((Mob) (Object) this).getType();
         ScalingSampler sampler = RandomMobSizesConfig.getScalingSampler(type);
-        float scaling = 1.0F;
+        double scaling = 1.0F;
         if (sampler != null) {
             scaling = sampler.sample(level.getRandom(), level.getDifficulty());
 
             if (sampler.shouldScaleHealth()) {
-                float healthScaling = sampler.getHealthScaler().apply(scaling);
+                double healthScaling = sampler.getHealthScaler().apply(scaling);
                 // only sets the new max possible health
-                float maxHealth = this.addModifier$RandomMobSizes(Attributes.MAX_HEALTH, healthScaling, true);
+                double maxHealth = this.addModifier$RandomMobSizes(Attributes.MAX_HEALTH, healthScaling, true);
                 // adjust the actual health as well
-                ((LivingEntity) (Object) this).setHealth(maxHealth);
+                ((LivingEntity) (Object) this).setHealth((float) maxHealth);
             }
             if (sampler.shouldScaleDamage()) {
-                float damageScaling = sampler.getDamageScaler().apply(scaling);
+                double damageScaling = sampler.getDamageScaler().apply(scaling);
                 this.addModifier$RandomMobSizes(Attributes.ATTACK_DAMAGE, damageScaling, true);
             }
             if (sampler.shouldScaleSpeed()) {
-                float speedScaling = sampler.getSpeedScaler().apply(scaling);
+                double speedScaling = sampler.getSpeedScaler().apply(scaling);
                 this.addModifier$RandomMobSizes(Attributes.MOVEMENT_SPEED, speedScaling, false);
             }
         }
@@ -88,11 +88,11 @@ public abstract class MobMixin implements MobMixinAddon {
     }
 
     @Override
-    public float addModifier$RandomMobSizes(Holder<Attribute> attribute, float scaling, boolean ceil) {
+    public double addModifier$RandomMobSizes(Holder<Attribute> attribute, double scaling, boolean ceil) {
         AttributeInstance instance = ((LivingEntity) (Object) this).getAttribute(attribute);
         if (instance != null) {
             double baseValue = instance.getBaseValue();
-            float newValue = (float) (ceil ? Math.ceil(baseValue * scaling) : baseValue * scaling);
+            double newValue = (ceil ? Math.ceil(baseValue * scaling) : baseValue * scaling);
             instance.setBaseValue(newValue);
             return newValue;
         }
@@ -136,9 +136,9 @@ public abstract class MobMixin implements MobMixinAddon {
         RandomMobSizes.LOGGER.info("Converted '{}' to '{}' with scaling '{}'", this.getClass().getSimpleName(), entity.getClass().getSimpleName(), scaling);
     }
 
-    private void scaleAttributes$RandomMobSizes(MobMixinAddon other, float scaling) {
-        float maxHealth = other.addModifier$RandomMobSizes(Attributes.MAX_HEALTH, scaling, true);
-        ((LivingEntity) other).setHealth(maxHealth);
+    private void scaleAttributes$RandomMobSizes(MobMixinAddon other, double scaling) {
+        double maxHealth = other.addModifier$RandomMobSizes(Attributes.MAX_HEALTH, scaling, true);
+        ((LivingEntity) other).setHealth((float) maxHealth);
         other.addModifier$RandomMobSizes(Attributes.MOVEMENT_SPEED, scaling, false);
         other.addModifier$RandomMobSizes(Attributes.ATTACK_DAMAGE, scaling, true);
         other.addModifier$RandomMobSizes(Attributes.SCALE, scaling, false);

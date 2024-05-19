@@ -17,6 +17,6 @@ public interface MobMixinAddon {
     // called by CaveSpiderMixin to apply scaling to CaveSpiders
     void doFinalizeSpawn$RandomMobSizes(ServerLevelAccessor level);
 
-    float addModifier$RandomMobSizes(Holder<Attribute> attribute, float scaling, boolean ceil);
+    double addModifier$RandomMobSizes(Holder<Attribute> attribute, double scaling, boolean ceil);
 
 }

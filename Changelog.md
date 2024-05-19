@@ -4,8 +4,9 @@
 
 - port to 1.20.6
 - use vanilla minecraft attribute for scaling
+    - possible range of min and max values adjusted to [0.0625, 16.0]
 - `/random_mob_sizes config show` no longer directly opens the config
-  - clicking on the underlined filename will now copy the file path to the clipboard
+    - clicking on the underlined filename will now copy the file path to the clipboard
 
 ### Version 1.20.4 - 2.1
 

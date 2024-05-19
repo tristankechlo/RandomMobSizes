@@ -9,16 +9,16 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 
 /**
- * creates random floats that are uniformly distributed between min and max,
+ * creates random doubles that are uniformly distributed between min and max,
  * basically random values between min and max
  */
 public class UniformScalingSampler extends ScalingSampler {
 
     public static final String TYPE = "uniform";
-    private final float min_scaling;
-    private final float max_scaling;
+    private final double min_scaling;
+    private final double max_scaling;
 
-    public UniformScalingSampler(float min_scaling, float max_scaling) {
+    public UniformScalingSampler(double min_scaling, double max_scaling) {
         this.min_scaling = min_scaling;
         this.max_scaling = max_scaling;
     }
@@ -26,19 +26,19 @@ public class UniformScalingSampler extends ScalingSampler {
     public UniformScalingSampler(JsonElement jsonElement, String entityType) {
         super(jsonElement, entityType);
         JsonObject json = GsonHelper.convertToJsonObject(jsonElement, entityType);
-        this.min_scaling = getFloatSafe(json, "min_scaling", entityType);
-        this.max_scaling = getFloatSafe(json, "max_scaling", entityType);
+        this.min_scaling = getDoubleSafe(json, "min_scaling", entityType);
+        this.max_scaling = getDoubleSafe(json, "max_scaling", entityType);
         ensureMinSmallerMax(min_scaling, max_scaling, entityType);
     }
 
-    public UniformScalingSampler(float min_scaling, float max_scaling, AttributeScalingTypes health, AttributeScalingTypes damage, AttributeScalingTypes speed) {
+    public UniformScalingSampler(double min_scaling, double max_scaling, AttributeScalingTypes health, AttributeScalingTypes damage, AttributeScalingTypes speed) {
         super(health, damage, speed);
         this.min_scaling = min_scaling;
         this.max_scaling = max_scaling;
     }
 
     @Override
-    protected float sampleScalingFactor(RandomSource random, Difficulty difficulty) {
+    protected double sampleScalingFactor(RandomSource random, Difficulty difficulty) {
         return min_scaling + (float) (random.nextDouble() * (max_scaling - min_scaling));
     }
 

@@ -13,34 +13,34 @@ import net.minecraft.world.Difficulty;
 public class StaticScalingSampler extends ScalingSampler {
 
     public static final String TYPE = "static";
-    private final float static_scaling;
+    private final double static_scaling;
 
-    public StaticScalingSampler(float static_scaling) {
+    public StaticScalingSampler(double static_scaling) {
         this.static_scaling = static_scaling;
     }
 
     public StaticScalingSampler(JsonElement jsonElement, String entityType) {
         super(jsonElement, entityType);
         if (GsonHelper.isNumberValue(jsonElement)) {
-            float scaling = jsonElement.getAsFloat();
-            if (isFloatOutOfBounds(scaling, MINIMUM_SCALING, MAXIMUM_SCALING)) {
+            double scaling = jsonElement.getAsDouble();
+            if (isDoubleOutOfBounds(scaling, MINIMUM_SCALING, MAXIMUM_SCALING)) {
                 RandomMobSizes.LOGGER.error("'scaling' for '{}' is out of range[{} - {}], changing to {}", entityType, MINIMUM_SCALING, MAXIMUM_SCALING, scaling);
                 scaling = Mth.clamp(scaling, MINIMUM_SCALING, MAXIMUM_SCALING);
             }
             this.static_scaling = scaling;
         } else {
             JsonObject json = GsonHelper.convertToJsonObject(jsonElement, entityType);
-            this.static_scaling = getFloatSafe(json, "scaling", entityType);
+            this.static_scaling = getDoubleSafe(json, "scaling", entityType);
         }
     }
 
-    public StaticScalingSampler(float static_scaling, AttributeScalingTypes health, AttributeScalingTypes damage, AttributeScalingTypes speed) {
+    public StaticScalingSampler(double static_scaling, AttributeScalingTypes health, AttributeScalingTypes damage, AttributeScalingTypes speed) {
         super(health, damage, speed);
         this.static_scaling = static_scaling;
     }
 
     @Override
-    protected float sampleScalingFactor(RandomSource random, Difficulty difficulty) {
+    protected double sampleScalingFactor(RandomSource random, Difficulty difficulty) {
         return static_scaling;
     }
 

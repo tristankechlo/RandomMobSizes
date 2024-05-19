@@ -9,11 +9,13 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 
 public abstract class ScalingSampler {
 
-    public static final float MINIMUM_SCALING = 0.1F;
-    public static final float MAXIMUM_SCALING = 10.0F;
+    public static final double MINIMUM_SCALING = ((RangedAttribute) Attributes.SCALE.value()).getMinValue();
+    public static final double MAXIMUM_SCALING = ((RangedAttribute) Attributes.SCALE.value()).getMaxValue();
     protected final AttributeScalingTypes scaleHealth;
     protected final AttributeScalingTypes scaleDamage;
     protected final AttributeScalingTypes scaleSpeed;
@@ -40,10 +42,10 @@ public abstract class ScalingSampler {
         this.shouldScaleXP = getBooleanSafe(json, "scale_xp", entityType, true);
     }
 
-    protected abstract float sampleScalingFactor(RandomSource random, Difficulty difficulty);
+    protected abstract double sampleScalingFactor(RandomSource random, Difficulty difficulty);
 
-    public final float sample(RandomSource random, Difficulty difficulty) {
-        float value = sampleScalingFactor(random, difficulty);
+    public final double sample(RandomSource random, Difficulty difficulty) {
+        double value = sampleScalingFactor(random, difficulty);
         return Mth.clamp(value, MINIMUM_SCALING, MAXIMUM_SCALING);
     }
 
@@ -96,7 +98,7 @@ public abstract class ScalingSampler {
 
     public static ScalingSampler deserializeSampler(JsonElement jsonElement, String entityType) {
         if (GsonHelper.isNumberValue(jsonElement)) {
-            return new StaticScalingSampler(jsonElement.getAsFloat());
+            return new StaticScalingSampler(jsonElement.getAsDouble());
         } else if (jsonElement.isJsonObject()) {
             JsonObject jsonObject = GsonHelper.convertToJsonObject(jsonElement, entityType);
             String type = jsonObject.get("type").getAsString();
@@ -109,19 +111,19 @@ public abstract class ScalingSampler {
         throw new JsonParseException("ScalingType must be a NumberValue or JsonObject");
     }
 
-    protected static void ensureMinSmallerMax(float min, float max, String entityType) {
+    protected static void ensureMinSmallerMax(double min, double max, String entityType) {
         if (min >= max) {
             throw new JsonParseException("'min_scaling' must be smaller than 'max_scaling' for '" + entityType + "' (can not be equal)");
         }
     }
 
-    protected static float getFloatSafe(JsonObject json, String key, String entityType) {
-        return getFloatSafe(json, key, MINIMUM_SCALING, MAXIMUM_SCALING, entityType);
+    protected static double getDoubleSafe(JsonObject json, String key, String entityType) {
+        return getDoubleSafe(json, key, MINIMUM_SCALING, MAXIMUM_SCALING, entityType);
     }
 
-    protected static float getFloatSafe(JsonObject json, String key, float min, float max, String entityType) {
-        float temp = GsonHelper.getAsFloat(json, key);
-        if (isFloatOutOfBounds(temp, min, max)) {
+    protected static double getDoubleSafe(JsonObject json, String key, double min, double max, String entityType) {
+        double temp = GsonHelper.getAsDouble(json, key);
+        if (isDoubleOutOfBounds(temp, min, max)) {
             temp = Mth.clamp(temp, min, max);
             RandomMobSizes.LOGGER.error("'{}' for '{}' is out of range[{} - {}], using {} instead", key, entityType, min, max, temp);
             //throw new JsonParseException("'" + key + "' for '" + entityType + "' is out of range[" + min + " - " + max + "], using " + temp + " instead");
@@ -129,7 +131,7 @@ public abstract class ScalingSampler {
         return temp;
     }
 
-    protected static boolean isFloatOutOfBounds(float value, float min, float max) {
+    protected static boolean isDoubleOutOfBounds(double value, double min, double max) {
         return value < min || value > max;
     }
 

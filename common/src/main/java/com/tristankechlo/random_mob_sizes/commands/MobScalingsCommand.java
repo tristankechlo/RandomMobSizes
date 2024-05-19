@@ -1,7 +1,7 @@
 package com.tristankechlo.random_mob_sizes.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.FloatArgumentType;
+import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.tristankechlo.random_mob_sizes.RandomMobSizes;
@@ -39,7 +39,7 @@ public final class MobScalingsCommand {
                                 .then(argument("scaling_type", SamplerTypesArgumentType.get())
                                         .then(argument("data", CompoundTagArgument.compoundTag())
                                                 .executes(MobScalingsCommand::setEntityScale)))
-                                .then(argument("scale", FloatArgumentType.floatArg(MINIMUM_SCALING, MAXIMUM_SCALING))
+                                .then(argument("scale", DoubleArgumentType.doubleArg(MINIMUM_SCALING, MAXIMUM_SCALING))
                                         .executes(MobScalingsCommand::setEntityScaleStatic))))
                 .then(literal("remove")
                         .then(argument("entity_type", ResourceArgument.resource(context, Registries.ENTITY_TYPE))
@@ -70,9 +70,9 @@ public final class MobScalingsCommand {
         try {
             //read values from command
             final EntityType<?> entityType = ResourceArgument.getEntityType(context, "entity_type").value();
-            final float scale = FloatArgumentType.getFloat(context, "scale");
+            final double scale = DoubleArgumentType.getDouble(context, "scale");
             final CompoundTag nbt = new CompoundTag();
-            nbt.putFloat("scaling", scale);
+            nbt.putDouble("scaling", scale);
             return setEntityScale(source, entityType, SamplerTypes.STATIC, nbt);
         } catch (Exception e) {
             return errorHandling(source, e, "An error occurred while setting the static scale for the entity type!");
