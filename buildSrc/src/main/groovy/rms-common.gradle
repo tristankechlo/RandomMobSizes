@@ -7,7 +7,7 @@ base {
 }
 
 java {
-    toolchain.languageVersion = JavaLanguageVersion.of(21)
+    toolchain.languageVersion = JavaLanguageVersion.of(java_version)
 }
 
 repositories {
@@ -62,8 +62,13 @@ processResources {
             "version"                   : "${minecraft_version}-${mod_version}",
             "version_range"             : version_range,
             "minecraft_version"         : minecraft_version,
+            "java_version"              : java_version,
+            "fabric_loader_min"         : fabric_loader_min,
             "fabric_range_min_inclusive": fabric_range_min_inclusive,
-            "fabric_range_max_exclusive": fabric_range_max_exclusive
+            "fabric_range_max_exclusive": fabric_range_max_exclusive,
+            "forge_loader_range"        : forge_loader_range,
+            "neoforge_loader_range"     : neoforge_loader_range,
+            "neoforge_range"            : neoforge_range
     ]
 
     filesMatching(['pack.mcmeta', 'fabric.mod.json', 'META-INF/mods.toml', 'META-INF/neoforge.mods.toml', '*.mixins.json']) {

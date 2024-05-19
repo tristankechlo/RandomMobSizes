@@ -8,6 +8,7 @@ jobs:
   prepare:
     runs-on: ubuntu-latest
     outputs:
+      java-version: ${{ steps.properties.outputs.java_version }}
       mc-version: ${{ steps.properties.outputs.minecraft_version }}
       mod-version: ${{ steps.properties.outputs.mod_version }}
       version-range: ${{ steps.properties.outputs.version_range }}
@@ -20,7 +21,7 @@ jobs:
         uses: christian-draeger/read-properties@1.1.1
         with:
           path: 'gradle.properties'
-          properties: 'minecraft_version mod_version version_range'
+          properties: 'minecraft_version mod_version version_range java_version'
       - name: Changelog
         id: changelog
         shell: bash
@@ -44,7 +45,7 @@ jobs:
       curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
       modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
     with:
-      java-version: 21
+      java-version: ${{ needs.prepare.outputs.java-version }}
       curseforge-id: 555230
       modrinth-id: "ccz0Dj7d"
       modid: "randommobsizes"

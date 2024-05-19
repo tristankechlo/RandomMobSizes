@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[2,)"
+loaderVersion="${neoforge_loader_range}"
 license="CC BY-NC-ND 4.0"
 showAsResourcePack=false
 
@@ -18,7 +18,7 @@ showAsResourcePack=false
 [[dependencies.random_mob_sizes]]
     modId="neoforge"
     type="required"
-    versionRange = "[20.4,)"
+    versionRange = "${neoforge_range}"
     ordering="NONE"
     side="BOTH"
 
