@@ -44,6 +44,7 @@ jobs:
       curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
       modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
     with:
+      java-version: 21
       curseforge-id: 555230
       modrinth-id: "ccz0Dj7d"
       modid: "randommobsizes"
