@@ -1,5 +1,7 @@
 package com.tristankechlo.random_mob_sizes.mixin_helper;
 
+import net.minecraft.core.Holder;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.level.ServerLevelAccessor;
 
 public interface MobMixinAddon {
@@ -14,5 +16,7 @@ public interface MobMixinAddon {
 
     // called by CaveSpiderMixin to apply scaling to CaveSpiders
     void doFinalizeSpawn$RandomMobSizes(ServerLevelAccessor level);
+
+    float addModifier$RandomMobSizes(Holder<Attribute> attribute, float scaling, boolean ceil);
 
 }

@@ -87,7 +87,8 @@ public abstract class MobMixin implements MobMixinAddon {
         this.doFinalizeSpawn$RandomMobSizes(level);
     }
 
-    private float addModifier$RandomMobSizes(Holder<Attribute> attribute, float scaling, boolean ceil) {
+    @Override
+    public float addModifier$RandomMobSizes(Holder<Attribute> attribute, float scaling, boolean ceil) {
         AttributeInstance instance = ((LivingEntity) (Object) this).getAttribute(attribute);
         if (instance != null) {
             double baseValue = instance.getBaseValue();
@@ -129,10 +130,18 @@ public abstract class MobMixin implements MobMixinAddon {
         boolean scaleLoot = ((MobMixinAddon) this).shouldScaleLoot$RandomMobSizes();
         boolean scaleXP = ((MobMixinAddon) this).shouldScaleXP$RandomMobSizes();
         T entity = cir.getReturnValue();
-        this.addModifier$RandomMobSizes(Attributes.SCALE, scaling, false);
+        this.scaleAttributes$RandomMobSizes((MobMixinAddon) entity, scaling);
         ((MobMixinAddon) entity).setShouldScaleLoot$RandomMobSizes(scaleLoot);
         ((MobMixinAddon) entity).setShouldScaleXP$RandomMobSizes(scaleXP);
         RandomMobSizes.LOGGER.info("Converted '{}' to '{}' with scaling '{}'", this.getClass().getSimpleName(), entity.getClass().getSimpleName(), scaling);
+    }
+
+    private void scaleAttributes$RandomMobSizes(MobMixinAddon other, float scaling) {
+        float maxHealth = other.addModifier$RandomMobSizes(Attributes.MAX_HEALTH, scaling, true);
+        ((LivingEntity) other).setHealth(maxHealth);
+        other.addModifier$RandomMobSizes(Attributes.MOVEMENT_SPEED, scaling, false);
+        other.addModifier$RandomMobSizes(Attributes.ATTACK_DAMAGE, scaling, true);
+        other.addModifier$RandomMobSizes(Attributes.SCALE, scaling, false);
     }
 
 }
