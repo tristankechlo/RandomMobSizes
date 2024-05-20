@@ -24,10 +24,10 @@
         "random_mob_sizes.mixins.json"
     ],
     "depends": {
-        "fabricloader": ">=0.14",
-        "fabric": "*",
-        "minecraft": "${minecraft_version}",
-        "java": ">=17"
+        "fabricloader": ">=${fabric_loader_min}",
+        "fabric-api": "*",
+        "minecraft": ">=${fabric_range_min_inclusive} <${fabric_range_max_exclusive}",
+        "java": ">=${java_version}"
     },
     "custom": {
         "modmenu": {
