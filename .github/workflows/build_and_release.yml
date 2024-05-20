@@ -8,6 +8,7 @@ jobs:
   prepare:
     runs-on: ubuntu-latest
     outputs:
+      java-version: ${{ steps.properties.outputs.java_version }}
       mc-version: ${{ steps.properties.outputs.minecraft_version }}
       mod-version: ${{ steps.properties.outputs.mod_version }}
       version-range: ${{ steps.properties.outputs.version_range }}
@@ -20,7 +21,7 @@ jobs:
         uses: christian-draeger/read-properties@1.1.1
         with:
           path: 'gradle.properties'
-          properties: 'minecraft_version mod_version version_range'
+          properties: 'minecraft_version mod_version version_range java_version'
       - name: Changelog
         id: changelog
         shell: bash
@@ -36,13 +37,14 @@ jobs:
           echo "${{ github.event.release.body }}" >> $GITHUB_STEP_SUMMARY
   build-release:
     needs: prepare
-    uses: tristankechlo/tristankechlo/.github/workflows/build_and_release_mod.yml@main
+    uses: tristankechlo/tristankechlo/.github/workflows/build_and_release_mod.yml@1.0.0-multiloader
     permissions:
       contents: write
     secrets:
       curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
       modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
     with:
+      java-version: ${{ needs.prepare.outputs.java-version }}
       curseforge-id: 555230
       modrinth-id: "ccz0Dj7d"
       modid: "randommobsizes"
@@ -56,7 +58,7 @@ jobs:
 
   send-discord:
     needs: [ "prepare", "build-release" ]
-    uses: tristankechlo/tristankechlo/.github/workflows/send_discord.yml@main
+    uses: tristankechlo/tristankechlo/.github/workflows/send_discord.yml@1.0.0-multiloader
     secrets:
       WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
     with:
