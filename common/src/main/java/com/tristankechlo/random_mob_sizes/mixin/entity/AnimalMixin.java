@@ -15,7 +15,9 @@ public abstract class AnimalMixin {
     @Inject(method = "finalizeSpawnChildFromBreeding", at = @At(value = "HEAD"))
     private void finalizeSpawnChildFromBreeding$RandomMobSizes(ServerLevel level, Animal parent, AgeableMob child, CallbackInfo ci) {
         // also apply scaling to child mobs from breeding two parents
-        ((MobMixinAddon) child).doFinalizeSpawn$RandomMobSizes(level);
+        if (child != null) {
+            ((MobMixinAddon) child).doFinalizeSpawn$RandomMobSizes(level);
+        }
     }
 
 }
