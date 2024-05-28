@@ -1,6 +1,6 @@
 # Changelog
 
-### Version 1.20.1 - 2.1
+### Version 1.20.1 - 2.1.1
 
 - fix game crashing when breeding frogs
 
