@@ -1,5 +1,9 @@
 # Changelog
 
+### Version 1.20.4 - 2.2
+
+- fix game crashing when breeding frogs
+
 ### Version 1.20.4 - 2.1
 
 - fix incorrect creeper model
