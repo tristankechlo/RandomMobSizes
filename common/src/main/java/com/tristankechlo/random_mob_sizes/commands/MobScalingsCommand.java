@@ -2,6 +2,7 @@ package com.tristankechlo.random_mob_sizes.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.tristankechlo.random_mob_sizes.RandomMobSizes;
@@ -36,7 +37,7 @@ public final class MobScalingsCommand {
         LiteralArgumentBuilder<CommandSourceStack> command = literal(COMMAND_NAME).requires((source) -> source.hasPermission(3))
                 .then(literal("set")
                         .then(argument("entity_type", ResourceArgument.resource(context, Registries.ENTITY_TYPE))
-                                .then(argument("scaling_type", SamplerTypesArgumentType.get())
+                                .then(argument("scaling_type", StringArgumentType.word())
                                         .then(argument("data", CompoundTagArgument.compoundTag())
                                                 .executes(MobScalingsCommand::setEntityScale)))
                                 .then(argument("scale", DoubleArgumentType.doubleArg(MINIMUM_SCALING, MAXIMUM_SCALING))
@@ -57,7 +58,8 @@ public final class MobScalingsCommand {
         try {
             //read values from command
             final EntityType<?> entityType = ResourceArgument.getEntityType(context, "entity_type").value();
-            final SamplerTypes scalingType = context.getArgument("scaling_type", SamplerTypes.class);
+            String argument = StringArgumentType.getString(context, "scaling_type");
+            final SamplerTypes scalingType = SamplerTypes.byName(argument, SamplerTypes.DIFFICULTY);
             final CompoundTag data = CompoundTagArgument.getCompoundTag(context, "data");
             return setEntityScale(source, entityType, scalingType, data);
         } catch (Exception e) {
