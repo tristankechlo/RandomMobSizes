@@ -1,6 +1,6 @@
 # Changelog
 
-### Version 1.20.6 - 2.2
+### Version 1.20.6 - 2.2.0
 
 - fix game crashing when breeding frogs
 - make mod fully server-side only
