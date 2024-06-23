@@ -11,13 +11,13 @@ mixin {
 
 minecraft {
     mappings channel: 'official', version: minecraft_version
+    copyIdeResources = true
+    reobf = false
 
     runs {
         configureEach {
             workingDirectory project.file('run')
             ideaModule "${rootProject.name}.${project.name}.main"
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
         }
 
         client {
@@ -41,6 +41,8 @@ minecraft {
         }
     }
 }
+
+jar.manifest.attributes.put("MixinConfigs", "${mod_id}.mixins.json")
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"

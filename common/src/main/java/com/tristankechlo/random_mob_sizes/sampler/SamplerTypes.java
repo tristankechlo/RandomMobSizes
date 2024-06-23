@@ -1,18 +1,15 @@
 package com.tristankechlo.random_mob_sizes.sampler;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.tristankechlo.random_mob_sizes.mixin.CompoundTagAccessor;
+import com.mojang.serialization.JsonOps;
 import com.tristankechlo.random_mob_sizes.sampler.types.DifficultyScalingSampler;
 import com.tristankechlo.random_mob_sizes.sampler.types.GaussianScalingSampler;
 import com.tristankechlo.random_mob_sizes.sampler.types.StaticScalingSampler;
 import com.tristankechlo.random_mob_sizes.sampler.types.UniformScalingSampler;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NumericTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.util.StringRepresentable;
 
-import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiFunction;
 
 public enum SamplerTypes implements StringRepresentable {
@@ -42,21 +39,8 @@ public enum SamplerTypes implements StringRepresentable {
     }
 
     public ScalingSampler fromNBT(CompoundTag nbt, String entityType) {
-        Map<String, Tag> map = ((CompoundTagAccessor) nbt).getEntries();
-        JsonObject json = new JsonObject();
-        for (Map.Entry<String, Tag> entry : map.entrySet()) {
-            final int id = entry.getValue().getId();
-            if (id == Tag.TAG_FLOAT || id == Tag.TAG_DOUBLE || id == Tag.TAG_INT || id == Tag.TAG_LONG) {
-                json.addProperty(entry.getKey(), ((NumericTag) entry.getValue()).getAsNumber());
-            }
-            if (id == Tag.TAG_BYTE) {
-                json.addProperty(entry.getKey(), ((NumericTag) entry.getValue()).getAsByte() != 0);
-            }
-            if (id == Tag.TAG_STRING) {
-                json.addProperty(entry.getKey(), entry.getValue().getAsString());
-            }
-        }
-        return this.fromJson(json, entityType);
+        Optional<JsonElement> json = CompoundTag.CODEC.encodeStart(JsonOps.INSTANCE, nbt).result();
+        return this.fromJson(json.orElseThrow(), entityType);
     }
 
     @Override
