@@ -3,7 +3,6 @@ package com.tristankechlo.random_mob_sizes.mixin.entity;
 import com.tristankechlo.random_mob_sizes.RandomMobSizes;
 import com.tristankechlo.random_mob_sizes.mixin_helper.MobMixinAddon;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -27,12 +26,16 @@ public abstract class LivingEntityMixin {
     @Redirect(method = "dropFromLootTable", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/storage/loot/LootTable;getRandomItems(Lnet/minecraft/world/level/storage/loot/LootContext;Ljava/util/function/Consumer;)V"))
     private void dropFromLootTable$RandomMobSizes(LootTable instance, LootContext context, Consumer<ItemStack> spawnAtLocation) {
         LivingEntity entity = (LivingEntity) (Object) this;
-        if (!(entity instanceof Mob)) { // not supported entity, drop default loot
+
+        // not supported entity, drop default loot
+        if (!(entity instanceof MobMixinAddon) || !RandomMobSizes.isEntityTypeAllowed(entity.getType())) {
             instance.getRandomItems(context, spawnAtLocation);
             return;
         }
         MobMixinAddon mob = (MobMixinAddon) entity;
-        if (!mob.shouldScaleLoot$RandomMobSizes()) { // loot manipulation disabled for this mob, drop default loot
+
+        // loot manipulation disabled for this mob, drop default loot
+        if (!mob.shouldScaleLoot$RandomMobSizes()) {
             instance.getRandomItems(context, spawnAtLocation);
             return;
         }
@@ -46,11 +49,15 @@ public abstract class LivingEntityMixin {
     @ModifyArg(method = "dropExperience", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/ExperienceOrb;award(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/phys/Vec3;I)V"), index = 2)
     private int calculateExperienceOnDeath$RandomMobSizes(int xp) {
         LivingEntity entity = (LivingEntity) (Object) this;
-        if (!(entity instanceof Mob)) {
+
+        // not supported entity, drop default xp
+        if (!(entity instanceof MobMixinAddon) || !RandomMobSizes.isEntityTypeAllowed(entity.getType())) {
             return xp;
         }
         MobMixinAddon mob = (MobMixinAddon) entity;
-        if (!mob.shouldScaleLoot$RandomMobSizes()) { // xp manipulation disabled for this mob
+
+        // xp manipulation disabled for this mob, drop default xp
+        if (!mob.shouldScaleLoot$RandomMobSizes()) {
             return xp;
         }
         float scaling = mob.getMobScaling$RandomMobSizes();
