@@ -1,5 +1,9 @@
 # Changelog
 
+### Version 1.18.2 - 2.2.1
+
+- fix mobs not dropping any loot when `scale_loot` is turned off
+
 ### Version 1.18.2 - 2.1
 
 - fix incorrect piglin eye height
