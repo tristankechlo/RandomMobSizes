@@ -57,7 +57,7 @@ public abstract class LivingEntityMixin {
         MobMixinAddon mob = (MobMixinAddon) entity;
 
         // xp manipulation disabled for this mob, drop default xp
-        if (!mob.shouldScaleLoot$RandomMobSizes()) {
+        if (!mob.shouldScaleXP$RandomMobSizes()) {
             return xp;
         }
         float scaling = mob.getMobScaling$RandomMobSizes();
