@@ -15,6 +15,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.ServerLevelAccessor;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -25,8 +26,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MobMixin implements MobMixinAddon {
 
     private static final EntityDataAccessor<Float> SCALING$RANDOM_MOB_SIZES = SynchedEntityData.defineId(Mob.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Boolean> SCALE_LOOT$RANDOM_MOB_SIZES = SynchedEntityData.defineId(Mob.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Boolean> SCALE_XP$RANDOM_MOB_SIZES = SynchedEntityData.defineId(Mob.class, EntityDataSerializers.BOOLEAN);
+
+    @Unique
+    private boolean scaleLoot$RandomMobSizes = false;
+    @Unique
+    private boolean scaleExperience$RandomMobSizes = false;
 
     @Override
     public float getMobScaling$RandomMobSizes() {
@@ -45,22 +49,22 @@ public abstract class MobMixin implements MobMixinAddon {
 
     @Override
     public boolean shouldScaleLoot$RandomMobSizes() {
-        return ((Mob) (Object) this).getEntityData().get(SCALE_LOOT$RANDOM_MOB_SIZES);
+        return this.scaleLoot$RandomMobSizes;
     }
 
     @Override
     public void setShouldScaleLoot$RandomMobSizes(boolean shouldScale) {
-        ((Mob) (Object) this).getEntityData().set(SCALE_LOOT$RANDOM_MOB_SIZES, shouldScale);
+        this.scaleLoot$RandomMobSizes = shouldScale;
     }
 
     @Override
     public boolean shouldScaleXP$RandomMobSizes() {
-        return ((Mob) (Object) this).getEntityData().get(SCALE_XP$RANDOM_MOB_SIZES);
+        return this.scaleExperience$RandomMobSizes;
     }
 
     @Override
     public void setShouldScaleXP$RandomMobSizes(boolean shouldScale) {
-        ((Mob) (Object) this).getEntityData().set(SCALE_XP$RANDOM_MOB_SIZES, shouldScale);
+        this.scaleExperience$RandomMobSizes = shouldScale;
     }
 
     @Override
@@ -116,8 +120,6 @@ public abstract class MobMixin implements MobMixinAddon {
     @Inject(at = @At("TAIL"), method = "defineSynchedData")
     private void defineSyncedData$RandomMobSizes(CallbackInfo ci) {
         ((Mob) (Object) this).getEntityData().define(SCALING$RANDOM_MOB_SIZES, 1.0F);
-        ((Mob) (Object) this).getEntityData().define(SCALE_LOOT$RANDOM_MOB_SIZES, false);
-        ((Mob) (Object) this).getEntityData().define(SCALE_XP$RANDOM_MOB_SIZES, false);
     }
 
     @Inject(at = @At("TAIL"), method = "readAdditionalSaveData")
