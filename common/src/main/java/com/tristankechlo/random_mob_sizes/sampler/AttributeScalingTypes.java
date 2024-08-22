@@ -14,7 +14,11 @@ public enum AttributeScalingTypes implements StringRepresentable {
     NORMAL("normal", (value) -> value),
     SQUARE("square", (value) -> (value * value)),
     INVERSE("inverse", (value) -> (1.0F / value)),
-    INVERSE_SQUARE("inverse_square", (value) -> (1.0F / (value * value)));
+    INVERSE_SQUARE("inverse_square", (value) -> (1.0F / (value * value))),
+    SQUARE_HALVED("square_halved", (value) -> (1.0F + (((value * value) - 1.0F) * 0.5F))),
+    INVERSE_HALVED("inverse_halved", (value) -> (1.0F + (((1.0F / value) - 1.0F) * 0.5F))),
+    INVERSE_SQUARE_HALVED("inverse_square_halved", (value) -> (1.0F + (((1.0F / (value * value)) - 1.0F) * 0.5F)));
+
 
     public static final Map<String, AttributeScalingTypes> BY_NAME;
     private final String name;
