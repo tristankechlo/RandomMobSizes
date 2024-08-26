@@ -8,6 +8,10 @@
 - fix config option `scale_xp` not affecting the dropped xp
 - remove unnecessary synched mob data
   - booleans for xp and loot scaling only remain on the server
+- create additional option for scaling health, attack damage or movement speed
+  - `square_halved` => $1 + (((scaling * scaling) - 1) * 0.5)$
+  - `inverse_halved` => $1 + (((1 / scaling) - 1) * 0.5)$
+  - `inverse_square_halved` => $1 + (((1 / (scaling * scaling)) - 1) * 0.5)$
 
 ### Version 1.20.1 - 2.1.1
 
