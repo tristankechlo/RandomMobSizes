@@ -6,6 +6,10 @@
 - change how/when default values are used
   - not supported entities (e.g. players) were affected by loot and xp scaling
 - fix config option `scale_xp` not affecting the dropped xp
+- create additional option for scaling health, attack damage or movement speed
+  - `square_halved` => $1 + (((scaling * scaling) - 1) * 0.5)$
+  - `inverse_halved` => $1 + (((1 / scaling) - 1) * 0.5)$
+  - `inverse_square_halved` => $1 + (((1 / (scaling * scaling)) - 1) * 0.5)$
 
 ### Version 1.21 - 2.2.0
 
