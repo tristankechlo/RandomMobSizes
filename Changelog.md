@@ -6,6 +6,8 @@
 - change how/when default values are used
   - not supported entities (e.g. players) were affected by loot and xp scaling
 - fix config option `scale_xp` not affecting the dropped xp
+- remove unnecessary synched mob data
+  - booleans for xp and loot scaling only remain on the server
 
 ### Version 1.20.1 - 2.1.1
 
