@@ -65,10 +65,10 @@ public abstract class MobMixin implements MobMixinAddon {
 
     @Override
     public void doFinalizeSpawn$RandomMobSizes(ServerLevelAccessor level) {
-        if (level.isClientSide()) {
+        EntityType<?> type = ((Mob) (Object) this).getType();
+        if (level.isClientSide() || !RandomMobSizes.isEntityTypeAllowed(type)) {
             return;
         }
-        EntityType<?> type = ((Mob) (Object) this).getType();
         ScalingSampler sampler = RandomMobSizesConfig.getScalingSampler(type);
         float scaling = 1.0F;
         if (sampler != null) {
@@ -116,8 +116,8 @@ public abstract class MobMixin implements MobMixinAddon {
     @Inject(at = @At("TAIL"), method = "defineSynchedData")
     private void defineSyncedData$RandomMobSizes(CallbackInfo ci) {
         ((Mob) (Object) this).getEntityData().define(SCALING$RANDOM_MOB_SIZES, 1.0F);
-        ((Mob) (Object) this).getEntityData().define(SCALE_LOOT$RANDOM_MOB_SIZES, true);
-        ((Mob) (Object) this).getEntityData().define(SCALE_XP$RANDOM_MOB_SIZES, true);
+        ((Mob) (Object) this).getEntityData().define(SCALE_LOOT$RANDOM_MOB_SIZES, false);
+        ((Mob) (Object) this).getEntityData().define(SCALE_XP$RANDOM_MOB_SIZES, false);
     }
 
     @Inject(at = @At("TAIL"), method = "readAdditionalSaveData")

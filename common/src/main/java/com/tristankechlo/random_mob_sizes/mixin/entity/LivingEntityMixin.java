@@ -4,7 +4,6 @@ import com.tristankechlo.random_mob_sizes.RandomMobSizes;
 import com.tristankechlo.random_mob_sizes.mixin_helper.MobMixinAddon;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -22,16 +21,22 @@ public abstract class LivingEntityMixin {
      * adjust the amount of dropped loot according to the scaling of the mob<br/>
      * <br/>
      * this mixin will fail to apply for forge, since they modify how the loot is loaded<br/>
-     * special handling for forge is done in TODO
+     * special handling for forge is done in RandomMobSizesLootModifier
      */
     @Redirect(method = "dropFromLootTable", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/storage/loot/LootTable;getRandomItems(Lnet/minecraft/world/level/storage/loot/LootContext;Ljava/util/function/Consumer;)V"))
     private void dropFromLootTable$RandomMobSizes(LootTable instance, LootContext context, Consumer<ItemStack> spawnAtLocation) {
         LivingEntity entity = (LivingEntity) (Object) this;
-        if (!(entity instanceof Mob)) {
+
+        // not supported entity, drop default loot
+        if (!(entity instanceof MobMixinAddon) || !RandomMobSizes.isEntityTypeAllowed(entity.getType())) {
+            instance.getRandomItems(context, spawnAtLocation);
             return;
         }
         MobMixinAddon mob = (MobMixinAddon) entity;
-        if (!mob.shouldScaleLoot$RandomMobSizes()) { // loot manipulation disabled for this mob
+
+        // loot manipulation disabled for this mob, drop default loot
+        if (!mob.shouldScaleLoot$RandomMobSizes()) {
+            instance.getRandomItems(context, spawnAtLocation);
             return;
         }
         float scaling = mob.getMobScaling$RandomMobSizes();
@@ -44,11 +49,15 @@ public abstract class LivingEntityMixin {
     @ModifyArg(method = "dropExperience", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/ExperienceOrb;award(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/phys/Vec3;I)V"), index = 2)
     private int calculateExperienceOnDeath$RandomMobSizes(int xp) {
         LivingEntity entity = (LivingEntity) (Object) this;
-        if (!(entity instanceof Mob)) {
+
+        // not supported entity, drop default xp
+        if (!(entity instanceof MobMixinAddon) || !RandomMobSizes.isEntityTypeAllowed(entity.getType())) {
             return xp;
         }
         MobMixinAddon mob = (MobMixinAddon) entity;
-        if (!mob.shouldScaleLoot$RandomMobSizes()) { // xp manipulation disabled for this mob
+
+        // xp manipulation disabled for this mob, drop default xp
+        if (!mob.shouldScaleXP$RandomMobSizes()) {
             return xp;
         }
         float scaling = mob.getMobScaling$RandomMobSizes();
