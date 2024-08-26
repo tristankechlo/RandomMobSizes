@@ -25,4 +25,4 @@ plugins {
 }
 
 rootProject.name = 'RandomMobSizes'
-include("Common", "Fabric", "Forge", "Neoforge")
+include("common", "Fabric", "Forge", "Neoforge")

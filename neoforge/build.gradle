@@ -28,7 +28,7 @@ runs {
 
 dependencies {
     implementation "net.neoforged:neoforge:${neoforge_version}"
-    compileOnly project(":Common")
+    compileOnly project(":common")
     implementation "software.bernie.geckolib:geckolib-forge-${geckolib_mc_version}:${geckolib_version_neoforge}"
 }
 
@@ -36,12 +36,12 @@ dependencies {
 Spec<Task> notNeoTask = { Task it -> !it.name.startsWith("neo") } as Spec<Task>
 
 tasks.withType(JavaCompile).matching(notNeoTask).configureEach {
-    source(project(":Common").sourceSets.main.allSource)
+    source(project(":common").sourceSets.main.allSource)
 }
 tasks.withType(Javadoc).matching(notNeoTask).configureEach {
-    source(project(":Common").sourceSets.main.allJava)
+    source(project(":common").sourceSets.main.allJava)
 }
 
 processResources {
-    from project(":Common").sourceSets.main.resources
+    from project(":common").sourceSets.main.resources
 }
