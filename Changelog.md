@@ -1,5 +1,12 @@
 # Changelog
 
+### Version 1.20.6 - 2.2.1
+
+- fix mobs not dropping any loot when `scale_loot` is turned off
+- change how/when default values are used
+  - not supported entities (e.g. players) were affected by loot and xp scaling
+- fix config option `scale_xp` not affecting the dropped xp
+
 ### Version 1.20.6 - 2.2.0
 
 - fix game crashing when breeding frogs
