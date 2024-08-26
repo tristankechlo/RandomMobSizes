@@ -24,13 +24,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MobMixin implements MobMixinAddon {
 
     @Unique
-    private boolean scaleLoot$RandomMobSizes = true;
+    private boolean scaleLoot$RandomMobSizes = false;
     @Unique
-    private boolean scaleExperience$RandomMobSizes = true;
+    private boolean scaleExperience$RandomMobSizes = false;
 
     @Override
     public boolean shouldScaleLoot$RandomMobSizes() {
-        return scaleLoot$RandomMobSizes;
+        return this.scaleLoot$RandomMobSizes;
     }
 
     @Override
@@ -50,10 +50,10 @@ public abstract class MobMixin implements MobMixinAddon {
 
     @Override
     public void doFinalizeSpawn$RandomMobSizes(ServerLevelAccessor level) {
-        if (level.isClientSide()) {
+        EntityType<?> type = ((Mob) (Object) this).getType();
+        if (level.isClientSide() || !RandomMobSizes.isEntityTypeAllowed(type)) {
             return;
         }
-        EntityType<?> type = ((Mob) (Object) this).getType();
         ScalingSampler sampler = RandomMobSizesConfig.getScalingSampler(type);
         double scaling = 1.0F;
         if (sampler != null) {
