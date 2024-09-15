@@ -1,5 +1,6 @@
 package com.tristankechlo.random_mob_sizes.mixin.entity;
 
+import com.tristankechlo.random_mob_sizes.RandomMobSizes;
 import com.tristankechlo.random_mob_sizes.mixin_helper.MobMixinAddon;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -23,14 +24,14 @@ public abstract class LivingEntityMixin {
 
         // not supported entity, drop default loot
         if (!(entity instanceof MobMixinAddon) || !RandomMobSizes.isEntityTypeAllowed(entity.getType())) {
-            instance.getRandomItems(context, seed, spawnAtLocation);
+            instance.getRandomItems(params, seed, spawnAtLocation);
             return;
         }
         MobMixinAddon mob = (MobMixinAddon) entity;
 
         // loot manipulation disabled for this mob, drop default loot
         if (!mob.shouldScaleLoot$RandomMobSizes()) {
-            instance.getRandomItems(context, seed, spawnAtLocation);
+            instance.getRandomItems(params, seed, spawnAtLocation);
             return;
         }
         float scaling = entity.getScale();
