@@ -22,6 +22,9 @@ dependencies {
     //using the forge version of geckolib because the fabric version is broken
     //does not matter cause the mod does not rely on geckolib, only used to compile the mixins
     modImplementation "software.bernie.geckolib:geckolib-forge-${geckolib_mc_version}:${geckolib_version_forge}"
+
+    compileOnly group: 'com.google.auto.service', name: 'auto-service', version: auto_service_version
+    annotationProcessor group: 'com.google.auto.service', name: 'auto-service', version: auto_service_version
 }
 
 loom {
