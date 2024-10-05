@@ -3,6 +3,7 @@
 ### Version 1.18.2 - 2.2.2
 
 - fix wrong attribute scaling when using difficulty-based-scaling
+- fix incorrectly placed model for phantoms
 
 ### Version 1.18.2 - 2.2.1
 
