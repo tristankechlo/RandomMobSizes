@@ -1,25 +1,31 @@
 plugins {
     id 'rms-loader'
-    id 'net.neoforged.gradle.userdev' version '7.0.145'
+    id 'net.neoforged.moddev'
 }
 
-runs {
-    configureEach {
-        modSource project.sourceSets.main
+neoForge {
+    version = neoforge_version
+    parchment {
+        minecraftVersion = parchment_minecraft
+        mappingsVersion = parchment_version
     }
-    client {
-        systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+    runs {
+        configureEach {
+            systemProperty('neoforge.enabledGameTestNamespaces', mod_id)
+            ideName = "NeoForge ${it.name.capitalize()} (${project.path})" // Unify the run config names with fabric
+        }
+        client {
+            client()
+        }
+        server {
+            server()
+        }
     }
-    server {
-        systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
-        programArgument '--nogui'
-    }
+    mods { "${mod_id}" { sourceSet sourceSets.main } }
 }
-
-sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    implementation "net.neoforged:neoforge:${neoforge_version}"
+    //implementation "net.neoforged:neoforge:${neoforge_version}"
     //implementation "software.bernie.geckolib:geckolib-neoforge-${geckolib_mc_version}:${geckolib_version_neoforge}"
 
     compileOnly group: 'com.google.auto.service', name: 'auto-service', version: auto_service_version
