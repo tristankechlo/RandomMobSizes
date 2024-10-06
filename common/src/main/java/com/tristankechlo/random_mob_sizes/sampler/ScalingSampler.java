@@ -62,35 +62,35 @@ public abstract class ScalingSampler {
         return json;
     }
 
-    public boolean shouldScaleHealth() {
+    public boolean shouldScaleHealth(Difficulty difficulty) {
         return scaleHealth != AttributeScalingTypes.NONE;
     }
 
-    public AttributeScalingTypes getHealthScaler() {
+    public AttributeScalingTypes getHealthScaler(Difficulty difficulty) {
         return scaleHealth;
     }
 
-    public boolean shouldScaleDamage() {
+    public boolean shouldScaleDamage(Difficulty difficulty) {
         return scaleDamage != AttributeScalingTypes.NONE;
     }
 
-    public AttributeScalingTypes getDamageScaler() {
+    public AttributeScalingTypes getDamageScaler(Difficulty difficulty) {
         return scaleDamage;
     }
 
-    public boolean shouldScaleSpeed() {
+    public boolean shouldScaleSpeed(Difficulty difficulty) {
         return scaleSpeed != AttributeScalingTypes.NONE;
     }
 
-    public AttributeScalingTypes getSpeedScaler() {
+    public AttributeScalingTypes getSpeedScaler(Difficulty difficulty) {
         return scaleSpeed;
     }
 
-    public boolean shouldScaleLoot() {
+    public boolean shouldScaleLoot(Difficulty difficulty) {
         return shouldScaleLoot;
     }
 
-    public boolean shouldScaleXP() {
+    public boolean shouldScaleXP(Difficulty difficulty) {
         return shouldScaleXP;
     }
 

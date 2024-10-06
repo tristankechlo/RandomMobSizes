@@ -17,8 +17,8 @@ public abstract class LivingEntityRendererMixin {
 
     @Inject(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
             at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/client/renderer/entity/LivingEntityRenderer;scale(Lnet/minecraft/world/entity/LivingEntity;Lcom/mojang/blaze3d/vertex/PoseStack;F)V",
-                    shift = At.Shift.AFTER))
+                    target = "Lnet/minecraft/client/renderer/entity/LivingEntityRenderer;setupRotations(Lnet/minecraft/world/entity/LivingEntity;Lcom/mojang/blaze3d/vertex/PoseStack;FFF)V",
+                    shift = At.Shift.BY))
     private void afterScale$RandomMobSizes(LivingEntity entity, float p_115309_, float p_115310_, PoseStack poseStack, MultiBufferSource p_115312_, int p_115313_, CallbackInfo ci) {
         // called after the normal scale method, to make sure the scaling is applied to all mobs
         // only scale Mob entities and not Players, ArmorStands, etc.
