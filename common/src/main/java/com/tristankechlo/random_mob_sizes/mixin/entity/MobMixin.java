@@ -6,6 +6,7 @@ import com.tristankechlo.random_mob_sizes.mixin_helper.MobMixinAddon;
 import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -55,29 +56,30 @@ public abstract class MobMixin implements MobMixinAddon {
             return;
         }
         ScalingSampler sampler = RandomMobSizesConfig.getScalingSampler(type);
+        Difficulty difficulty = level.getDifficulty();
         double scaling = 1.0F;
         if (sampler != null) {
             scaling = sampler.sample(level.getRandom(), level.getDifficulty());
 
-            if (sampler.shouldScaleHealth()) {
-                double healthScaling = sampler.getHealthScaler().apply(scaling);
+            if (sampler.shouldScaleHealth(difficulty)) {
+                double healthScaling = sampler.getHealthScaler(difficulty).apply(scaling);
                 // only sets the new max possible health
                 double maxHealth = this.addModifier$RandomMobSizes(Attributes.MAX_HEALTH, healthScaling, true);
                 // adjust the actual health as well
                 ((LivingEntity) (Object) this).setHealth((float) maxHealth);
             }
-            if (sampler.shouldScaleDamage()) {
-                double damageScaling = sampler.getDamageScaler().apply(scaling);
+            if (sampler.shouldScaleDamage(difficulty)) {
+                double damageScaling = sampler.getDamageScaler(difficulty).apply(scaling);
                 this.addModifier$RandomMobSizes(Attributes.ATTACK_DAMAGE, damageScaling, true);
             }
-            if (sampler.shouldScaleSpeed()) {
-                double speedScaling = sampler.getSpeedScaler().apply(scaling);
+            if (sampler.shouldScaleSpeed(difficulty)) {
+                double speedScaling = sampler.getSpeedScaler(difficulty).apply(scaling);
                 this.addModifier$RandomMobSizes(Attributes.MOVEMENT_SPEED, speedScaling, false);
             }
         }
-        boolean shouldScaleLoot = sampler == null || sampler.shouldScaleLoot();
+        boolean shouldScaleLoot = sampler == null || sampler.shouldScaleLoot(difficulty);
         this.setShouldScaleLoot$RandomMobSizes(shouldScaleLoot);
-        boolean shouldScaleXP = sampler == null || sampler.shouldScaleXP();
+        boolean shouldScaleXP = sampler == null || sampler.shouldScaleXP(difficulty);
         this.setShouldScaleXP$RandomMobSizes(shouldScaleXP);
         this.addModifier$RandomMobSizes(Attributes.SCALE, scaling, false);
     }
