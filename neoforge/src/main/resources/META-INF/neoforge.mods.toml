@@ -1,31 +1,31 @@
-modLoader="javafml"
-loaderVersion="${neoforge_loader_range}"
-license="CC BY-NC-ND 4.0"
-showAsResourcePack=false
+modLoader = "javafml"
+loaderVersion = "${neoforge_loader_range}"
+license = "CC BY-NC-ND 4.0"
+showAsResourcePack = false
 
 [[mods]]
-    modId="random_mob_sizes"
-    version="${version}"
-    displayName="Random Mob Sizes"
-    displayURL="https://github.com/tristankechlo/RandomMobSizes"
-    logoFile="banner.png"
-    authors="Buecher_wurm"
-    description='''configure mobs to spawn in different sizes'''
-    displayTest="IGNORE_SERVER_VERSION"
+    modId = "random_mob_sizes"
+    version = "${version}"
+    displayName = "Random Mob Sizes"
+    displayURL = "https://github.com/tristankechlo/RandomMobSizes"
+    logoFile = "banner.png"
+    authors = "Buecher_wurm"
+    description = '''configure mobs to spawn in different sizes'''
+    displayTest = "IGNORE_SERVER_VERSION"
 
 [[mixins]]
     config = "random_mob_sizes.mixins.json"
 
 [[dependencies.random_mob_sizes]]
-    modId="neoforge"
-    type="required"
+    modId = "neoforge"
+    type = "required"
     versionRange = "${neoforge_range}"
-    ordering="NONE"
-    side="BOTH"
+    ordering = "NONE"
+    side = "BOTH"
 
 [[dependencies.random_mob_sizes]]
-    modId="minecraft"
-    type="required"
-    versionRange="${version_range}"
-    ordering="NONE"
-    side="BOTH"
+    modId = "minecraft"
+    type = "required"
+    versionRange = "${version_range}"
+    ordering = "NONE"
+    side = "BOTH"

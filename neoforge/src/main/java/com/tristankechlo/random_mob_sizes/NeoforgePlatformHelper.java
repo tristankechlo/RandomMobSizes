@@ -1,10 +1,12 @@
 package com.tristankechlo.random_mob_sizes;
 
+import com.google.auto.service.AutoService;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLPaths;
 
 import java.nio.file.Path;
 
+@AutoService(IPlatformHelper.class)
 public class NeoforgePlatformHelper implements IPlatformHelper {
 
     @Override

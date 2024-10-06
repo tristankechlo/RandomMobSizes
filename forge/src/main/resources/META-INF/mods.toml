@@ -1,17 +1,17 @@
 modLoader = "javafml"
 loaderVersion = "${forge_loader_range}"
 license = "CC BY-NC-ND 4.0"
-issueTrackerURL="https://github.com/tristankechlo/RandomMobSizes/issues"
+issueTrackerURL = "https://github.com/tristankechlo/RandomMobSizes/issues"
 
 [[mods]]
     modId = "random_mob_sizes"
     version = "${version}"
     displayName = "Random Mob Sizes"
-    displayURL="https://github.com/tristankechlo/RandomMobSizes"
-    logoFile= "banner.png"
+    displayURL = "https://github.com/tristankechlo/RandomMobSizes"
+    logoFile = "banner.png"
     authors = "Buecher_wurm"
     description = '''configure mobs to spawn in different sizes'''
-    displayTest="IGNORE_SERVER_VERSION"
+    displayTest = "IGNORE_SERVER_VERSION"
 
 [[dependencies.random_mob_sizes]]
     modId = "forge"
