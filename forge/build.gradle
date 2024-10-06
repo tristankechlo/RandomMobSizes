@@ -63,6 +63,9 @@ dependencies {
     implementation 'org.spongepowered:mixin:0.8.4:processor'
     annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
     implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version_forge}")
+
+    compileOnly group: 'com.google.auto.service', name: 'auto-service', version: auto_service_version
+    annotationProcessor group: 'com.google.auto.service', name: 'auto-service', version: auto_service_version
 }
 
 tasks.withType(JavaCompile) {
