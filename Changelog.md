@@ -1,5 +1,9 @@
 # Changelog
 
+### Version 1.20.1 - 2.2.3
+
+- fix game crashing on startup
+
 ### Version 1.20.1 - 2.2.2
 
 - fix wrong attribute scaling when using difficulty-based-scaling
