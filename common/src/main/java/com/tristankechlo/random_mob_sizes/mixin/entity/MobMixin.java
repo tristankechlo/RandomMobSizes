@@ -85,7 +85,7 @@ public abstract class MobMixin implements MobMixinAddon {
     }
 
     @Inject(at = @At("TAIL"), method = "finalizeSpawn")
-    private void finalizeSpawn$RandomMobSizes(ServerLevelAccessor level, DifficultyInstance $$1, MobSpawnType $$2, SpawnGroupData $$3, CallbackInfoReturnable<SpawnGroupData> cir) {
+    private void finalizeSpawn$RandomMobSizes(ServerLevelAccessor level, DifficultyInstance $$1, EntitySpawnReason $$2, SpawnGroupData $$3, CallbackInfoReturnable<SpawnGroupData> cir) {
         this.doFinalizeSpawn$RandomMobSizes(level);
     }
 
@@ -117,8 +117,8 @@ public abstract class MobMixin implements MobMixinAddon {
         tag.putBoolean("ScaleExperience", this.shouldScaleXP$RandomMobSizes());
     }
 
-    @Inject(at = @At("TAIL"), method = "convertTo")
-    private <T extends Mob> void convertTo$RandomMobSizes(EntityType<T> type, boolean $$1, CallbackInfoReturnable<T> cir) {
+    @Inject(at = @At("TAIL"), method = "convertTo(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/entity/ConversionParams;Lnet/minecraft/world/entity/EntitySpawnReason;Lnet/minecraft/world/entity/ConversionParams$AfterConversion;)Lnet/minecraft/world/entity/Mob;")
+    private <T extends Mob> void convertTo$RandomMobSizes(EntityType<T> type, ConversionParams conversionParams, EntitySpawnReason spawnReason, ConversionParams.AfterConversion<T> afterConversion, CallbackInfoReturnable<T> cir) {
         if (!RandomMobSizesConfig.keepScalingOnConversion() || !RandomMobSizes.isEntityTypeAllowed(type)) {
             return;
         }

@@ -1,10 +1,8 @@
 package com.tristankechlo.random_mob_sizes.mixin.entity;
 
 import com.tristankechlo.random_mob_sizes.mixin_helper.MobMixinAddon;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.monster.CaveSpider;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -17,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class CaveSpiderMixin {
 
     @Inject(method = "finalizeSpawn", at = @At("HEAD"))
-    private void finalizeSpawn$RandomMobSizes(ServerLevelAccessor level, DifficultyInstance $$1, MobSpawnType $$2, SpawnGroupData $$3, CallbackInfoReturnable<SpawnGroupData> cir) {
+    private void finalizeSpawn$RandomMobSizes(ServerLevelAccessor level, DifficultyInstance $$1, EntitySpawnReason $$2, SpawnGroupData $$3, CallbackInfoReturnable<SpawnGroupData> cir) {
         // finalizeSpawn in CaveSpider.class does not call super method where scaling would be applied
         // call custom doFinalizeSpawn instead
         ((MobMixinAddon) this).doFinalizeSpawn$RandomMobSizes(level);

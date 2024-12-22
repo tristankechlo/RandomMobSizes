@@ -1,5 +1,9 @@
 # Changelog
 
+### Version 1.21.4 - 2.2.2
+
+- port to 1.21.4
+
 ### Version 1.21 - 2.2.2
 
 - fix wrong attribute scaling when using difficulty-based-scaling
