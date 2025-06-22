@@ -14,7 +14,6 @@ neoForge {
 
 dependencies {
     compileOnly group:'org.spongepowered', name:'mixin', version:'0.8.5'
-    //compileOnly "software.bernie.geckolib:geckolib-neoforge-${geckolib_mc_version}:${geckolib_version_neoforge}"
 }
 
 configurations {
