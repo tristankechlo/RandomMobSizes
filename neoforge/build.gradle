@@ -16,9 +16,11 @@ neoForge {
         }
         client {
             client()
+            gameDirectory = project.file('run')
         }
         server {
             server()
+            gameDirectory = project.file('run')
         }
     }
     mods { "${mod_id}" { sourceSet sourceSets.main } }
