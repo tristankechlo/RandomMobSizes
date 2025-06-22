@@ -103,12 +103,8 @@ public abstract class MobMixin implements MobMixinAddon {
 
     @Inject(at = @At("TAIL"), method = "readAdditionalSaveData")
     private void readAdditionalSaveData$RandomMobSizes(CompoundTag tag, CallbackInfo ci) {
-        if (tag.contains("ScaleLoot")) {
-            this.setShouldScaleLoot$RandomMobSizes(tag.getBoolean("ScaleLoot"));
-        }
-        if (tag.contains("ScaleExperience")) {
-            this.setShouldScaleXP$RandomMobSizes(tag.getBoolean("ScaleExperience"));
-        }
+        this.setShouldScaleLoot$RandomMobSizes(tag.getBooleanOr("ScaleLoot", false));
+        this.setShouldScaleXP$RandomMobSizes(tag.getBooleanOr("ScaleExperience", false));
     }
 
     @Inject(at = @At("TAIL"), method = "addAdditionalSaveData")

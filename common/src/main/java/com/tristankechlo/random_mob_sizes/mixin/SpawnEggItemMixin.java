@@ -20,7 +20,7 @@ import java.util.Optional;
 public abstract class SpawnEggItemMixin {
 
     @Inject(method = "spawnOffspringFromSpawnEgg",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Mob;moveTo(DDDFF)V", shift = At.Shift.AFTER),
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Mob;snapTo(DDDFF)V", shift = At.Shift.AFTER),
             locals = LocalCapture.CAPTURE_FAILHARD)
     private void spawnOffspringFromSpawnEgg$RandomMobSizes(
             Player player, Mob parent, EntityType<? extends Mob> type, ServerLevel level, Vec3 pos, ItemStack stack,

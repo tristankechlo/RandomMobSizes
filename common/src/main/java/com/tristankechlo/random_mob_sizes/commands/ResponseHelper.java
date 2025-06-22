@@ -12,6 +12,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.EntityType;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 public final class ResponseHelper {
 
     public static void sendMessageConfigShow(CommandSourceStack source) {
@@ -48,19 +51,25 @@ public final class ResponseHelper {
         String filePath = ConfigManager.getConfigPath();
         MutableComponent mutableComponent = Component.literal(fileName);
         mutableComponent.withStyle(ChatFormatting.GREEN, ChatFormatting.UNDERLINE);
-        mutableComponent.withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, filePath)));
+        mutableComponent.withStyle(style -> style.withClickEvent(new ClickEvent.CopyToClipboard(filePath)));
         return mutableComponent;
     }
 
-    public static MutableComponent clickableLink(String url, String displayText) {
+    public static MutableComponent clickableLink(String url, String displayText) throws URISyntaxException {
+        URI parsedUrl = new URI(url);
         MutableComponent mutableComponent = Component.literal(displayText);
         mutableComponent.withStyle(ChatFormatting.GREEN, ChatFormatting.UNDERLINE);
-        mutableComponent.withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url)));
+        mutableComponent.withStyle(style -> style.withClickEvent(new ClickEvent.OpenUrl(parsedUrl)));
         return mutableComponent;
     }
 
     public static MutableComponent clickableLink(String url) {
-        return clickableLink(url, url);
+        try {
+            return clickableLink(url, url);
+        } catch (URISyntaxException e) {
+            RandomMobSizes.LOGGER.error("Failed to create clickable link for URL: {}", url, e);
+            throw new RuntimeException(e);
+        }
     }
 
     public static void sendSuccessScalingTypeSet(CommandSourceStack source, EntityType<?> entityType, SamplerTypes samplerTypes, CompoundTag data) {
