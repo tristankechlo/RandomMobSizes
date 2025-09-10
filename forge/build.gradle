@@ -1,6 +1,6 @@
 plugins {
     id 'rms-loader'
-    id 'net.minecraftforge.gradle' version '[6.0.24,6.2)'
+    id 'net.minecraftforge.gradle' version '[6.0.36,6.2)'
     id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
 }
 
@@ -47,6 +47,7 @@ jar.manifest.attributes.put("MixinConfigs", "${mod_id}.mixins.json")
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
+    annotationProcessor 'net.minecraftforge:eventbus-validator:7.0-beta.10'
     implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
 
     compileOnly group: 'com.google.auto.service', name: 'auto-service', version: auto_service_version
