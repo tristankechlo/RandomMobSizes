@@ -5,7 +5,6 @@ import com.tristankechlo.random_mob_sizes.config.RandomMobSizesConfig;
 import com.tristankechlo.random_mob_sizes.mixin_helper.MobMixinAddon;
 import com.tristankechlo.random_mob_sizes.sampler.ScalingSampler;
 import net.minecraft.core.Holder;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
@@ -13,6 +12,8 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -102,15 +103,15 @@ public abstract class MobMixin implements MobMixinAddon {
     }
 
     @Inject(at = @At("TAIL"), method = "readAdditionalSaveData")
-    private void readAdditionalSaveData$RandomMobSizes(CompoundTag tag, CallbackInfo ci) {
-        this.setShouldScaleLoot$RandomMobSizes(tag.getBooleanOr("ScaleLoot", false));
-        this.setShouldScaleXP$RandomMobSizes(tag.getBooleanOr("ScaleExperience", false));
+    private void readAdditionalSaveData$RandomMobSizes(ValueInput input, CallbackInfo ci) {
+        this.setShouldScaleLoot$RandomMobSizes(input.getBooleanOr("ScaleLoot", false));
+        this.setShouldScaleXP$RandomMobSizes(input.getBooleanOr("ScaleExperience", false));
     }
 
     @Inject(at = @At("TAIL"), method = "addAdditionalSaveData")
-    private void addAdditionalSaveData$RandomMobSizes(CompoundTag tag, CallbackInfo ci) {
-        tag.putBoolean("ScaleLoot", this.shouldScaleLoot$RandomMobSizes());
-        tag.putBoolean("ScaleExperience", this.shouldScaleXP$RandomMobSizes());
+    private void addAdditionalSaveData$RandomMobSizes(ValueOutput output, CallbackInfo ci) {
+        output.putBoolean("ScaleLoot", this.shouldScaleLoot$RandomMobSizes());
+        output.putBoolean("ScaleExperience", this.shouldScaleXP$RandomMobSizes());
     }
 
     @Inject(at = @At("TAIL"), method = "convertTo(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/entity/ConversionParams;Lnet/minecraft/world/entity/EntitySpawnReason;Lnet/minecraft/world/entity/ConversionParams$AfterConversion;)Lnet/minecraft/world/entity/Mob;")
