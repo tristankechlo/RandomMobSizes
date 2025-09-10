@@ -19,7 +19,6 @@ public enum SamplerTypes implements StringRepresentable {
     GAUSSIAN(GaussianScalingSampler.TYPE, GaussianScalingSampler::new),
     DIFFICULTY(DifficultyScalingSampler.TYPE, DifficultyScalingSampler::new);
 
-    @SuppressWarnings("deprecation")
     public static final StringRepresentable.EnumCodec<SamplerTypes> CODEC;
     private final String name;
     private final BiFunction<JsonElement, String, ScalingSampler> jsonDeserializer;

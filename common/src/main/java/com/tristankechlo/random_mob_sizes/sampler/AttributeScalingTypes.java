@@ -16,7 +16,6 @@ public enum AttributeScalingTypes implements StringRepresentable {
     INVERSE_HALVED("inverse_halved", (value) -> (1.0F + (((1.0F / value) - 1.0F) * 0.5F))),
     INVERSE_SQUARE_HALVED("inverse_square_halved", (value) -> (1.0F + (((1.0F / (value * value)) - 1.0F) * 0.5F)));
 
-    @SuppressWarnings("deprecation")
     public static final EnumCodec<AttributeScalingTypes> CODEC = StringRepresentable.fromEnum(AttributeScalingTypes::values);
     private final String name;
     private final Function<Double, Double> modifier;

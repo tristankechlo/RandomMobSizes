@@ -24,4 +24,5 @@ public class NeoforgeRandomMobSizes {
         RandomMobSizesCommand.register(event.getDispatcher());
         MobScalingsCommand.register(event.getDispatcher(), event.getBuildContext());
     }
+
 }
